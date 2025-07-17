@@ -9,24 +9,27 @@ use Illuminate\Notifications\Notifiable;
 
 class User extends Authenticatable
 {
-    /** @use HasFactory<\Database\Factories\UserFactory> */
     use HasFactory, Notifiable;
 
     /**
      * The attributes that are mass assignable.
      *
-     * @var list<string>
+     * @var array<int, string>
      */
     protected $fillable = [
         'name',
         'email',
         'password',
+        'role',
+        'nip',
+        'birth_date',
+        'photo_path'
     ];
 
     /**
      * The attributes that should be hidden for serialization.
      *
-     * @var list<string>
+     * @var array<int, string>
      */
     protected $hidden = [
         'password',
@@ -45,4 +48,37 @@ class User extends Authenticatable
             'password' => 'hashed',
         ];
     }
+
+    // --- TAMBAHKAN FUNGSI BARU DI SINI ---
+    /**
+     * Memberitahu Laravel untuk menggunakan kolom 'nip' untuk autentikasi.
+     *
+     * @return string
+     */
+    public function username()
+    {
+        return 'nip';
+    }
+
+    public function isSuperAdmin(): bool
+    {
+        // Kita gunakan trim() untuk keamanan ekstra, lalu bandingkan.
+        return trim($this->role) === 'super_admin';
+    }
+
+    public function isKepegawaianAdmin(): bool
+    {
+        // Super Admin juga memiliki hak akses ini.
+        return in_array(trim($this->role), ['admin_kepegawaian', 'super_admin']);
+    }
+
+    /**
+     * Memeriksa apakah pengguna adalah Admin Anggaran.
+     */
+    public function isAnggaranAdmin(): bool
+    {
+        // Super Admin juga memiliki hak akses ini.
+        return in_array(trim($this->role), ['admin_anggaran', 'super_admin']);
+    }
+    // ------------------------------------
 }
