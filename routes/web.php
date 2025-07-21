@@ -26,7 +26,8 @@ Route::middleware('auth')->group(function () {
     Route::post('/attendances/import', [AttendanceImportController::class, 'store'])->name('attendances.import.store');
     Route::get('/reports/attendance', [AttendanceReportController::class, 'index'])->name('reports.attendance.index');
     Route::post('/reports/attendance/update-status', [AttendanceReportController::class, 'updateStatus'])->name('reports.attendance.updateStatus');
-
+    Route::resource('agenda-harian', AgendaController::class);
+    Route::get('/dashboard/events', [DashboardController::class, 'getEvents'])->name('dashboard.events');
 });
 
 require __DIR__.'/auth.php';
