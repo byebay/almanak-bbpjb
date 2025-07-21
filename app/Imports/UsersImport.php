@@ -24,9 +24,6 @@ class UsersImport implements ToModel, WithHeadingRow
                 'email'    => $formattedRow['nip'] . '@bbpjb.test',
                 'password' => Hash::make('password123'),
                 'role'     => 'pegawai',
-                // --- PERBAIKAN UTAMA DI SINI ---
-                // Langsung gunakan nilai dari Excel karena formatnya sudah benar (YYYY-MM-DD).
-                // Tidak perlu lagi konversi.
                 'birth_date' => $formattedRow['tanggal_lahir'],
                 // ---------------------------------
             ]
