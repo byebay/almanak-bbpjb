@@ -2,17 +2,13 @@
 
 namespace App\Http\Controllers;
 
-use App\Models\Agenda;
 use App\Models\User;
-use App\Models\DailyAttendance; // Pastikan nama model ini sesuai
+use App\Models\DailyAttendance; // PASTIKAN NAMA MODEL INI SESUAI
 use Illuminate\Http\Request;
 use Illuminate\Support\Carbon;
 
-class DashboardController extends Controller
+class AttendanceStatisticController extends Controller
 {
-    /**
-     * Menampilkan halaman utama dashboard dengan statistik dan kalender.
-     */
     public function index()
     {
         $today = Carbon::today()->toDateString();
@@ -38,35 +34,12 @@ class DashboardController extends Controller
         $pegawaiDinasLuar = $attendancesToday->where('status', 'Dinas Luar')->map(fn($att) => $att->user)->whereNotNull()->unique('id');
         
         // Mengirim semua data yang sudah diolah ke view
-        return view('dashboard', [
+        return view('reports.statistics', [
             'pegawaiPalingAwal' => $pegawaiPalingAwal,
             'jumlahHadir' => $jumlahHadir,
             'jumlahTerlambat' => $jumlahTerlambat,
             'pegawaiCuti' => $pegawaiCuti,
             'pegawaiDinasLuar' => $pegawaiDinasLuar,
         ]);
-    }
-
-    /**
-     * Menyediakan data agenda untuk FullCalendar dalam format JSON.
-     */
-    public function getEvents(Request $request)
-    {
-        $agendas = Agenda::where('status', 'Terpublikasi')->get();
-
-        $events = [];
-        foreach ($agendas as $agenda) {
-            $events[] = [
-                'title' => $agenda->title,
-                'start' => $agenda->agenda_date->format('Y-m-d'),
-                'extendedProps' => [
-                    'description' => $agenda->description,
-                    'start_time' => Carbon::parse($agenda->start_time)->format('H:i'),
-                    'end_time' => Carbon::parse($agenda->end_time)->format('H:i'),
-                ]
-            ];
-        }
-
-        return response()->json($events);
     }
 }

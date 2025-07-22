@@ -6,6 +6,7 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
+use Illuminate\Support\Facades\Storage;
 
 class User extends Authenticatable
 {
@@ -89,14 +90,16 @@ class User extends Authenticatable
     public function getPhotoUrlAttribute()
     {
         $extensions = ['jpg', 'png', 'jpeg'];
+        
+        // PERBAIKAN: Mengganti spasi dengan underscore agar cocok dengan nama file
+        $fileName = str_replace(' ', '_', $this->name);
+
         foreach ($extensions as $ext) {
-            // Menggunakan 'name' sebagai nama file foto
-            $path = "photos/pegawai/{$this->name}.{$ext}";
+            $path = "photos/pegawai/{$fileName}.{$ext}";
             if (Storage::disk('public')->exists($path)) {
                 return asset("storage/{$path}");
             }
         }
-        // Jika tidak ada foto, kembalikan URL ke gambar placeholder
         return 'https://via.placeholder.com/150/0000FF/FFFFFF?text=No+Photo';
     }
 }

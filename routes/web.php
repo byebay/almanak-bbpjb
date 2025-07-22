@@ -7,6 +7,7 @@ use App\Http\Controllers\UserImportController;
 use App\Http\Controllers\AttendanceImportController;
 use App\Http\Controllers\AttendanceReportController;
 use App\Http\Controllers\AgendaController;
+use App\Http\Controllers\AttendanceStatisticController; 
 
 Route::get('/', function () {
     return view('welcome');
@@ -28,6 +29,7 @@ Route::middleware('auth')->group(function () {
     Route::post('/reports/attendance/update-status', [AttendanceReportController::class, 'updateStatus'])->name('reports.attendance.updateStatus');
     Route::resource('agenda-harian', AgendaController::class);
     Route::get('/dashboard/events', [DashboardController::class, 'getEvents'])->name('dashboard.events');
+    Route::get('/laporan/statistik', [AttendanceStatisticController::class, 'index'])->name('laporan.statistik');
 });
 
 require __DIR__.'/auth.php';

@@ -1,38 +1,104 @@
-{{-- Blok CSS untuk mengubah warna kalender --}}
 <style>
-    /* Mengubah warna semua tombol (prev, next, today, bulan, minggu) menjadi biru */
+    /* CSS untuk mengubah warna kalender */
     :root {
-        --fc-button-bg-color: #3B82F6; /* blue-500 */
+        --fc-button-bg-color: #3B82F6;
         --fc-button-border-color: #3B82F6;
-        --fc-button-hover-bg-color: #2563EB; /* blue-600 */
+        --fc-button-hover-bg-color: #2563EB;
         --fc-button-hover-border-color: #2563EB;
-        --fc-button-active-bg-color: #1D4ED8; /* blue-700 */
+        --fc-button-active-bg-color: #1D4ED8;
         --fc-button-active-border-color: #1D4ED8;
-        --fc-today-bg-color: rgba(219, 234, 254, 0.7); /* Latar belakang tanggal hari ini */
+        --fc-today-bg-color: rgba(219, 234, 254, 0.7);
     }
-
-    /* PERUBAHAN #1: Warna header hari dibuat sedikit lebih gelap */
     .fc .fc-col-header-cell {
-        background-color: #DBEAFE; /* Warna biru muda (blue-200) */
+        background-color: #DBEAFE;
     }
-
-    /* Mengubah warna angka tanggal di hari Minggu dan Sabtu menjadi merah */
     .fc-day-sun .fc-daygrid-day-number,
     .fc-day-sat .fc-daygrid-day-number {
-        color: #EF4444; /* red-500 */
+        color: #EF4444;
         font-weight: bold;
     }
 </style>
 
 <x-app-layout>
+    {{-- Import Swiper.js CSS --}}
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/swiper@11/swiper-bundle.min.css"/>
+
     <x-slot name="header">
         <h2 class="font-semibold text-xl text-gray-800 leading-tight">
-            {{ __('Dasbor') }}
+            {{ __('Dashboard') }}
         </h2>
     </x-slot>
 
     <div class="py-12">
-        <div class="max-w-7xl mx-auto sm:px-6 lg:px-8">
+        <div class="max-w-7xl mx-auto sm:px-6 lg:px-8 space-y-6">
+            
+            {{-- BAGIAN STATISTIK KEHADIRAN (SLIDER) --}}
+            <div class="swiper bg-transparent h-72">
+                <div class="swiper-wrapper">
+                    <div class="swiper-slide bg-white rounded-lg p-6 shadow-sm">
+                        <h3 class="text-xl font-bold text-gray-800 text-center">Datang Paling Awal</h3>
+                        @if($pegawaiPalingAwal)
+                            <div class="text-center mt-4">
+                                {{-- PERUBAHAN DI SINI: Menghapus class 'border-4' dan 'border-green-400' --}}
+                                <img src="{{ $pegawaiPalingAwal->photo_url }}" alt="{{ $pegawaiPalingAwal->name }}" class="w-24 h-24 rounded-full mx-auto object-cover">
+                                <p class="text-xl font-semibold mt-3">{{ $pegawaiPalingAwal->name }}</p>
+                                <p class="text-gray-500 text-sm">NIP: {{ $pegawaiPalingAwal->nip }}</p>
+                            </div>
+                        @else
+                            <p class="text-center text-gray-500 mt-4 pt-16">Tidak ada data kehadiran.</p>
+                        @endif
+                    </div>
+
+                    <div class="swiper-slide bg-white rounded-lg p-6 shadow-sm">
+                        <div class="grid grid-cols-2 divide-x divide-gray-200 h-full">
+                            {{-- Kolom Kiri: Jumlah Hadir --}}
+                            <div class="flex flex-col items-center justify-center text-center pr-4">
+                                <h3 class="text-xl font-bold text-gray-800">Jumlah Hadir</h3>
+                                <p class="text-7xl font-extrabold text-blue-500 mt-2">{{ $jumlahHadir }}/40</p>
+                                <p class="text-lg text-gray-600">Pegawai</p>
+                            </div>
+                            {{-- Kolom Kanan: Jumlah Terlambat --}}
+                            <div class="flex flex-col items-center justify-center text-center pl-4">
+                                <h3 class="text-xl font-bold text-gray-800">Jumlah Terlambat</h3>
+                                <p class="text-7xl font-extrabold text-yellow-500 mt-2">{{ $jumlahTerlambat }}</p>
+                                <p class="text-lg text-gray-600">Pegawai</p>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="swiper-slide bg-white rounded-lg p-6 shadow-sm overflow-y-auto">
+                        <h3 class="text-xl font-bold text-gray-800 text-center mb-4">Pegawai Cuti</h3>
+                        {{-- PERUBAHAN DI SINI: Menggunakan Flexbox untuk tata letak dinamis --}}
+                        <div class="flex flex-wrap justify-center gap-4">
+                            @forelse($pegawaiCuti as $pegawai)
+                                <div class="text-center w-24">
+                                    <img src="{{ $pegawai->photo_url }}" alt="{{ $pegawai->name }}" class="w-20 h-20 rounded-full mx-auto object-cover">
+                                    <p class="mt-2 text-sm font-medium break-words">{{ $pegawai->name }}</p>
+                                </div>
+                            @empty
+                                <p class="text-center text-gray-500">Tidak ada pegawai yang cuti hari ini.</p>
+                            @endforelse
+                        </div>
+                    </div>
+                    
+                    <div class="swiper-slide bg-white rounded-lg p-6 shadow-sm overflow-y-auto">
+                        <h3 class="text-xl font-bold text-gray-800 text-center mb-4">Pegawai Dinas Luar</h3>
+                        {{-- PERUBAHAN DI SINI: Menggunakan Flexbox untuk tata letak dinamis --}}
+                        <div class="flex flex-wrap justify-center gap-4">
+                            @forelse($pegawaiDinasLuar as $pegawai)
+                                <div class="text-center w-24">
+                                    <img src="{{ $pegawai->photo_url }}" alt="{{ $pegawai->name }}" class="w-20 h-20 rounded-full mx-auto object-cover">
+                                    <p class="mt-2 text-sm font-medium break-words">{{ $pegawai->name }}</p>
+                                </div>
+                            @empty
+                                <p class="text-center text-gray-500">Tidak ada pegawai dinas luar hari ini.</p>
+                            @endforelse
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            {{-- BAGIAN KALENDER AGENDA --}}
             <div class="bg-white overflow-hidden shadow-sm sm:rounded-lg">
                 <div class="p-6 text-gray-900">
                     <h3 class="text-2xl font-bold mb-4">Kalender Agenda BBJB</h3>
@@ -44,36 +110,46 @@
 
     {{-- Modal untuk Detail Agenda --}}
     <div id="agendaDetailModal" class="fixed z-50 inset-0 overflow-y-auto hidden">
-        <div class="flex items-center justify-center min-h-screen pt-4 px-4 pb-20 text-center sm:block sm:p-0">
-            <div class="fixed inset-0 transition-opacity" aria-hidden="true">
-                <div class="absolute inset-0 bg-gray-500 opacity-75"></div>
-            </div>
-            <span class="hidden sm:inline-block sm:align-middle sm:h-screen" aria-hidden="true">&#8203;</span>
-            <div class="inline-block align-bottom bg-white rounded-lg text-left overflow-hidden shadow-xl transform transition-all sm:my-8 sm:align-middle sm:max-w-lg sm:w-full">
+        <div class="flex items-center justify-center min-h-screen">
+            <div class="fixed inset-0 transition-opacity" aria-hidden="true"><div class="absolute inset-0 bg-gray-500 opacity-75"></div></div>
+            <div class="bg-white rounded-lg text-left overflow-hidden shadow-xl transform transition-all sm:my-8 sm:max-w-lg sm:w-full">
                 <div class="bg-white px-4 pt-5 pb-4 sm:p-6 sm:pb-4">
                     <h3 class="text-lg leading-6 font-medium text-gray-900 text-center" id="modalTitle"></h3>
                     <div id="modalBody" class="mt-4 border-t border-gray-200 pt-4 space-y-4"></div>
                 </div>
                 <div class="bg-gray-50 px-4 py-3 sm:px-6 sm:flex sm:flex-row-reverse">
-                    <button type="button" onclick="closeModal()" class="w-full inline-flex justify-center rounded-md border border-transparent shadow-sm px-4 py-2 bg-blue-600 text-base font-medium text-white hover:bg-blue-700 sm:ml-3 sm:w-auto sm:text-sm">
-                        Tutup
-                    </button>
+                    <button type="button" onclick="closeModal()" class="w-full inline-flex justify-center rounded-md border shadow-sm px-4 py-2 bg-blue-600 text-base font-medium text-white hover:bg-blue-700 sm:ml-3 sm:w-auto">Tutup</button>
                 </div>
             </div>
         </div>
     </div>
 
     @push('scripts')
-    <script src='https://cdn.jsdelivr.net/npm/fullcalendar@6.1.15/index.global.min.js'></script>
+    {{-- Import Swiper.js & FullCalendar JS --}}
+    <script src="https://cdn.jsdelivr.net/npm/swiper@11/swiper-bundle.min.js"></script>
+    <script src='https://cdn.jsdelivr.net/npm/@fullcalendar/core@6.1.15/index.global.min.js'></script>
+    <script src='https://cdn.jsdelivr.net/npm/@fullcalendar/daygrid@6.1.15/index.global.min.js'></script>
+    <script src='https://cdn.jsdelivr.net/npm/@fullcalendar/interaction@6.1.15/index.global.min.js'></script>
+    
     <script>
+        // Inisialisasi Swiper.js untuk slider statistik
+        const swiper = new Swiper('.swiper', {
+            loop: true,
+            autoplay: {
+                delay: 5000,
+                disableOnInteraction: false,
+            },
+        });
+
+        // Inisialisasi FullCalendar
         document.addEventListener('DOMContentLoaded', function() {
             const calendarEl = document.getElementById('calendar');
             const modal = document.getElementById('agendaDetailModal');
             const modalTitle = document.getElementById('modalTitle');
             const modalBody = document.getElementById('modalBody');
             
-            // --- FUNGSI BANTU UNTUK FORMAT TANGGAL TANPA TIMEZONE ---
             const toLocalISOString = (date) => {
+                if (!date) return null;
                 const year = date.getFullYear();
                 const month = String(date.getMonth() + 1).padStart(2, '0');
                 const day = String(date.getDate()).padStart(2, '0');
@@ -84,25 +160,16 @@
                 initialView: 'dayGridMonth',
                 locale: 'id',
                 headerToolbar: { left: 'prev,next today', center: 'title', right: 'dayGridMonth,dayGridWeek' },
-                
-                // --- PERUBAHAN DI SINI ---
-                buttonText: {
-                    today: 'Hari Ini',
-                    month: 'Bulan',
-                    week: 'Minggu'
-                },
-
+                buttonText: { month: 'Bulan', week: 'Minggu', today: 'Hari Ini' },
                 eventContent: function(info) {
                     if (info.view.type === 'dayGridMonth') return { html: '' };
                     return true;
                 },
                 events: '{{ route("dashboard.events") }}',
-                
-                datesSet: function(dateInfo) {
+                eventsSet: function(info) {
                     document.querySelectorAll('.fc-daygrid-day .custom-star').forEach(el => el.remove());
-                    const currentEvents = calendar.getEvents();
+                    const currentEvents = info.events;
                     currentEvents.forEach(event => {
-                        // PERBAIKAN TIMEZONE #1
                         const dateStr = toLocalISOString(event.start);
                         const dayCell = document.querySelector(`.fc-day[data-date="${dateStr}"]`);
                         if (dayCell) {
@@ -116,14 +183,10 @@
                         }
                     });
                 },
-
                 dateClick: function(info) {
                     const clickedDate = info.dateStr;
                     const allEvents = calendar.getEvents();
-                    
-                    // PERBAIKAN TIMEZONE #2
                     const eventsOnDate = allEvents.filter(event => toLocalISOString(event.start) === clickedDate);
-
                     if (eventsOnDate.length > 0) {
                         const dateObj = new Date(info.date);
                         modalTitle.textContent = `Agenda pada tanggal ${dateObj.toLocaleDateString('id-ID', { day: '2-digit', month: 'long', year: 'numeric' })}`;
@@ -134,8 +197,7 @@
                                     <p class="font-bold text-gray-800">${event.title}</p>
                                     <p class="text-sm text-gray-600">Waktu: ${event.extendedProps.start_time} - ${event.extendedProps.end_time}</p>
                                     <p class="text-sm text-gray-500 mt-1">${event.extendedProps.description}</p>
-                                </div>
-                                <hr class="last:hidden">`;
+                                </div><hr class="last:hidden">`;
                             modalBody.innerHTML += eventDetail;
                         });
                         modal.classList.remove('hidden');
