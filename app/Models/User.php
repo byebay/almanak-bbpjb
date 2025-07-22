@@ -81,4 +81,22 @@ class User extends Authenticatable
         return in_array(trim($this->role), ['admin_anggaran', 'super_admin']);
     }
     // ------------------------------------
+
+    /**
+     * Accessor untuk mendapatkan URL foto pegawai.
+     * Akan mencari file jpg, png, atau jpeg.
+     */
+    public function getPhotoUrlAttribute()
+    {
+        $extensions = ['jpg', 'png', 'jpeg'];
+        foreach ($extensions as $ext) {
+            // Menggunakan 'name' sebagai nama file foto
+            $path = "photos/pegawai/{$this->name}.{$ext}";
+            if (Storage::disk('public')->exists($path)) {
+                return asset("storage/{$path}");
+            }
+        }
+        // Jika tidak ada foto, kembalikan URL ke gambar placeholder
+        return 'https://via.placeholder.com/150/0000FF/FFFFFF?text=No+Photo';
+    }
 }
