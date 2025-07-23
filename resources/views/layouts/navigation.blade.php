@@ -41,6 +41,12 @@
                         </x-nav-link>
                     @endif
 
+                    @if(Auth::check() && Auth::user()->isKepegawaianAdmin())
+                        <x-nav-link :href="route('leaves.manage')" :active="request()->routeIs('leaves.manage')">
+                            {{ __('Kelola Cuti & DL') }}
+                        </x-nav-link>
+                    @endif
+
                     <x-nav-link :href="route('hasil-kerja.index')" :active="request()->routeIs('hasil-kerja.*')">
                         {{ __('Hasil Kerja') }}
                     </x-nav-link>

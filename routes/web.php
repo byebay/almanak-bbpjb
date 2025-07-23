@@ -7,6 +7,8 @@ use App\Http\Controllers\UserImportController;
 use App\Http\Controllers\AttendanceImportController;
 use App\Http\Controllers\AttendanceReportController;
 use App\Http\Controllers\EmployeeWorkController;
+use App\Http\Controllers\LeaveController;
+
 
 
 Route::get('/', function () {
@@ -34,7 +36,11 @@ Route::middleware('auth')->group(function () {
     Route::get('/hasil-kerja/{year}/{month}', [EmployeeWorkController::class, 'showMonth'])->name('hasil-kerja.month');
     Route::get('/hasil-kerja/{year}/{month}/{user}', [EmployeeWorkController::class, 'showEmployeeWork'])->name('hasil-kerja.employee');
     Route::delete('/hasil-kerja/{work}', [EmployeeWorkController::class, 'destroy'])->name('hasil-kerja.destroy');
+    Route::get('/leaves/manage', [LeaveController::class, 'index'])->name('leaves.manage');
+    Route::post('/leaves', [LeaveController::class, 'store'])->name('leaves.store');
+    Route::delete('/leaves/{leaveRecord}', [LeaveController::class, 'destroy'])->name('leaves.destroy');
     
 });
+
 
 require __DIR__.'/auth.php';
