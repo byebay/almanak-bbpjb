@@ -6,6 +6,7 @@ use App\Http\Controllers\DashboardController;
 use App\Http\Controllers\UserImportController;  
 use App\Http\Controllers\AttendanceImportController;
 use App\Http\Controllers\AttendanceReportController;
+use App\Http\Controllers\EmployeeWorkController;
 
 
 Route::get('/', function () {
@@ -26,7 +27,14 @@ Route::middleware('auth')->group(function () {
     Route::post('/attendances/import', [AttendanceImportController::class, 'store'])->name('attendances.import.store');
     Route::get('/reports/attendance', [AttendanceReportController::class, 'index'])->name('reports.attendance.index');
     Route::post('/reports/attendance/update-status', [AttendanceReportController::class, 'updateStatus'])->name('reports.attendance.updateStatus');
-
+    Route::get('/hasil-kerja', [EmployeeWorkController::class, 'index'])->name('hasil-kerja.index');
+    Route::post('/hasil-kerja', [EmployeeWorkController::class, 'store'])->name('hasil-kerja.store');
+    Route::get('/hasil-kerja/{work}/view', [EmployeeWorkController::class, 'view'])->name('hasil-kerja.view');
+    Route::get('/hasil-kerja/{work}/download', [EmployeeWorkController::class, 'download'])->name('hasil-kerja.download');
+    Route::get('/hasil-kerja/{year}/{month}', [EmployeeWorkController::class, 'showMonth'])->name('hasil-kerja.month');
+    Route::get('/hasil-kerja/{year}/{month}/{user}', [EmployeeWorkController::class, 'showEmployeeWork'])->name('hasil-kerja.employee');
+    Route::delete('/hasil-kerja/{work}', [EmployeeWorkController::class, 'destroy'])->name('hasil-kerja.destroy');
+    
 });
 
 require __DIR__.'/auth.php';
