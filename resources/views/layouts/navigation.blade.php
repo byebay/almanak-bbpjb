@@ -36,6 +36,10 @@
                         </x-nav-link>
                     @endif
 
+                    <x-nav-link :href="route('hasil-kerja.index')" :active="request()->routeIs('hasil-kerja.*')">
+                        {{ __('Hasil Kerja') }}
+                    </x-nav-link>
+
                     {{-- Contoh untuk menu lain nanti --}}
                     {{-- @if(Auth::check() && $user->isKepegawaianAdmin())
                         <x-nav-link href="#">
