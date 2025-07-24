@@ -20,7 +20,6 @@
 </style>
 
 <x-app-layout>
-    {{-- Import Swiper.js CSS --}}
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/swiper@11/swiper-bundle.min.css"/>
 
     <x-slot name="header">
@@ -31,33 +30,27 @@
 
     <div class="py-12">
         <div class="max-w-7xl mx-auto sm:px-6 lg:px-8 space-y-6">
-            
-            {{-- BAGIAN STATISTIK KEHADIRAN (SLIDER) --}}
             <div class="swiper bg-transparent h-72">
                 <div class="swiper-wrapper">
-                    <div class="swiper-slide bg-white rounded-lg p-6 shadow-sm">
+                    <div class="swiper-slide bg-white rounded-lg p-6 shadow-sm flex flex-col items-center justify-center">
                         <h3 class="text-xl font-bold text-gray-800 text-center">Datang Paling Awal</h3>
                         @if($pegawaiPalingAwal)
                             <div class="text-center mt-4">
-                                {{-- PERUBAHAN DI SINI: Menghapus class 'border-4' dan 'border-green-400' --}}
                                 <img src="{{ $pegawaiPalingAwal->photo_url }}" alt="{{ $pegawaiPalingAwal->name }}" class="w-24 h-24 rounded-full mx-auto object-cover">
                                 <p class="text-xl font-semibold mt-3">{{ $pegawaiPalingAwal->name }}</p>
                                 <p class="text-gray-500 text-sm">NIP: {{ $pegawaiPalingAwal->nip }}</p>
                             </div>
                         @else
-                            <p class="text-center text-gray-500 mt-4 pt-16">Tidak ada data kehadiran.</p>
+                            <p class="text-center text-gray-500 mt-4">Tidak ada data kehadiran.</p>
                         @endif
                     </div>
-
                     <div class="swiper-slide bg-white rounded-lg p-6 shadow-sm">
                         <div class="grid grid-cols-2 divide-x divide-gray-200 h-full">
-                            {{-- Kolom Kiri: Jumlah Hadir --}}
                             <div class="flex flex-col items-center justify-center text-center pr-4">
                                 <h3 class="text-xl font-bold text-gray-800">Jumlah Hadir</h3>
-                                <p class="text-7xl font-extrabold text-blue-500 mt-2">{{ $jumlahHadir }}/40</p>
+                                <p class="text-7xl font-extrabold text-blue-500 mt-2">{{ $jumlahHadir }}</p>
                                 <p class="text-lg text-gray-600">Pegawai</p>
                             </div>
-                            {{-- Kolom Kanan: Jumlah Terlambat --}}
                             <div class="flex flex-col items-center justify-center text-center pl-4">
                                 <h3 class="text-xl font-bold text-gray-800">Jumlah Terlambat</h3>
                                 <p class="text-7xl font-extrabold text-yellow-500 mt-2">{{ $jumlahTerlambat }}</p>
@@ -65,10 +58,8 @@
                             </div>
                         </div>
                     </div>
-                    
                     <div class="swiper-slide bg-white rounded-lg p-6 shadow-sm overflow-y-auto">
                         <h3 class="text-xl font-bold text-gray-800 text-center mb-4">Pegawai Cuti</h3>
-                        {{-- PERUBAHAN DI SINI: Menggunakan Flexbox untuk tata letak dinamis --}}
                         <div class="flex flex-wrap justify-center gap-4">
                             @forelse($pegawaiCuti as $pegawai)
                                 <div class="text-center w-24">
@@ -80,10 +71,8 @@
                             @endforelse
                         </div>
                     </div>
-                    
                     <div class="swiper-slide bg-white rounded-lg p-6 shadow-sm overflow-y-auto">
                         <h3 class="text-xl font-bold text-gray-800 text-center mb-4">Pegawai Dinas Luar</h3>
-                        {{-- PERUBAHAN DI SINI: Menggunakan Flexbox untuk tata letak dinamis --}}
                         <div class="flex flex-wrap justify-center gap-4">
                             @forelse($pegawaiDinasLuar as $pegawai)
                                 <div class="text-center w-24">
@@ -97,8 +86,6 @@
                     </div>
                 </div>
             </div>
-
-            {{-- BAGIAN KALENDER AGENDA --}}
             <div class="bg-white overflow-hidden shadow-sm sm:rounded-lg">
                 <div class="p-6 text-gray-900">
                     <h3 class="text-2xl font-bold mb-4">Kalender Agenda BBJB</h3>
@@ -107,8 +94,6 @@
             </div>
         </div>
     </div>
-
-    {{-- Modal untuk Detail Agenda --}}
     <div id="agendaDetailModal" class="fixed z-50 inset-0 overflow-y-auto hidden">
         <div class="flex items-center justify-center min-h-screen">
             <div class="fixed inset-0 transition-opacity" aria-hidden="true"><div class="absolute inset-0 bg-gray-500 opacity-75"></div></div>
@@ -125,29 +110,21 @@
     </div>
 
     @push('scripts')
-    {{-- Import Swiper.js & FullCalendar JS --}}
     <script src="https://cdn.jsdelivr.net/npm/swiper@11/swiper-bundle.min.js"></script>
     <script src='https://cdn.jsdelivr.net/npm/@fullcalendar/core@6.1.15/index.global.min.js'></script>
     <script src='https://cdn.jsdelivr.net/npm/@fullcalendar/daygrid@6.1.15/index.global.min.js'></script>
     <script src='https://cdn.jsdelivr.net/npm/@fullcalendar/interaction@6.1.15/index.global.min.js'></script>
-    
     <script>
-        // Inisialisasi Swiper.js untuk slider statistik
         const swiper = new Swiper('.swiper', {
             loop: true,
-            autoplay: {
-                delay: 5000,
-                disableOnInteraction: false,
-            },
+            autoplay: { delay: 5000, disableOnInteraction: false },
         });
 
-        // Inisialisasi FullCalendar
         document.addEventListener('DOMContentLoaded', function() {
             const calendarEl = document.getElementById('calendar');
             const modal = document.getElementById('agendaDetailModal');
             const modalTitle = document.getElementById('modalTitle');
             const modalBody = document.getElementById('modalBody');
-            
             const toLocalISOString = (date) => {
                 if (!date) return null;
                 const year = date.getFullYear();
@@ -155,10 +132,10 @@
                 const day = String(date.getDate()).padStart(2, '0');
                 return `${year}-${month}-${day}`;
             }
-
             const calendar = new FullCalendar.Calendar(calendarEl, {
                 initialView: 'dayGridMonth',
                 locale: 'id',
+                aspectRatio: 2,
                 headerToolbar: { left: 'prev,next today', center: 'title', right: 'dayGridMonth,dayGridWeek' },
                 buttonText: { month: 'Bulan', week: 'Minggu', today: 'Hari Ini' },
                 eventContent: function(info) {
@@ -204,7 +181,6 @@
                     }
                 }
             });
-
             calendar.render();
             window.closeModal = function() { modal.classList.add('hidden'); }
         });

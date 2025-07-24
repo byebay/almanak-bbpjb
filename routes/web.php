@@ -30,6 +30,7 @@ Route::middleware('auth')->group(function () {
     Route::post('/reports/attendance/update-status', [AttendanceReportController::class, 'updateStatus'])->name('reports.attendance.updateStatus');
     Route::resource('agenda-harian', AgendaController::class);
     Route::get('/dashboard/events', [DashboardController::class, 'getEvents'])->name('dashboard.events');
+    Route::get('/laporan/statistik', [AttendanceStatisticController::class, 'index'])->name('laporan.statistik');
     Route::get('/hasil-kerja', [EmployeeWorkController::class, 'index'])->name('hasil-kerja.index');
     Route::post('/hasil-kerja', [EmployeeWorkController::class, 'store'])->name('hasil-kerja.store');
     Route::get('/hasil-kerja/{work}/view', [EmployeeWorkController::class, 'view'])->name('hasil-kerja.view');
