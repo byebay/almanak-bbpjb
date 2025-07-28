@@ -72,7 +72,9 @@ class AgendaController extends Controller
 
     public function update(Request $request, Agenda $agenda)
     {
+        // PERBAIKAN DI SINI: Pastikan ada 'update' sebagai parameter pertama
         $this->authorize('update', $agenda);
+
         $request->validate([
             'title' => 'required|string|max:255',
             'description' => 'required|string',
@@ -99,7 +101,7 @@ class AgendaController extends Controller
 
         return redirect()->route('agenda-harian.index')->with('success', 'Agenda berhasil diperbarui.');
     }
-
+    
     public function destroy(Agenda $agenda)
     {
         $this->authorize('delete', $agenda);

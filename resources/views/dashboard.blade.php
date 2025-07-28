@@ -119,33 +119,45 @@
             loop: true,
             autoplay: { delay: 5000, disableOnInteraction: false },
         });
-
+    <script src='https://cdn.jsdelivr.net/npm/fullcalendar@6.1.15/index.global.min.js'></script>
+    <script>
         document.addEventListener('DOMContentLoaded', function() {
             const calendarEl = document.getElementById('calendar');
             const modal = document.getElementById('agendaDetailModal');
             const modalTitle = document.getElementById('modalTitle');
             const modalBody = document.getElementById('modalBody');
+            
             const toLocalISOString = (date) => {
-                if (!date) return null;
                 const year = date.getFullYear();
                 const month = String(date.getMonth() + 1).padStart(2, '0');
                 const day = String(date.getDate()).padStart(2, '0');
                 return `${year}-${month}-${day}`;
             }
+
             const calendar = new FullCalendar.Calendar(calendarEl, {
                 initialView: 'dayGridMonth',
                 locale: 'id',
-                aspectRatio: 2,
                 headerToolbar: { left: 'prev,next today', center: 'title', right: 'dayGridMonth,dayGridWeek' },
-                buttonText: { month: 'Bulan', week: 'Minggu', today: 'Hari Ini' },
+                
+                // --- PERBAIKAN DI SINI ---
+                // Menambahkan aspectRatio untuk membuat sel lebih pendek.
+                // Angka yang lebih besar berarti sel lebih pendek. Anda bisa sesuaikan nilainya.
+                aspectRatio: 2,
+
+                buttonText: {
+                    today: 'Hari Ini',
+                    month: 'Bulan',
+                    week: 'Minggu'
+                },
                 eventContent: function(info) {
                     if (info.view.type === 'dayGridMonth') return { html: '' };
                     return true;
                 },
                 events: '{{ route("dashboard.events") }}',
-                eventsSet: function(info) {
+                
+                datesSet: function(dateInfo) {
                     document.querySelectorAll('.fc-daygrid-day .custom-star').forEach(el => el.remove());
-                    const currentEvents = info.events;
+                    const currentEvents = calendar.getEvents();
                     currentEvents.forEach(event => {
                         const dateStr = toLocalISOString(event.start);
                         const dayCell = document.querySelector(`.fc-day[data-date="${dateStr}"]`);
@@ -160,6 +172,7 @@
                         }
                     });
                 },
+
                 dateClick: function(info) {
                     const clickedDate = info.dateStr;
                     const allEvents = calendar.getEvents();
@@ -174,7 +187,8 @@
                                     <p class="font-bold text-gray-800">${event.title}</p>
                                     <p class="text-sm text-gray-600">Waktu: ${event.extendedProps.start_time} - ${event.extendedProps.end_time}</p>
                                     <p class="text-sm text-gray-500 mt-1">${event.extendedProps.description}</p>
-                                </div><hr class="last:hidden">`;
+                                </div>
+                                <hr class="last:hidden">`;
                             modalBody.innerHTML += eventDetail;
                         });
                         modal.classList.remove('hidden');

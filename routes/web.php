@@ -10,6 +10,7 @@ use App\Http\Controllers\EmployeeWorkController;
 use App\Http\Controllers\LeaveController;
 use App\Http\Controllers\AgendaController;
 use App\Http\Controllers\AttendanceStatisticController;
+use App\Http\Controllers\KinerjaController;
 
 Route::get('/', function () {
     return view('welcome');
@@ -42,7 +43,7 @@ Route::middleware('auth')->group(function () {
     Route::get('/leaves/manage', [LeaveController::class, 'index'])->name('leaves.manage');
     Route::post('/leaves', [LeaveController::class, 'store'])->name('leaves.store');
     Route::delete('/leaves/{leaveRecord}', [LeaveController::class, 'destroy'])->name('leaves.destroy');
-    
+    Route::resource('kinerja', KinerjaController::class);
 });
 
 

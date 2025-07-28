@@ -1,12 +1,13 @@
 <div x-show="sidebarOpen" @click="sidebarOpen = false" class="fixed inset-0 z-20 bg-black bg-opacity-50 transition-opacity md:hidden"></div>
 
 <aside 
-    class="fixed inset-y-0 left-0 z-30 w-64 bg-white text-gray-800 border-r border-gray-200 flex flex-col transform transition-transform duration-300 ease-in-out md:translate-x-0"
+    class="fixed inset-y-0 left-0 z-30 w-64 bg-blue-100 text-gray-900 border-r border-blue-200 flex flex-col transform transition-transform duration-300 ease-in-out md:translate-x-0"
     :class="{'translate-x-0': sidebarOpen, '-translate-x-full': !sidebarOpen}"
 >
-    <div class="flex items-center justify-center p-4 border-b border-gray-200">
-        <a href="{{ route('dashboard') }}">
-            <img src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTRVuB5izhn6_SweD4kY9qdmzSinIWC-_jr2w&s" alt="Logo Balai Bahasa" class="block h-12 w-auto">
+    <div class="flex items-center justify-center p-4 border-b border-blue-200">
+        <a href="{{ route('dashboard') }}" class="flex items-center space-x-3">
+            <img src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTRVuB5izhn6_SweD4kY9qdmzSinIWC-_jr2w&s" alt="Logo Balai Bahasa" class="block h-10 w-auto">
+            <span class="font-bold text-xl text-gray-800">Almanak</span>
         </a>
     </div>
 
@@ -28,6 +29,13 @@
             {{ __('Agenda Harian') }}
         </x-nav-link>
 
+        <x-nav-link :href="route('kinerja.index')" :active="request()->routeIs('kinerja.*')" class="w-full flex items-center p-2 rounded-md text-gray-600 hover:bg-gray-100 hover:text-gray-900">
+            <svg class="h-5 w-5 mr-3" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor">
+                <path stroke-linecap="round" stroke-linejoin="round" d="M16.862 4.487l1.687-1.688a1.875 1.875 0 112.652 2.652L10.582 16.07a4.5 4.5 0 01-1.897 1.13L6 18l.8-2.685a4.5 4.5 0 011.13-1.897l8.932-8.931zm0 0L19.5 7.125M18 14v4.75A2.25 2.25 0 0115.75 21H5.25A2.25 2.25 0 013 18.75V8.25A2.25 2.25 0 015.25 6H10" />
+            </svg>
+            {{ __('Realisasi Kegiatan') }}
+        </x-nav-link>
+
         @if(Auth::check() && Auth::user()->isSuperAdmin())
             <x-nav-link :href="route('users.import.create')" :active="request()->routeIs('users.import.*')" class="w-full flex items-center p-2 rounded-md text-gray-600 hover:bg-gray-100 hover:text-gray-900">
                 <svg class="h-5 w-5 mr-3" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0zm6 3a2 2 0 11-4 0 2 2 0 014 0zM7 10a2 2 0 11-4 0 2 2 0 014 0z"/></svg>
@@ -35,18 +43,34 @@
             </x-nav-link>
         @endif
 
-        <x-nav-link :href="route('reports.attendance.index')" :active="request()->routeIs('reports.attendance.*')" class="w-full flex items-center p-2 rounded-md text-gray-600 hover:bg-gray-100 hover:text-gray-900">
-            <svg class="h-5 w-5 mr-3" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 17v-2m3 2v-4m3 4v-6m2 10H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"/></svg>
-            {{ __('Laporan Kehadiran') }}
-        </x-nav-link>
+        @php
+            $isKehadiranMenuActive = request()->routeIs(['reports.attendance.*', 'attendances.import.*', 'leaves.manage']);
+        @endphp
+        <div x-data="{ open: {{ $isKehadiranMenuActive ? 'true' : 'false' }} }" class="space-y-1">
+            <button @click="open = !open" class="w-full flex items-center p-2 rounded-md text-gray-600 hover:bg-gray-100 hover:text-gray-900 {{ $isKehadiranMenuActive ? 'text-gray-900 font-bold' : '' }}">
+                <svg class="h-5 w-5 mr-3" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 17v-2m3 2v-4m3 4v-6m2 10H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"/></svg>
+                <span class="flex-1 text-left">{{ __('Manajemen Kehadiran') }}</span>
+                <svg class="h-4 w-4 transform transition-transform" :class="{'rotate-90': open}" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7" /></svg>
+            </button>
+            <div x-show="open" x-transition class="space-y-1 pl-4">
+                <x-nav-link :href="route('reports.attendance.index')" :active="request()->routeIs('reports.attendance.*')">
+                <svg class="h-5 w-5 mr-3" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="M19.5 14.25v-2.625a3.375 3.375 0 0 0-3.375-3.375h-1.5A1.125 1.125 0 0 1 13.5 7.125v-1.5a3.375 3.375 0 0 0-3.375-3.375H8.25m0 12.75h7.5m-7.5 3H12M10.5 2.25H5.625c-.621 0-1.125.504-1.125 1.125v17.25c0 .621.504 1.125 1.125 1.125h12.75c.621 0 1.125-.504 1.125-1.125V11.25a9 9 0 0 0-9-9Z" /></svg>
+                    {{ __('Laporan Kehadiran') }}
+                </x-nav-link>
 
-        @if(Auth::check() && Auth::user()->isKepegawaianAdmin())
-            <x-nav-link :href="route('attendances.import.create')" :active="request()->routeIs('attendances.import.*')" class="w-full flex items-center p-2 rounded-md text-gray-600 hover:bg-gray-100 hover:text-gray-900">
-                <svg class="h-5 w-5 mr-3" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-8l-4-4m0 0L8 8m4-4v12"/></svg>
-                {{ __('Impor Absensi') }}
-            </x-nav-link>
-        @endif
-        
+                @if(Auth::check() && Auth::user()->isKepegawaianAdmin())
+                    <x-nav-link :href="route('attendances.import.create')" :active="request()->routeIs('attendances.import.*')">
+                    <svg class="h-5 w-5 mr-3" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="M3 16.5v2.25A2.25 2.25 0 0 0 5.25 21h13.5A2.25 2.25 0 0 0 21 18.75V16.5m-13.5-9L12 3m0 0 4.5 4.5M12 3v13.5" /></svg>
+                        {{ __('Impor Absensi') }}
+                    </x-nav-link>
+                    <x-nav-link :href="route('leaves.manage')" :active="request()->routeIs('leaves.manage')">
+                    <svg class="h-5 w-5 mr-3" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="M10.125 2.25h-4.5c-.621 0-1.125.504-1.125 1.125v17.25c0 .621.504 1.125 1.125 1.125h12.75c.621 0 1.125-.504 1.125-1.125v-9M10.125 2.25h.375a9 9 0 0 1 9 9v.375M10.125 2.25A3.375 3.375 0 0 1 13.5 5.625v1.5c0 .621.504 1.125 1.125 1.125h1.5a3.375 3.375 0 0 1 3.375 3.375M9 15l2.25 2.25L15 12" /></svg>
+                        {{ __('Kelola Cuti & Dinas Luar') }}
+                    </x-nav-link>
+                @endif
+            </div>
+        </div>
+
         <x-nav-link :href="route('hasil-kerja.index')" :active="request()->routeIs('hasil-kerja.*')" class="w-full flex items-center p-2 rounded-md text-gray-600 hover:bg-gray-100 hover:text-gray-900">
             <svg class="h-5 w-5 mr-3" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>
             {{ __('Hasil Kerja') }}
