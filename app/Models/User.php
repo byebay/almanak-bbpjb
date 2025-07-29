@@ -89,17 +89,13 @@ class User extends Authenticatable
      */
     public function getPhotoUrlAttribute()
     {
-        $extensions = ['jpg', 'png', 'jpeg'];
-        
-        // PERBAIKAN: Mengganti spasi dengan underscore agar cocok dengan nama file
-        $fileName = str_replace(' ', '_', $this->name);
-
-        foreach ($extensions as $ext) {
-            $path = "photos/pegawai/{$fileName}.{$ext}";
-            if (Storage::disk('public')->exists($path)) {
-                return asset("storage/{$path}");
-            }
+        // Jika ada path foto yang tersimpan di database, gunakan itu.
+        if ($this->photo_path && Storage::disk('public')->exists($this->photo_path)) {
+            return asset('storage/' . $this->photo_path);
         }
-        return 'https://via.placeholder.com/150/0000FF/FFFFFF?text=No+Photo';
+
+        // Jika tidak ada, kembalikan foto placeholder dengan inisial nama.
+        $initials = strtoupper(substr($this->name, 0, 2));
+        return 'https://via.placeholder.com/150/007BFF/FFFFFF?text=' . urlencode($initials);
     }
 }

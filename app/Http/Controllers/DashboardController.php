@@ -17,11 +17,12 @@ class DashboardController extends Controller
     {
         $today = Carbon::today()->toDateString();
 
-        // Mengambil semua data absensi hari ini beserta data user-nya
+        // Eager load relasi 'user' untuk efisiensi
         $attendancesToday = DailyAttendance::where('date', $today)->with('user')->get();
 
         // 1. Pegawai datang paling awal
         $earliestAttendance = $attendancesToday
+            ->whereNotNull('user')
             ->whereIn('status', ['Hadir', 'Terlambat'])
             ->sortBy('check_in_time')
             ->first();
@@ -32,12 +33,11 @@ class DashboardController extends Controller
         $jumlahTerlambat = $attendancesToday->where('status', 'Terlambat')->count();
 
         // 3. Pegawai yang cuti
-        $pegawaiCuti = $attendancesToday->where('status', 'Cuti')->map(fn($att) => $att->user)->whereNotNull()->unique('id');
+        $pegawaiCuti = $attendancesToday->where('status', 'Cuti')->whereNotNull('user')->pluck('user')->unique('id');
 
         // 4. Pegawai yang dinas luar
-        $pegawaiDinasLuar = $attendancesToday->where('status', 'Dinas Luar')->map(fn($att) => $att->user)->whereNotNull()->unique('id');
+        $pegawaiDinasLuar = $attendancesToday->where('status', 'Dinas Luar')->whereNotNull('user')->pluck('user')->unique('id');
         
-        // Mengirim semua data yang sudah diolah ke view
         return view('dashboard', [
             'pegawaiPalingAwal' => $pegawaiPalingAwal,
             'jumlahHadir' => $jumlahHadir,

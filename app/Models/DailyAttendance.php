@@ -22,10 +22,9 @@ class DailyAttendance extends Model
      * 2. TAMBAHKAN FUNGSI RELASI DI SINI
      * Mendefinisikan relasi bahwa setiap data absensi ini milik (belongs to) seorang User.
      */
-    public function user(): BelongsTo
+    public function user()
     {
-        // Kode ini menghubungkan kolom 'ac_no' di tabel ini
-        // dengan kolom 'nip' di tabel 'users'.
         return $this->belongsTo(User::class, 'ac_no', 'nip');
     }
+    
 }
