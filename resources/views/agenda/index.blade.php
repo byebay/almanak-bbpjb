@@ -44,7 +44,7 @@
                             <tbody class="bg-white divide-y divide-gray-200">
                                 @forelse ($agendas as $agenda)
                                     <tr>
-                                        <td class="px-6 py-4 whitespace-nowrap">{{ \Carbon\Carbon::parse($agenda->agenda_date)->translatedFormat('j F Y') }}</td>
+                                        <td class="px-6 py-4 whitespace-nowrap">{{ \Carbon\Carbon::parse($agenda->date)->translatedFormat('j F Y') }}</td>
                                         <td class="px-6 py-4 whitespace-nowrap">{{ \Carbon\Carbon::parse($agenda->start_time)->format('H:i') }}</td>
                                         <td class="px-6 py-4 whitespace-nowrap">{{ \Carbon\Carbon::parse($agenda->end_time)->format('H:i') }}</td>
                                         <td class="px-6 py-4 whitespace-nowrap">{{ $agenda->title }}</td>
@@ -142,31 +142,46 @@
         const currentFile = document.getElementById('current-file');
 
         function openModal(mode, id = null) {
-            form.reset();
-            currentFile.innerText = '';
-            if (mode === 'add') {
-                modalTitle.innerText = 'Tambah Agenda Baru';
-                form.action = "{{ route('agenda-harian.store') }}";
-                formMethod.innerHTML = '';
-            } else if (mode === 'edit') {
-                modalTitle.innerText = 'Edit Agenda';
-                form.action = `/agenda-harian/${id}`;
-                formMethod.innerHTML = '@method("PUT")';
-                fetch(`/agenda-harian/${id}`)
-                    .then(response => response.json())
-                    .then(data => {
-                        document.getElementById('title').value = data.title;
-                        document.getElementById('agenda_date').value = data.agenda_date;
-                        document.getElementById('start_time').value = data.start_time;
-                        document.getElementById('end_time').value = data.end_time;
-                        document.getElementById('description').value = data.description;
-                        if (data.file_path) {
-                            currentFile.innerText = 'File saat ini: ' + data.file_path.split('/').pop();
-                        }
-                    });
-            }
-            modal.classList.remove('hidden');
+        form.reset();
+        currentFile.innerText = '';
+
+        if (mode === 'add') {
+            modalTitle.innerText = 'Tambah Agenda Baru';
+            form.action = "{{ route('agenda-harian.store') }}";
+            formMethod.innerHTML = ''; // Hapus method spoofing
+        } else if (mode === 'edit') {
+            modalTitle.innerText = 'Edit Agenda';
+            // Pastikan URL dan method-nya benar
+            form.action = `/agenda-harian/${id}`;
+            formMethod.innerHTML = '@method("PUT")';
+
+            // Fetch data dari server
+            fetch(`/agenda-harian/${id}`)
+                .then(response => {
+                    if (!response.ok) {
+                        throw new Error('Gagal mengambil data agenda. Status: ' + response.status);
+                    }
+                    return response.json();
+                })
+                .then(data => {
+                    // Isi semua field form dengan data yang diterima
+                    document.getElementById('title').value = data.title;
+                    document.getElementById('agenda_date').value = data.agenda_date;
+                    document.getElementById('start_time').value = data.start_time;
+                    document.getElementById('end_time').value = data.end_time;
+                    document.getElementById('description').value = data.description;
+                    if (data.file_path) {
+                        currentFile.innerText = 'File saat ini: ' + data.file_path.split('/').pop();
+                    }
+                })
+                .catch(error => {
+                    console.error('Error:', error);
+                    alert('Tidak dapat memuat data agenda. Periksa konsol browser untuk detail.');
+                });
         }
+        modal.classList.remove('hidden');
+    }
+
         function closeModal() { modal.classList.add('hidden'); }
     </script>
     @endpush

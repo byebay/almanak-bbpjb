@@ -1,5 +1,5 @@
 <style>
-    /* CSS untuk mengubah warna kalender */
+    /* CSS kustom Anda untuk mengubah warna kalender tetap dipertahankan */
     :root {
         --fc-button-bg-color: #3B82F6;
         --fc-button-border-color: #3B82F6;
@@ -30,62 +30,83 @@
 
     <div class="py-12">
         <div class="max-w-7xl mx-auto sm:px-6 lg:px-8 space-y-6">
+            
+            {{-- HTML untuk Swiper Slider (sesuai struktur Anda) --}}
             <div class="swiper bg-transparent h-72">
                 <div class="swiper-wrapper">
-                    <div class="swiper-slide bg-white rounded-lg p-6 shadow-sm flex flex-col items-center justify-center">
-                        <h3 class="text-xl font-bold text-gray-800 text-center">Datang Paling Awal</h3>
-                        @if($pegawaiPalingAwal)
-                            <div class="text-center mt-4">
-                                <img src="{{ $pegawaiPalingAwal->photo_url }}" alt="{{ $pegawaiPalingAwal->name }}" class="w-24 h-24 rounded-full mx-auto object-cover">
-                                <p class="text-xl font-semibold mt-3">{{ $pegawaiPalingAwal->name }}</p>
-                                <p class="text-gray-500 text-sm">NIP: {{ $pegawaiPalingAwal->nip }}</p>
-                            </div>
-                        @else
-                            <p class="text-center text-gray-500 mt-4">Tidak ada data kehadiran.</p>
-                        @endif
+                    <!-- Slide 1: Datang Paling Awal -->
+                    <div class="swiper-slide">
+                        <div class="bg-white rounded-lg p-6 shadow-sm flex flex-col items-center justify-center h-full">
+                            <h3 class="text-xl font-bold text-gray-800 text-center">Datang Paling Awal</h3>
+                            @if($pegawaiPalingAwal)
+                                <div class="text-center mt-4">
+                                    <img src="{{ $pegawaiPalingAwal->photo_url }}" alt="{{ $pegawaiPalingAwal->name }}" class="w-24 h-24 rounded-full mx-auto object-cover">
+                                    <p class="text-xl font-semibold mt-3">{{ $pegawaiPalingAwal->name }}</p>
+                                    <p class="text-gray-500 text-sm">NIP: {{ $pegawaiPalingAwal->nip }}</p>
+                                </div>
+                            @else
+                                <p class="text-center text-gray-500 mt-4">Tidak ada data kehadiran.</p>
+                            @endif
+                        </div>
                     </div>
-                    <div class="swiper-slide bg-white rounded-lg p-6 shadow-sm">
-                        <div class="grid grid-cols-2 divide-x divide-gray-200 h-full">
-                            <div class="flex flex-col items-center justify-center text-center pr-4">
-                                <h3 class="text-xl font-bold text-gray-800">Jumlah Hadir</h3>
-                                <p class="text-7xl font-extrabold text-blue-500 mt-2">{{ $jumlahHadir }}</p>
-                                <p class="text-lg text-gray-600">Pegawai</p>
-                            </div>
-                            <div class="flex flex-col items-center justify-center text-center pl-4">
-                                <h3 class="text-xl font-bold text-gray-800">Jumlah Terlambat</h3>
-                                <p class="text-7xl font-extrabold text-yellow-500 mt-2">{{ $jumlahTerlambat }}</p>
-                                <p class="text-lg text-gray-600">Pegawai</p>
+
+                    <!-- Slide 2: Jumlah Hadir & Terlambat -->
+                    <div class="swiper-slide">
+                        <div class="bg-white rounded-lg p-6 shadow-sm h-full">
+                            <div class="grid grid-cols-2 divide-x divide-gray-200 h-full">
+                                <div class="flex flex-col items-center justify-center text-center pr-4">
+                                    <h3 class="text-xl font-bold text-gray-800">Jumlah Hadir</h3>
+                                    <p class="text-7xl font-extrabold text-blue-500 mt-2">{{ $jumlahHadir }}</p>
+                                    <p class="text-lg text-gray-600">Pegawai</p>
+                                </div>
+                                <div class="flex flex-col items-center justify-center text-center pl-4">
+                                    <h3 class="text-xl font-bold text-gray-800">Jumlah Terlambat</h3>
+                                    <p class="text-7xl font-extrabold text-yellow-500 mt-2">{{ $jumlahTerlambat }}</p>
+                                    <p class="text-lg text-gray-600">Pegawai</p>
+                                </div>
                             </div>
                         </div>
                     </div>
-                    <div class="swiper-slide bg-white rounded-lg p-6 shadow-sm overflow-y-auto">
-                        <h3 class="text-xl font-bold text-gray-800 text-center mb-4">Pegawai Cuti</h3>
-                        <div class="flex flex-wrap justify-center gap-4">
-                            @forelse($pegawaiCuti as $pegawai)
-                                <div class="text-center w-24">
-                                    <img src="{{ $pegawai->photo_url }}" alt="{{ $pegawai->name }}" class="w-20 h-20 rounded-full mx-auto object-cover">
-                                    <p class="mt-2 text-sm font-medium break-words">{{ $pegawai->name }}</p>
-                                </div>
-                            @empty
-                                <p class="text-center text-gray-500">Tidak ada pegawai yang cuti hari ini.</p>
-                            @endforelse
+
+                    <!-- Slide 3: Pegawai Cuti -->
+                    <div class="swiper-slide">
+                        <div class="bg-white rounded-lg p-6 shadow-sm overflow-y-auto h-full">
+                            <h3 class="text-xl font-bold text-gray-800 text-center mb-4">Pegawai Cuti</h3>
+                            <div class="flex flex-wrap justify-center gap-4">
+                                @forelse($pegawaiCuti as $pegawai)
+                                    <div class="text-center w-24">
+                                        <img src="{{ $pegawai->photo_url }}" alt="{{ $pegawai->name }}" class="w-20 h-20 rounded-full mx-auto object-cover">
+                                        <p class="mt-2 text-sm font-medium break-words">{{ $pegawai->name }}</p>
+                                    </div>
+                                @empty
+                                    <p class="text-center text-gray-500">Tidak ada pegawai yang cuti hari ini.</p>
+                                @endforelse
+                            </div>
                         </div>
                     </div>
-                    <div class="swiper-slide bg-white rounded-lg p-6 shadow-sm overflow-y-auto">
-                        <h3 class="text-xl font-bold text-gray-800 text-center mb-4">Pegawai Dinas Luar</h3>
-                        <div class="flex flex-wrap justify-center gap-4">
-                            @forelse($pegawaiDinasLuar as $pegawai)
-                                <div class="text-center w-24">
-                                    <img src="{{ $pegawai->photo_url }}" alt="{{ $pegawai->name }}" class="w-20 h-20 rounded-full mx-auto object-cover">
-                                    <p class="mt-2 text-sm font-medium break-words">{{ $pegawai->name }}</p>
-                                </div>
-                            @empty
-                                <p class="text-center text-gray-500">Tidak ada pegawai dinas luar hari ini.</p>
-                            @endforelse
+
+                    <!-- Slide 4: Pegawai Dinas Luar -->
+                    <div class="swiper-slide">
+                        <div class="bg-white rounded-lg p-6 shadow-sm overflow-y-auto h-full">
+                            <h3 class="text-xl font-bold text-gray-800 text-center mb-4">Pegawai Dinas Luar</h3>
+                            <div class="flex flex-wrap justify-center gap-4">
+                                @forelse($pegawaiDinasLuar as $pegawai)
+                                    <div class="text-center w-24">
+                                        <img src="{{ $pegawai->photo_url }}" alt="{{ $pegawai->name }}" class="w-20 h-20 rounded-full mx-auto object-cover">
+                                        <p class="mt-2 text-sm font-medium break-words">{{ $pegawai->name }}</p>
+                                    </div>
+                                @empty
+                                    <p class="text-center text-gray-500">Tidak ada pegawai dinas luar hari ini.</p>
+                                @endforelse
+                            </div>
                         </div>
                     </div>
                 </div>
+                <!-- Tambahkan Pagination -->
+                <div class="swiper-pagination"></div>
             </div>
+
+            <!-- Kalender Agenda (sesuai struktur Anda) -->
             <div class="bg-white overflow-hidden shadow-sm sm:rounded-lg">
                 <div class="p-6 text-gray-900">
                     <h3 class="text-2xl font-bold mb-4">Kalender Agenda BBJB</h3>
@@ -94,6 +115,8 @@
             </div>
         </div>
     </div>
+
+    <!-- Modal untuk Detail Agenda (sesuai struktur Anda) -->
     <div id="agendaDetailModal" class="fixed z-50 inset-0 overflow-y-auto hidden">
         <div class="flex items-center justify-center min-h-screen">
             <div class="fixed inset-0 transition-opacity" aria-hidden="true"><div class="absolute inset-0 bg-gray-500 opacity-75"></div></div>
@@ -110,18 +133,26 @@
     </div>
 
     @push('scripts')
+    {{-- JavaScript untuk Swiper dan FullCalendar --}}
     <script src="https://cdn.jsdelivr.net/npm/swiper@11/swiper-bundle.min.js"></script>
-    <script src='https://cdn.jsdelivr.net/npm/@fullcalendar/core@6.1.15/index.global.min.js'></script>
-    <script src='https://cdn.jsdelivr.net/npm/@fullcalendar/daygrid@6.1.15/index.global.min.js'></script>
-    <script src='https://cdn.jsdelivr.net/npm/@fullcalendar/interaction@6.1.15/index.global.min.js'></script>
-    <script>
-        const swiper = new Swiper('.swiper', {
-            loop: true,
-            autoplay: { delay: 5000, disableOnInteraction: false },
-        });
     <script src='https://cdn.jsdelivr.net/npm/fullcalendar@6.1.15/index.global.min.js'></script>
+    
     <script>
         document.addEventListener('DOMContentLoaded', function() {
+            // Inisialisasi Swiper Slider
+            const swiper = new Swiper('.swiper', {
+                loop: true,
+                autoplay: {
+                    delay: 5000,
+                    disableOnInteraction: false,
+                },
+                pagination: {
+                    el: '.swiper-pagination',
+                    clickable: true,
+                },
+            });
+
+            // Inisialisasi FullCalendar (menggunakan kode kustom Anda)
             const calendarEl = document.getElementById('calendar');
             const modal = document.getElementById('agendaDetailModal');
             const modalTitle = document.getElementById('modalTitle');
@@ -138,12 +169,7 @@
                 initialView: 'dayGridMonth',
                 locale: 'id',
                 headerToolbar: { left: 'prev,next today', center: 'title', right: 'dayGridMonth,dayGridWeek' },
-                
-                // --- PERBAIKAN DI SINI ---
-                // Menambahkan aspectRatio untuk membuat sel lebih pendek.
-                // Angka yang lebih besar berarti sel lebih pendek. Anda bisa sesuaikan nilainya.
                 aspectRatio: 2,
-
                 buttonText: {
                     today: 'Hari Ini',
                     month: 'Bulan',

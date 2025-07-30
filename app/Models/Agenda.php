@@ -5,15 +5,14 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
+use Illuminate\Database\Eloquent\SoftDeletes;
 
 class Agenda extends Model
 {
-    use HasFactory;
+    use HasFactory, SoftDeletes;
 
     /**
      * Atribut yang dapat diisi secara massal.
-     *
-     * @var array<int, string>
      */
     protected $fillable = [
         'user_id',
@@ -28,13 +27,12 @@ class Agenda extends Model
 
     /**
      * Casts atribut ke tipe data asli.
-     *
-     * @var array<string, string>
      */
     protected $casts = [
         'agenda_date' => 'date',
         'start_time' => 'datetime:H:i',
         'end_time' => 'datetime:H:i',
+        'password' => 'hashed', // Tambahkan ini jika belum ada, praktik yang baik
     ];
 
     /**
