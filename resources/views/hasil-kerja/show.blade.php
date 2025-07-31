@@ -49,7 +49,7 @@
 
             <!-- Daftar Hasil Kerja (Grid Ikon) -->
             <div class="bg-white p-6 rounded-lg shadow-sm">
-                <h3 class="font-bold text-lg mb-4">Daftar Hasil Kerja</h3>
+                <h3 class="font-bold text-lg mb-4">Daftar Bukti Kerja</h3>
                 <div class="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-6 gap-4">
                     @forelse ($works as $work)
                         <div class="relative group">
@@ -84,7 +84,7 @@
                             @endif
                         </div>
                     @empty
-                        <p class="text-gray-500 col-span-full">Belum ada hasil kerja yang diunggah untuk periode ini.</p>
+                        <p class="text-gray-500 col-span-full">Belum ada bukti kerja yang diunggah untuk periode ini.</p>
                     @endforelse
                 </div>
             </div>

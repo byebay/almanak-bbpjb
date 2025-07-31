@@ -2,6 +2,7 @@
 
 use App\Http\Controllers\ProfileController;
 use Illuminate\Support\Facades\Route;
+use App\Http\Controllers\PublicController;
 use App\Http\Controllers\DashboardController;
 use App\Http\Controllers\UserImportController;  
 use App\Http\Controllers\AttendanceImportController;
@@ -16,11 +17,18 @@ Route::get('/', function () {
     return view('welcome');
 });
 
-Route::get('/dashboard', [DashboardController::class, 'index'])
-    ->middleware(['auth', 'verified'])->name('dashboard');
+// 1. Jadikan halaman utama (root) menunjuk ke PublicController
+Route::get('/', [PublicController::class, 'index'])->name('public.home');
+
+// 2. Buat route untuk data event kalender yang bisa diakses publik
+Route::get('/public/events', [PublicController::class, 'getEvents'])->name('public.events');
+// --------------------------------
 
 
 Route::middleware('auth')->group(function () {
+    Route::get('/dashboard', [DashboardController::class, 'index'])->name('dashboard');
+    // Dashboard internal juga butuh data event
+    Route::get('/dashboard/events', [DashboardController::class, 'getEvents'])->name('dashboard.events');
     Route::get('/profile', [ProfileController::class, 'edit'])->name('profile.edit');
     Route::patch('/profile', [ProfileController::class, 'update'])->name('profile.update');
     Route::delete('/profile', [ProfileController::class, 'destroy'])->name('profile.destroy');
