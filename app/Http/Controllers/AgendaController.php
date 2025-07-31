@@ -64,19 +64,24 @@ class AgendaController extends Controller
      */
     public function show(string $id)
     {
-        // Cari agenda secara manual berdasarkan ID dari URL
+        // 1. Cari agenda secara manual berdasarkan ID dari URL.
         $agenda = Agenda::findOrFail($id);
 
-        // Otorisasi: Periksa apakah user yang login boleh melihat agenda ini.
-        $this->authorize('view', $agenda);
+        /** @var \App\Models\User $authUser */
+        $authUser = Auth::user();
 
-        // Kirim data dalam format JSON yang bersih dan aman
+        // 2. Otorisasi Manual: Siapa yang boleh melihat data untuk diedit?
+        // Aturan: Pengguna harus Super Admin ATAU pemilik agenda tersebut.
+        if ($authUser->id !== $agenda->user_id && !$authUser->isSuperAdmin()) {
+            abort(403, 'AKSI TIDAK DIIZINKAN.');
+        }
+
+        // 3. Kirim data dalam format JSON yang bersih dan aman.
         return response()->json([
             'id' => $agenda->id,
             'title' => $agenda->title,
             'description' => $agenda->description,
-            // Gunakan Carbon::parse untuk memastikan kita bekerja dengan objek tanggal/waktu
-            'agenda_date' => \Carbon\Carbon::parse($agenda->agenda_date)->format('Y-m-d'),
+            'agenda_date' => $agenda->agenda_date->format('Y-m-d'),
             'start_time' => \Carbon\Carbon::parse($agenda->start_time)->format('H:i'),
             'end_time' => \Carbon\Carbon::parse($agenda->end_time)->format('H:i'),
             'file_path' => $agenda->file_path,
