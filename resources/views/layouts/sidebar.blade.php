@@ -73,40 +73,57 @@
 
         <x-nav-link :href="route('hasil-kerja.index')" :active="request()->routeIs('hasil-kerja.*')" class="w-full flex items-center p-2 rounded-md text-gray-600 hover:bg-gray-100 hover:text-gray-900">
             <svg class="h-5 w-5 mr-3" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>
-            {{ __('Hasil Kerja') }}
+            {{ __('Bukti Kerja') }}
         </x-nav-link>
     </nav>
 
-    <div class="border-t border-gray-200 p-2">
-        <x-dropdown align="top" width="60">
-            <x-slot name="trigger">
-                <button class="w-full flex items-center p-2 rounded-md text-sm font-medium text-gray-600 hover:bg-gray-100 hover:text-gray-900 focus:outline-none">
-                    <div class="flex-shrink-0">
-                        <span class="inline-block h-8 w-8 rounded-full bg-gray-200 text-center leading-8 font-bold">
-                            {{ strtoupper(substr(Auth::user()->name, 0, 1)) }}
-                        </span>
-                    </div>
-                    <div class="ml-3 text-left">
-                        <div>{{ Auth::user()->name }}</div>
-                    </div>
-                    <div class="ml-auto">
-                        <svg class="fill-current h-4 w-4" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20"><path fill-rule="evenodd" d="M5.293 7.293a1 1 0 011.414 0L10 10.586l3.293-3.293a1 1 0 111.414 1.414l-4 4a1 1 0 01-1.414 0l-4-4a1 1 0 010-1.414z" clip-rule="evenodd" /></svg>
-                    </div>
-                </button>
-            </x-slot>
+    <div class="mt-auto p-4 border-t border-gray-200">
+    {{-- 1. Bungkus semuanya dengan komponen Alpine.js --}}
+    <div x-data="{ open: false }" class="relative">
+        
+        {{-- 2. Tombol Pemicu Dropdown --}}
+        <button @click="open = ! open" class="w-full flex items-center justify-between text-left p-2 rounded-md hover:bg-gray-100 focus:outline-none focus:ring-2 focus:ring-blue-500">
+            <div class="flex items-center">
+                {{-- Anda bisa menambahkan foto profil di sini nanti --}}
+                {{-- <img src="{{ Auth::user()->photo_url }}" alt="Foto Profil" class="w-8 h-8 rounded-full mr-3 object-cover"> --}}
+                <div>
+                    <p class="font-semibold text-sm text-gray-800">{{ Auth::user()->name }}</p>
+                    <p class="text-xs text-gray-500">{{ Auth::user()->getRoleName() }}</p> {{-- Asumsi ada fungsi getRoleName() di Model User --}}
+                </div>
+            </div>
+            {{-- Ikon Panah Dropdown --}}
+            <svg class="w-4 h-4 text-gray-500 transform transition-transform duration-200" :class="{'rotate-180': open}" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"></path></svg>
+        </button>
 
-            <x-slot name="content">
+        {{-- 3. Konten Dropdown yang Muncul/Hilang --}}
+        <div x-show="open"
+             @click.away="open = false"
+             x-transition:enter="transition ease-out duration-100"
+             x-transition:enter-start="transform opacity-0 scale-95"
+             x-transition:enter-end="transform opacity-100 scale-100"
+             x-transition:leave="transition ease-in duration-75"
+             x-transition:leave-start="transform opacity-100 scale-100"
+             x-transition:leave-end="transform opacity-0 scale-95"
+             class="absolute bottom-full mb-2 w-full bg-white rounded-md shadow-lg ring-1 ring-black ring-opacity-5 z-10"
+             style="display: none;">
+            
+            <div class="py-1">
                 <x-dropdown-link :href="route('profile.edit')">
-                    {{ __('Profile') }}
+                    {{ __('Profil Saya') }}
                 </x-dropdown-link>
+
+                <!-- Tombol Logout -->
                 <form method="POST" action="{{ route('logout') }}">
                     @csrf
                     <x-dropdown-link :href="route('logout')"
-                            onclick="event.preventDefault(); this.closest('form').submit();">
-                        {{ __('Log Out') }}
+                            onclick="event.preventDefault();
+                                        this.closest('form').submit();">
+                        {{ __('Keluar') }}
                     </x-dropdown-link>
                 </form>
-            </x-slot>
-        </x-dropdown>
+            </div>
+        </div>
     </div>
+</div>
+
 </aside>

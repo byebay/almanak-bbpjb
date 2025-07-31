@@ -1,5 +1,5 @@
 <x-app-layout>
-    <x-slot name="header"><h2 class="font-semibold text-xl text-gray-800 leading-tight">Hasil Kerja Pegawai</h2></x-slot>
+    <x-slot name="header"><h2 class="font-semibold text-xl text-gray-800 leading-tight">Bukti Kerja Pegawai</h2></x-slot>
     <div class="py-12" x-data="{ year: new Date().getFullYear(), month: new Date().getMonth() + 1 }">
         <div class="max-w-7xl mx-auto sm:px-6 lg:px-8">
             <div class="bg-white p-6 rounded-lg shadow-sm">

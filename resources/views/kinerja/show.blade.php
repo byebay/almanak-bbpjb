@@ -24,14 +24,14 @@
             </div>
 
             {{-- Tombol Aksi untuk Detail --}}
-            <div class="flex justify-start">
+            {{-- <div class="flex justify-start">
                 <button class="inline-flex items-center px-4 py-2 bg-blue-600 text-white rounded-md hover:bg-blue-700">
                     <svg class="w-5 h-5 mr-2" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor">
                         <path stroke-linecap="round" stroke-linejoin="round" d="M12 4.5v15m7.5-7.5h-15" />
                     </svg>
                     Tambah Laporan Progres
                 </button>
-            </div>
+            </div> --}}
 
             {{-- Daftar Laporan Progres --}}
             <div class="bg-white rounded-lg shadow-sm">

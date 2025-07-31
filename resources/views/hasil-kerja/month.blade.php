@@ -2,7 +2,7 @@
     <x-slot name="header">
         <h2 class="font-semibold text-xl text-gray-800 leading-tight">
             {{-- Tambahkan (int) untuk mengubah string dari URL menjadi angka --}}
-            Hasil Kerja - {{ \Carbon\Carbon::create()->month((int)$month)->translatedFormat('F') }} {{ $year }}
+            Bukti Kerja - {{ \Carbon\Carbon::create()->month((int)$month)->translatedFormat('F') }} {{ $year }}
         </h2>
     </x-slot>
     <div class="py-12">

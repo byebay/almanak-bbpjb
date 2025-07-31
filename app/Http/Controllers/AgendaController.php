@@ -30,14 +30,7 @@ class AgendaController extends Controller
 
     public function store(Request $request)
     {
-        $request->validate([
-            'title' => 'required|string|max:255',
-            'description' => 'required|string',
-            'agenda_date' => 'required|date',
-            'start_time' => 'required|date_format:H:i',
-            'end_time' => 'required|date_format:H:i|after:start_time',
-            'file_path' => 'nullable|file|mimes:pdf,docx,jpg,png|max:5120',
-        ]);
+        $request->validate([ /* ... aturan validasi Anda ... */ ]);
 
         $filePath = null;
         if ($request->hasFile('file_path')) {
@@ -52,7 +45,7 @@ class AgendaController extends Controller
             'start_time' => $request->start_time,
             'end_time' => $request->end_time,
             'file_path' => $filePath,
-            'status' => 'Terpublikasi',
+            'status' => 'Terpublikasi', // <-- PASTIKAN BARIS INI ADA
         ]);
 
         return redirect()->route('agenda-harian.index')->with('success', 'Agenda baru berhasil ditambahkan.');
@@ -90,10 +83,17 @@ class AgendaController extends Controller
 
     public function update(Request $request, Agenda $agenda)
     {
-        // PERBAIKAN DI SINI: Pastikan ada 'update' sebagai parameter pertama
-        $this->authorize('update', $agenda);
+        /** @var \App\Models\User $authUser */
+        $authUser = Auth::user();
 
-        $request->validate([
+        // --- PERBAIKAN UTAMA DI SINI ---
+        // Otorisasi Manual untuk Menyimpan Perubahan
+        if ($authUser->id !== $agenda->user_id && !$authUser->isSuperAdmin()) {
+            abort(403, 'AKSI TIDAK DIIZINKAN.');
+        }
+        // ------------------------------------
+
+        $validated = $request->validate([
             'title' => 'required|string|max:255',
             'description' => 'required|string',
             'agenda_date' => 'required|date',
@@ -109,11 +109,11 @@ class AgendaController extends Controller
         }
 
         $agenda->update([
-            'title' => $request->title,
-            'description' => $request->description,
-            'agenda_date' => $request->agenda_date,
-            'start_time' => $request->start_time,
-            'end_time' => $request->end_time,
+            'title' => $validated['title'],
+            'description' => $validated['description'],
+            'agenda_date' => $validated['agenda_date'],
+            'start_time' => $validated['start_time'],
+            'end_time' => $validated['end_time'],
             'file_path' => $filePath,
         ]);
 

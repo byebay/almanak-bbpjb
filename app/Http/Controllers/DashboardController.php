@@ -77,9 +77,24 @@ class DashboardController extends Controller
 
     public function getEvents(Request $request)
     {
-        // Fungsi ini tidak berubah
+        // --- PERBAIKAN UTAMA DI SINI ---
+        // Ambil hanya agenda yang statusnya 'Terpublikasi'
         $agendas = Agenda::where('status', 'Terpublikasi')->get();
-        // ... sisa kode getEvents ...
+        // ------------------------------------
+
+        $events = [];
+        foreach ($agendas as $agenda) {
+            $events[] = [
+                'title' => $agenda->title,
+                'start' => $agenda->agenda_date->format('Y-m-d'),
+                'extendedProps' => [
+                    'description' => $agenda->description,
+                    'start_time' => Carbon::parse($agenda->start_time)->format('H:i'),
+                    'end_time' => Carbon::parse($agenda->end_time)->format('H:i'),
+                ]
+            ];
+        }
+
         return response()->json($events);
     }
 }

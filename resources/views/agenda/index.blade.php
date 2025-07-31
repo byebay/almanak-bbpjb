@@ -159,9 +159,10 @@
             fetch(`/agenda-harian/${id}`)
                 .then(response => {
                     if (!response.ok) {
-                        throw new Error('Gagal mengambil data agenda. Status: ' + response.status);
-                    }
-                    return response.json();
+                    // Ini akan memberikan pesan error yang lebih jelas jika server gagal
+                    throw new Error('Gagal mengambil data. Server merespons dengan status: ' + response.status);
+                }
+                return response.json();
                 })
                 .then(data => {
                     // Isi semua field form dengan data yang diterima

@@ -98,4 +98,15 @@ class User extends Authenticatable
         $initials = strtoupper(substr($this->name, 0, 2));
         return 'https://via.placeholder.com/150/007BFF/FFFFFF?text=' . urlencode($initials);
     }
+
+    public function getRoleName(): string
+    {
+    return match ($this->role) {
+        'super_admin' => 'Super Admin',
+        'admin_kepegawaian' => 'Admin Kepegawaian',
+        'admin_anggaran' => 'Admin Anggaran',
+        'pegawai' => 'Pegawai',
+        default => 'Tidak Diketahui',
+    };
+}
 }
