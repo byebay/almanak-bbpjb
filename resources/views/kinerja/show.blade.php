@@ -47,10 +47,10 @@
                             </div>
                             
                             <div class="grid grid-cols-1 md:grid-cols-2 gap-4 text-sm">
-                                <div class="bg-gray-50 p-4 rounded-lg">
+                                <!-- <div class="bg-gray-50 p-4 rounded-lg">
                                     <p class="font-semibold text-gray-800">Pelaksana</p>
                                     <p class="text-gray-700 mt-1 break-words">{{ $detail->pelaksana }}</p>
-                                </div>
+                                </div> -->
                                 <div class="bg-gray-50 p-4 rounded-lg">
                                     <p class="font-semibold text-gray-800">Progres Kegiatan</p>
                                     <p class="text-gray-700 mt-1 break-words">{{ $detail->progres_kegiatan }}</p>

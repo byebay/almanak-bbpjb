@@ -35,7 +35,7 @@ class KinerjaController extends Controller
             'judul_kegiatan' => 'required|string|max:255',
             'target_kinerja' => 'required|string',
             'bulan_tahun' => 'required|date_format:Y-m',
-            'pelaksana' => 'required|string',
+            // 'pelaksana' => 'required|string',
             'deskripsi_pekerjaan' => 'required|string',
             'realisasi_target' => 'required|string',
             'progres_kegiatan' => 'required|string',

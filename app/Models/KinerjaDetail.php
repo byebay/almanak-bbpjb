@@ -12,7 +12,7 @@ class KinerjaDetail extends Model
 
     protected $fillable = [
         'kinerja_id', 
-        'pelaksana', 
+        // 'pelaksana', 
         'deskripsi_pekerjaan', 
         'realisasi_target', 
         'progres_kegiatan', 
