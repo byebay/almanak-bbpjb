@@ -90,7 +90,7 @@ class EmployeeWorkController extends Controller
         Storage::delete($work->file_path);
         $work->delete();
 
-        return back()->with('success', 'Hasil kerja berhasil dihapus.');
+        return back()->with('success', 'Bukti kerja berhasil dihapus.');
     }
 
      public function view(EmployeeWork $work)
