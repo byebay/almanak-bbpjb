@@ -91,6 +91,9 @@ class DashboardController extends Controller
                     'description' => $agenda->description,
                     'start_time' => Carbon::parse($agenda->start_time)->format('H:i'),
                     'end_time' => Carbon::parse($agenda->end_time)->format('H:i'),
+                    'file_url' => $agenda->file_path ? asset('storage/' . $agenda->file_path) : null,
+                    'file_name' => $agenda->file_path ? basename($agenda->file_path) : null,
+                    'file_extension' => $agenda->file_path ? strtolower(pathinfo($agenda->file_path, PATHINFO_EXTENSION)) : null,
                 ]
             ];
         }

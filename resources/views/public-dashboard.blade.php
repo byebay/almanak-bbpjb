@@ -44,7 +44,7 @@
                 <!-- Logo -->
                 <div class="flex items-center">
                     <img src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRL5cmZSSbEF_Aww6083_87Z96cCKwM6CA0ww&s" alt="Logo Balai Bahasa" class="block h-12 w-auto">
-                    <span class="font-semibold text-xl text-gray-800 ml-3">Almanak BBJB</span>
+                    <span class="font-semibold text-xl text-gray-800 ml-3">Almanak</span>
                 </div>
                 <!-- Tombol Login -->
                 <a href="{{ route('login') }}" class="inline-flex items-center px-4 py-2 bg-blue-600 border border-transparent rounded-md font-semibold text-xs text-white uppercase tracking-widest hover:bg-blue-700">
@@ -131,7 +131,7 @@
     <div id="agendaDetailModal" class="fixed z-50 inset-0 overflow-y-auto hidden">
         <div class="flex items-center justify-center min-h-screen">
             <div class="fixed inset-0 transition-opacity" aria-hidden="true"><div class="absolute inset-0 bg-gray-500 opacity-75"></div></div>
-            <div class="bg-white rounded-lg text-left overflow-hidden shadow-xl transform transition-all sm:my-8 sm:max-w-lg sm:w-full">
+            <div class="bg-white rounded-lg text-left overflow-hidden shadow-xl transform transition-all sm:my-8 sm:max-w-4xl sm:w-full">
                 <div class="bg-white px-4 pt-5 pb-4 sm:p-6 sm:pb-4">
                     <h3 class="text-lg leading-6 font-medium text-gray-900 text-center" id="modalTitle"></h3>
                     <div id="modalBody" class="mt-4 border-t border-gray-200 pt-4 space-y-4"></div>
@@ -210,11 +210,38 @@
                         modalTitle.textContent = `Agenda pada tanggal ${dateObj.toLocaleDateString('id-ID', { day: '2-digit', month: 'long', year: 'numeric' })}`;
                         modalBody.innerHTML = '';
                         eventsOnDate.forEach(event => {
+                            let fileHtml = '';
+                            const props = event.extendedProps;
+                            if (props.file_url) {
+                                let fileContent = '';
+                                // Jika file adalah gambar
+                                if (['jpg', 'jpeg', 'png', 'gif'].includes(props.file_extension)) {
+                                    fileContent = `<img src="${props.file_url}" alt="File Dukung" class="mt-2 rounded-md border max-w-full h-auto">`;
+                                } 
+                                // Jika file adalah PDF
+                                else if (props.file_extension === 'pdf') {
+                                    fileContent = `<iframe src="${props.file_url}" class="mt-2 w-full h-96 rounded-md border"></iframe>`;
+                                } 
+                                // Untuk tipe file lainnya
+                                else {
+                                    fileContent = `<a href="${props.file_url}" target="_blank" class="text-sm text-blue-600 hover:underline">${props.file_name}</a>`;
+                                }
+
+                                fileHtml = `
+                                    <div class="mt-3 pt-3 border-t border-gray-200">
+                                        <p class="text-l text-gray-600 font-semibold">Data Dukung:</p>
+                                        ${fileContent}
+                                    </div>
+                                `;
+                            }
+
                             const eventDetail = `
                                 <div class="pb-3">
-                                    <p class="font-bold text-gray-800">${event.title}</p>
-                                    <p class="text-sm text-gray-600">Waktu: ${event.extendedProps.start_time} - ${event.extendedProps.end_time}</p>
-                                    <p class="text-sm text-gray-500 mt-1">${event.extendedProps.description}</p>
+                                    <p class="text-3xl text-center font-bold text-black mb-1 font-montserrat">${event.title}</p>
+                                    <p class="text-l text-center text-gray-600">Waktu: ${event.extendedProps.start_time} - ${event.extendedProps.end_time}</p>
+                                    <p class="text-l font-semibold text-gray-600 mt-2 whitespace-pre-wrap">Deskripsi Kegiatan:</p>
+                                    <p class="text-l text-gray-500 mt-2 whitespace-pre-wrap">${event.extendedProps.description}</p>
+                                    ${fileHtml}
                                 </div>
                                 <hr class="last:hidden">`;
                             modalBody.innerHTML += eventDetail;

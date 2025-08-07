@@ -78,5 +78,33 @@ class KinerjaController extends Controller
 
         return view('kinerja.show', compact('kinerja'));
     }
+
+    public function update(Request $request, Kinerja $kinerja)
+    {
+        $validated = $request->validate([
+            'judul_kegiatan' => 'required|string|max:255',
+            'target_kinerja' => 'required|string',
+        ]);
+        
+        $kinerja->update($validated);
+        
+        return back()->with('success', 'Kegiatan utama berhasil diperbarui.');
+    }
+
+    public function destroy(Kinerja $kinerja)
+    {
+        // Hapus semua file bukti dari detail terkait terlebih dahulu
+        foreach ($kinerja->details as $detail) {
+            if ($detail->file_bukti && is_array($detail->file_bukti)) {
+                foreach ($detail->file_bukti as $filePath) {
+                    Storage::disk('public')->delete($filePath);
+                }
+            }
+        }
+        
+        $kinerja->delete(); // Ini akan otomatis menghapus detailnya karena ada onDelete('cascade')
+        
+        return back()->with('success', 'Kegiatan berhasil dihapus.');
+    }
     // Fungsi lainnya akan kita tambahkan nanti
 }

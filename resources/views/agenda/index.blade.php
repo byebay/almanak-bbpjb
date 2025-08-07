@@ -44,7 +44,7 @@
                             <tbody class="bg-white divide-y divide-gray-200">
                                 @forelse ($agendas as $agenda)
                                     <tr>
-                                        <td class="px-6 py-4 whitespace-nowrap">{{ \Carbon\Carbon::parse($agenda->date)->translatedFormat('j F Y') }}</td>
+                                        <td class="px-6 py-4 whitespace-nowrap">{{ \Carbon\Carbon::parse($agenda->agenda_date)->translatedFormat('j F Y') }}</td>
                                         <td class="px-6 py-4 whitespace-nowrap">{{ \Carbon\Carbon::parse($agenda->start_time)->format('H:i') }}</td>
                                         <td class="px-6 py-4 whitespace-nowrap">{{ \Carbon\Carbon::parse($agenda->end_time)->format('H:i') }}</td>
                                         <td class="px-6 py-4 whitespace-nowrap">{{ $agenda->title }}</td>

@@ -30,7 +30,15 @@ class AgendaController extends Controller
 
     public function store(Request $request)
     {
-        $request->validate([ /* ... aturan validasi Anda ... */ ]);
+        $request->validate([ 
+            'title' => 'required|string|max:255',
+            'description' => 'required|string',
+            'agenda_date' => 'required|date',
+            'start_time' => 'required|date_format:H:i',
+            'end_time' => 'required|date_format:H:i|after:start_time',
+            // PERUBAHAN DI SINI: Menghapus aturan 'mimes'
+            'file_path' => 'nullable|file|max:5120', // Maks 5MB
+        ]);
 
         $filePath = null;
         if ($request->hasFile('file_path')) {
