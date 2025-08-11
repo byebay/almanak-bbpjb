@@ -12,6 +12,7 @@ use App\Http\Controllers\LeaveController;
 use App\Http\Controllers\AgendaController;
 use App\Http\Controllers\AttendanceStatisticController;
 use App\Http\Controllers\KinerjaController;
+use App\Http\Controllers\RoomController;
 
 Route::get('/', function () {
     return view('welcome');
@@ -52,6 +53,9 @@ Route::middleware('auth')->group(function () {
     Route::post('/leaves', [LeaveController::class, 'store'])->name('leaves.store');
     Route::delete('/leaves/{leaveRecord}', [LeaveController::class, 'destroy'])->name('leaves.destroy');
     Route::resource('kinerja', KinerjaController::class);
+    Route::get('/status-ruangan', [RoomController::class, 'showStatus'])->name('rooms.status');
+    Route::resource('rooms', RoomController::class)->except(['show', 'create']);
+
 });
 
 

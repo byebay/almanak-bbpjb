@@ -46,6 +46,17 @@
                         {{ __('Hasil Kerja') }}
                     </x-nav-link>
 
+                    <x-nav-link :href="route('rooms.status')" :active="request()->routeIs('rooms.status')">
+                        {{ __('Status Ruangan') }}
+                    </x-nav-link>
+
+                    {{-- Hanya untuk Super Admin --}}
+                    @if(Auth::check() && Auth::user()->isSuperAdmin())
+                        <x-nav-link :href="route('rooms.index')" :active="request()->routeIs('rooms.*') && !request()->routeIs('rooms.status')">
+                            {{ __('Manajemen Ruangan') }}
+                        </x-nav-link>
+                    @endif
+
                     {{-- Contoh untuk menu lain nanti --}}
                     {{-- @if(Auth::check() && $user->isKepegawaianAdmin())
                         <x-nav-link href="#">
