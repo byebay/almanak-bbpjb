@@ -35,7 +35,7 @@ class KinerjaController extends Controller
             'judul_kegiatan' => 'required|string|max:255',
             'target_kinerja' => 'required|string',
             'bulan_tahun' => 'required|date_format:Y-m',
-            // 'pelaksana' => 'required|string',
+            'pelaksana' => 'required|string',
             'deskripsi_pekerjaan' => 'required|string',
             'realisasi_target' => 'required|string',
             'progres_kegiatan' => 'required|string',
@@ -82,8 +82,10 @@ class KinerjaController extends Controller
     public function update(Request $request, Kinerja $kinerja)
     {
         $validated = $request->validate([
-            'judul_kegiatan' => 'required|string|max:255',
-            'target_kinerja' => 'required|string',
+            'pelaksana'             => 'required|string|max:255',
+            'deskripsi_pekerjaan'   => 'required|string',
+            'realisasi_target'      => 'required|string',
+            'progres_kegiatan'      => 'required|string',
         ]);
         
         $kinerja->update($validated);
@@ -96,7 +98,7 @@ class KinerjaController extends Controller
         // Hapus semua file bukti dari detail terkait terlebih dahulu
         foreach ($kinerja->details as $detail) {
             if ($detail->file_bukti && is_array($detail->file_bukti)) {
-                foreach ($detail->file_bukti as $filePath) {
+                foreach ($detail->file_bukti as $filePath) {   
                     Storage::disk('public')->delete($filePath);
                 }
             }
@@ -104,7 +106,9 @@ class KinerjaController extends Controller
         
         $kinerja->delete(); // Ini akan otomatis menghapus detailnya karena ada onDelete('cascade')
         
-        return back()->with('success', 'Kegiatan berhasil dihapus.');
+        // return back()->with('success', 'Kegiatan berhasil dihapus.');
+        return redirect()->route('kinerja.index')->with('success', 'Kegiatan berhasil dihapus.');
+
     }
     // Fungsi lainnya akan kita tambahkan nanti
 }

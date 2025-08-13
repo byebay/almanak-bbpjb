@@ -11,7 +11,7 @@ return new class extends Migration
         Schema::create('kinerja_details', function (Blueprint $table) {
             $table->id();
             $table->foreignId('kinerja_id')->constrained()->onDelete('cascade');
-            // $table->string('pelaksana');
+            $table->string('pelaksana');
             $table->text('deskripsi_pekerjaan');
             $table->text('realisasi_target'); // Bisa numerik atau teks
             $table->text('progres_kegiatan');
