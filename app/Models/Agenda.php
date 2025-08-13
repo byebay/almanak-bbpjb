@@ -23,6 +23,7 @@ class Agenda extends Model
         'end_time',
         'file_path',
         'status',
+        'room_id',
     ];
 
     /**
@@ -42,4 +43,10 @@ class Agenda extends Model
     {
         return $this->belongsTo(User::class);
     }
+
+    public function room()
+    {
+        return $this->belongsTo(Room::class);
+    }
+
 }

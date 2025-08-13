@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Models\Agenda;
 use App\Models\User;
+use App\Models\Room;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Storage;
@@ -20,12 +21,14 @@ class AgendaController extends Controller
 
         // Dengan SoftDeletes di Model, Laravel secara otomatis hanya mengambil data yang "aktif"
         if ($authUser->isSuperAdmin()) {
-            $agendas = Agenda::with('user')->latest()->get();
+            $agendas = Agenda::with('user', 'room')->latest()->get();
         } else {
-            $agendas = Agenda::with('user')->where('user_id', $authUser->id)->latest()->get();
+            $agendas = Agenda::with('user', 'room')->where('user_id', $authUser->id)->latest()->get();
         }
 
-        return view('agenda.index', compact('agendas')); // Sesuaikan nama view jika perlu
+        $rooms = Room::orderBy('name')->get(); // Ambil semua ruangan
+        return view('agenda.index', compact('agendas', 'rooms')); // Kirim data ruangan ke view
+// Sesuaikan nama view jika perlu
     }
 
     public function store(Request $request)
@@ -38,6 +41,7 @@ class AgendaController extends Controller
             'end_time' => 'required|date_format:H:i|after:start_time',
             // PERUBAHAN DI SINI: Menghapus aturan 'mimes'
             'file_path' => 'nullable|file|max:5120', // Maks 5MB
+            'room_id' => 'nullable|exists:rooms,id', // Validasi untuk room_id
         ]);
 
         $filePath = null;
@@ -53,6 +57,7 @@ class AgendaController extends Controller
             'start_time' => $request->start_time,
             'end_time' => $request->end_time,
             'file_path' => $filePath,
+            'room_id' => $validated['room_id'],
             'status' => 'Terpublikasi', // <-- PASTIKAN BARIS INI ADA
         ]);
 
@@ -86,6 +91,7 @@ class AgendaController extends Controller
             'start_time' => \Carbon\Carbon::parse($agenda->start_time)->format('H:i'),
             'end_time' => \Carbon\Carbon::parse($agenda->end_time)->format('H:i'),
             'file_path' => $agenda->file_path,
+            'room_id' => $agenda->room_id,
         ]);
     }
 
@@ -108,6 +114,7 @@ class AgendaController extends Controller
             'start_time' => 'required|date_format:H:i',
             'end_time' => 'required|date_format:H:i|after:start_time',
             'file_path' => 'nullable|file|mimes:pdf,docx,jpg,png|max:5120',
+            'room_id' => $validated['room_id'],
         ]);
 
         $filePath = $agenda->file_path;
