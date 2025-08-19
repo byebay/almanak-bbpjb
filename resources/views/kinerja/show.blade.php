@@ -94,23 +94,45 @@
                         </div>
                         @endif
 
-                        @if($detail->file_bukti && is_string($detail->file_bukti))
+                        @if($detail->file_bukti)
                         <div class="md:col-span-2">
                             <p class="font-semibold text-gray-500 mb-2">Bukti/Dokumentasi:</p>
-                            <div class="mt-2 border rounded-md p-2">
-                                @php 
-                                    $filePath = $detail->file_bukti;
-                                    $extension = strtolower(pathinfo(storage_path('app/public/' . $filePath), PATHINFO_EXTENSION));
+                            <div class="mt-2 border rounded-md p-4">
+                                @php
+                                    // Kode ini akan menangani jika file_bukti adalah string tunggal atau array (dari JSON)
+                                    $files = is_string($detail->file_bukti) ? json_decode($detail->file_bukti, true) : $detail->file_bukti;
+                                    if (is_null($files) || !is_array($files)) {
+                                        $files = [$detail->file_bukti];
+                                    }
                                 @endphp
-                                @if(in_array($extension, ['jpg', 'jpeg', 'png', 'gif']))
-                                    <img src="{{ asset('storage/' . $filePath) }}" alt="Bukti Kegiatan" class="rounded-md border max-w-full">
-                                @elseif($extension === 'pdf')
-                                    <iframe src="{{ asset('storage/' . $filePath) }}" class="w-full h-96 rounded-md border"></iframe>
-                                @else
-                                    <a href="{{ asset('storage/' . $filePath) }}" target="_blank" class="text-blue-600 hover:underline">
-                                        Lihat File: {{ basename($filePath) }}
-                                    </a>
-                                @endif
+
+                                <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                                    @foreach($files as $filePath)   
+                                        @if(is_string($filePath) && !empty($filePath))
+                                            @php
+                                                $extension = strtolower(pathinfo($filePath, PATHINFO_EXTENSION));
+                                            @endphp
+
+                                            @if(in_array($extension, ['jpg', 'jpeg', 'png', 'gif', 'webp', 'svg']))
+                                                {{-- Tampilkan sebagai gambar yang bisa diklik --}}
+                                                <a href="{{ asset('storage/' . $filePath) }}" target="_blank">
+                                                    <img src="{{ asset('storage/' . $filePath) }}" alt="Bukti Kegiatan" class="rounded-md border max-w-full h-auto object-cover hover:opacity-90 transition-opacity">
+                                                </a>
+                                            @elseif($extension === 'pdf')
+                                                {{-- Sematkan file PDF langsung di halaman --}}
+                                                <iframe src="{{ asset('storage/' . $filePath) }}" class="w-full h-96 rounded-md border"></iframe>
+                                            @else
+                                                {{-- Tampilkan sebagai link download untuk tipe file lain --}}
+                                                <div class="flex items-center space-x-3 p-3 bg-gray-100 rounded-md">
+                                                    <svg class="w-8 h-8 text-gray-500 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"></path></svg>
+                                                    <a href="{{ asset('storage/' . $filePath) }}" target="_blank" class="text-blue-600 hover:underline break-all">
+                                                        Lihat File: {{ basename($filePath) }}
+                                                    </a>
+                                                </div>
+                                            @endif
+                                        @endif
+                                    @endforeach
+                                </div>
                             </div>
                         </div>
                         @endif
