@@ -18,16 +18,7 @@ class EmployeeWorkController extends Controller
     // Menampilkan daftar pegawai sesuai hak akses
     public function showMonth($year, $month)
     {
-        $authUser = Auth::user();
-
-        // LOGIKA HAK AKSES UTAMA:
-        // Jika user adalah salah satu jenis admin, tampilkan semua pegawai.
-        if ($authUser->isSuperAdmin() || $authUser->isKepegawaianAdmin() || $authUser->isAnggaranAdmin()) {
-            $employees = User::orderBy('name')->get();
-        } else {
-            // Jika bukan admin, hanya tampilkan dirinya sendiri.
-            $employees = collect([$authUser]);
-        }
+        $employees = User::orderBy('name')->get();
 
         return view('hasil-kerja.month', compact('employees', 'year', 'month'));
     }
@@ -39,9 +30,6 @@ class EmployeeWorkController extends Controller
 
         // OTORISASI:
         // Hentikan jika user yang login bukan admin DAN bukan pemilik halaman.
-        if (!($authUser->isSuperAdmin() || $authUser->isKepegawaianAdmin() || $authUser->isAnggaranAdmin()) && $authUser->id !== $user->id) {
-            abort(403, 'AKSI TIDAK DIIZINKAN');
-        }
 
         $works = EmployeeWork::where('user_id', $user->id)
                              ->where('year', $year)
