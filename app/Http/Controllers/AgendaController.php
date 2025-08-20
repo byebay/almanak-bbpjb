@@ -33,15 +33,14 @@ class AgendaController extends Controller
 
     public function store(Request $request)
     {
-        $request->validate([ 
+        $validated = $request->validate([
             'title' => 'required|string|max:255',
             'description' => 'required|string',
             'agenda_date' => 'required|date',
             'start_time' => 'required|date_format:H:i',
             'end_time' => 'required|date_format:H:i|after:start_time',
-            // PERUBAHAN DI SINI: Menghapus aturan 'mimes'
-            'file_path' => 'nullable|file|max:5120', // Maks 5MB
-            'room_id' => 'nullable|exists:rooms,id', // Validasi untuk room_id
+            'file_path' => 'nullable|file|mimes:pdf,docx,jpg,png|max:5120',
+            'room_id' => 'nullable|exists:rooms,id',
         ]);
 
         $filePath = null;
@@ -49,17 +48,19 @@ class AgendaController extends Controller
             $filePath = $request->file('file_path')->store('agenda_files', 'public');
         }
 
+        // Gunakan data dari $validated yang sudah aman
         Agenda::create([
             'user_id' => Auth::id(),
-            'title' => $request->title,
-            'description' => $request->description,
-            'agenda_date' => $request->agenda_date,
-            'start_time' => $request->start_time,
-            'end_time' => $request->end_time,
+            'title' => $validated['title'],
+            'description' => $validated['description'],
+            'agenda_date' => $validated['agenda_date'],
+            'start_time' => $validated['start_time'],
+            'end_time' => $validated['end_time'],
             'file_path' => $filePath,
             'room_id' => $validated['room_id'],
-            'status' => 'Terpublikasi', // <-- PASTIKAN BARIS INI ADA
+            'status' => 'Terpublikasi', // Atau 'pending' jika menggunakan alur persetujuan
         ]);
+
 
         return redirect()->route('agenda-harian.index')->with('success', 'Agenda baru berhasil ditambahkan.');
     }
@@ -114,7 +115,7 @@ class AgendaController extends Controller
             'start_time' => 'required|date_format:H:i',
             'end_time' => 'required|date_format:H:i|after:start_time',
             'file_path' => 'nullable|file|mimes:pdf,docx,jpg,png|max:5120',
-            'room_id' => $validated['room_id'],
+            'room_id' => 'nullable|exists:rooms,id',
         ]);
 
         $filePath = $agenda->file_path;
@@ -130,6 +131,7 @@ class AgendaController extends Controller
             'start_time' => $validated['start_time'],
             'end_time' => $validated['end_time'],
             'file_path' => $filePath,
+            'room_id' => $validated['room_id'],
         ]);
 
         return redirect()->route('agenda-harian.index')->with('success', 'Agenda berhasil diperbarui.');
