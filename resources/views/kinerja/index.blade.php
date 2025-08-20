@@ -41,7 +41,7 @@
                     </svg>
                     Tambah Kegiatan Baru
                 </button>
-                <button class="px-4 py-2 bg-green-600 text-white rounded-md hover:bg-green-700">Buat Rekapan</button>
+                <!-- <button class="px-4 py-2 bg-green-600 text-white rounded-md hover:bg-green-700">Buat Rekapan</button> -->
             </div>
 
             {{-- Grid untuk Kartu Kinerja --}}
@@ -133,10 +133,10 @@
                             </div>
                             <div class="p-4 border rounded-md bg-gray-50">
                                 <h4 class="font-semibold text-gray-800 mb-2">Laporan Progres Pertama</h4>
-                                <!-- <div>
+                                <div>
                                     <label for="pelaksana" class="block text-sm font-medium">Pelaksana</label>
                                     <input type="text" name="pelaksana" id="pelaksana" class="mt-1 block w-full shadow-sm sm:text-sm border-gray-300 rounded-md" required>
-                                </div> -->
+                                </div>
                                 <div class="mt-4">
                                     <label for="deskripsi_pekerjaan" class="block text-sm font-medium">Deskripsi Pekerjaan</label>
                                     <textarea name="deskripsi_pekerjaan" id="deskripsi_pekerjaan" rows="3" class="mt-1 block w-full shadow-sm sm:text-sm border-gray-300 rounded-md" required></textarea>
