@@ -13,6 +13,7 @@ class Agenda extends Model
 
     /**
      * Atribut yang dapat diisi secara massal.
+     * Pastikan semua kolom dari form Anda ada di sini.
      */
     protected $fillable = [
         'user_id',
@@ -23,7 +24,7 @@ class Agenda extends Model
         'end_time',
         'file_path',
         'status',
-        'room_id',
+        'room_id', // <-- Pastikan ini ada
     ];
 
     /**
@@ -33,20 +34,15 @@ class Agenda extends Model
         'agenda_date' => 'date',
         'start_time' => 'datetime:H:i',
         'end_time' => 'datetime:H:i',
-        'password' => 'hashed', // Tambahkan ini jika belum ada, praktik yang baik
     ];
 
-    /**
-     * Mendefinisikan relasi bahwa Agenda ini milik seorang User.
-     */
     public function user(): BelongsTo
     {
         return $this->belongsTo(User::class);
     }
 
-    public function room()
+    public function room(): BelongsTo
     {
         return $this->belongsTo(Room::class);
     }
-
 }

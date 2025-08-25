@@ -14,6 +14,7 @@ use App\Http\Controllers\AttendanceStatisticController;
 use App\Http\Controllers\KinerjaController;
 use App\Http\Controllers\RoomController;
 use App\Http\Controllers\KinerjaDetailController;
+use App\Http\Controllers\AgendaImportController;
 
 Route::get('/', function () {
     return view('welcome');
@@ -56,6 +57,8 @@ Route::middleware('auth')->group(function () {
     Route::resource('kinerja', KinerjaController::class);
     Route::get('/status-ruangan', [RoomController::class, 'showStatus'])->name('rooms.status');
     Route::resource('rooms', RoomController::class)->except(['show', 'create']);Route::put('/kinerja-detail/{kinerjaDetail}', [KinerjaDetailController::class, 'update'])->name('kinerja.detail.update');
+    Route::get('/agendas/import', [AgendaImportController::class, 'create'])->name('agendas.import.create');
+    Route::post('/agendas/import', [AgendaImportController::class, 'store'])->name('agendas.import.store');
 });
 
 

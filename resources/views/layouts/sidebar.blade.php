@@ -71,7 +71,7 @@
             </div>
         </div>
 
-        <x-nav-link :href="route('rooms.status')" :active="request()->routeIs('rooms.status')" class="w-full flex items-center p-2 rounded-md text-gray-600 hover:bg-gray-100 hover:text-gray-900">
+        {{-- <x-nav-link :href="route('rooms.status')" :active="request()->routeIs('rooms.status')" class="w-full flex items-center p-2 rounded-md text-gray-600 hover:bg-gray-100 hover:text-gray-900">
             <svg class="h-5 w-5 mr-3" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor">
                 <path stroke-linecap="round" stroke-linejoin="round" d="M2.25 21h19.5m-18-18h16.5M2.25 9h16.5m-16.5 6H21m-1.5-1.5V5.625c0-1.036-.84-1.875-1.875-1.875H5.625c-1.036 0-1.875.84-1.875 1.875v12.75c0 1.036.84 1.875 1.875 1.875h12.75c1.035 0 1.875-.84 1.875-1.875V15M12 12h9" />
             </svg>
@@ -86,12 +86,19 @@
                 </svg>
                 {{ __('Manajemen Ruangan') }}
             </x-nav-link>
-        @endif
+        @endif --}}
 
         <x-nav-link :href="route('hasil-kerja.index')" :active="request()->routeIs('hasil-kerja.*')" class="w-full flex items-center p-2 rounded-md text-gray-600 hover:bg-gray-100 hover:text-gray-900">
             <svg class="h-5 w-5 mr-3" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>
             {{ __('Bukti Kerja') }}
         </x-nav-link>
+
+         @if(Auth::check() && Auth::user()->isSuperAdmin())
+            <x-nav-link :href="route('agendas.import.create')" :active="request()->routeIs('agendas.import.create')">
+                {{ __('Impor Agenda Lama') }}
+            </x-nav-link>
+        @endif
+
     </nav>
 
     <div class="mt-auto p-4 border-t border-gray-200">
