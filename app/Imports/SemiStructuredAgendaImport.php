@@ -65,7 +65,7 @@ class SemiStructuredAgendaImport implements ToCollection
 
         foreach ($agendas as $singleAgenda) {
             // Hapus nomor di awal (misal: "1. Rapat") dan spasi ekstra
-            $cleanedAgenda = trim(preg_replace('/^[0-9]+\.\s*/', '', $singleAgenda));
+            $cleanedAgenda = trim(preg_replace('/^[0-9]+\.\s*/', ' ', $singleAgenda));
             
             if (!empty($cleanedAgenda)) {
                 Agenda::create([
@@ -73,7 +73,7 @@ class SemiStructuredAgendaImport implements ToCollection
                     'description'   => 'Data diimpor dari almanak lama.',
                     'agenda_date'   => $date->format('Y-m-d'),
                     'start_time'    => '08:00:00', // Waktu default
-                    'end_time'      => '17:00:00', // Waktu default
+                    'end_time'      => '16:00:00', // Waktu default
                     'status'        => 'Terpublikasi',
                     'user_id'       => $userId,
                 ]);
