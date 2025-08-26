@@ -96,17 +96,18 @@ class AgendaController extends Controller
         ]);
     }
 
-    public function update(Request $request, Agenda $agenda)
+     public function update(Request $request, string $id)
     {
+        // 1. Cari agenda secara manual berdasarkan ID dari URL.
+        $agenda = Agenda::findOrFail($id);
+        
         /** @var \App\Models\User $authUser */
         $authUser = Auth::user();
 
-        // --- PERBAIKAN UTAMA DI SINI ---
-        // Otorisasi Manual untuk Menyimpan Perubahan
+        // 2. Otorisasi Manual untuk Menyimpan Perubahan
         if ($authUser->id !== $agenda->user_id && !$authUser->isSuperAdmin()) {
             abort(403, 'AKSI TIDAK DIIZINKAN.');
         }
-        // ------------------------------------
 
         $validated = $request->validate([
             'title' => 'required|string|max:255',
@@ -124,6 +125,7 @@ class AgendaController extends Controller
             $filePath = $request->file('file_path')->store('agenda_files', 'public');
         }
 
+        // 3. Perintah update ini sekarang akan berhasil
         $agenda->update([
             'title' => $validated['title'],
             'description' => $validated['description'],
