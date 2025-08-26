@@ -36,7 +36,7 @@
                                     <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">Waktu</th>
                                     <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">Judul Agenda</th>
                                     <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">Ruangan</th>
-                                    <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">Status</th>
+                                    <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase"></th>
                                     <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">Aksi</th>
                                 </tr>
                             </thead>

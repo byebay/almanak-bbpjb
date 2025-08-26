@@ -112,7 +112,7 @@
             <!-- Kalender Agenda (sesuai struktur Anda) -->
             <div class="bg-white overflow-hidden shadow-sm sm:rounded-lg">
                 <div class="p-6 text-gray-900">
-                    <h3 class="text-2xl font-bold mb-4">Kalender Agenda BBJB</h3>
+                    <h3 class="text-2xl font-bold mb-4">Kalender Agenda BBPJB</h3>
                     <div id='calendar'></div>
                 </div>
             </div>
