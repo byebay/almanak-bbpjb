@@ -13,6 +13,13 @@
                 </div>
             </div>
 
+            @if (session('status') === 'password-updated')
+                <div x-data="{ show: true }" x-show="show" x-transition x-init="setTimeout(() => show = false, 2000)"
+                    class="mt-4 text-sm font-medium text-green-600">
+                    Password berhasil diperbarui.
+                </div>
+            @endif
+
             <div class="p-4 sm:p-8 bg-white shadow sm:rounded-lg">
                 <div class="max-w-xl">
                     @include('profile.partials.update-password-form')

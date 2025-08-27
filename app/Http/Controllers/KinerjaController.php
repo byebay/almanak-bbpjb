@@ -6,6 +6,7 @@ use App\Models\Kinerja;
 use Illuminate\Http\Request;
 use Illuminate\Support\Carbon;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Storage;
 
 class KinerjaController extends Controller
 {
