@@ -1,7 +1,7 @@
 <x-app-layout>
     <x-slot name="header">
         <h2 class="font-semibold text-xl text-gray-800 leading-tight">
-            {{ __('Profile') }}
+            {{ __('Profil') }}
         </h2>
     </x-slot>
 
@@ -13,10 +13,10 @@
                 </div>
             </div>
 
-            @if (session('status') === 'password-updated')
+            @if (session('status') === 'Sandi diperbarui')
                 <div x-data="{ show: true }" x-show="show" x-transition x-init="setTimeout(() => show = false, 2000)"
                     class="mt-4 text-sm font-medium text-green-600">
-                    Password berhasil diperbarui.
+                    Sandi berhasil diperbarui.
                 </div>
             @endif
 
@@ -26,11 +26,11 @@
                 </div>
             </div>
 
-            <div class="p-4 sm:p-8 bg-white shadow sm:rounded-lg">
+            {{-- <div class="p-4 sm:p-8 bg-white shadow sm:rounded-lg">
                 <div class="max-w-xl">
                     @include('profile.partials.delete-user-form')
                 </div>
-            </div>
+            </div> --}}
         </div>
     </div>
 </x-app-layout>

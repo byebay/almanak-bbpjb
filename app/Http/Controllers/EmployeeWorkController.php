@@ -34,6 +34,7 @@ class EmployeeWorkController extends Controller
         $works = EmployeeWork::where('user_id', $user->id)
                              ->where('year', $year)
                              ->where('month', $month)
+                             ->orderBy('work_date', 'desc')
                              ->get();
 
         return view('hasil-kerja.show', compact('user', 'works', 'year', 'month'));
@@ -45,6 +46,7 @@ class EmployeeWorkController extends Controller
         $validated = $request->validate([
             'year' => 'required|integer',
             'month' => 'required|integer|between:1,12',
+            'work_date' => 'required|date',
             'title' => 'required|string|max:255',
             'description' => 'nullable|string',
             'work_file' => 'required|file|max:10240', // Maks 10MB
@@ -57,6 +59,7 @@ class EmployeeWorkController extends Controller
             'user_id' => Auth::id(),
             'year' => $validated['year'],
             'month' => $validated['month'],
+            'work_date' => $validated['work_date'],
             'title' => $validated['title'],
             'description' => $validated['description'],
             'file_path' => $path,
