@@ -10,9 +10,18 @@
             modalDescription: '',
             modalViewUrl: '',
             modalDownloadUrl: '',
-            modalFileType: ''
+            modalFileType: '',
+            showLink: false,
+            link: '{{ $user->shareable_token ? route('hasil-kerja.public.show', ['token' => $user->shareable_token, 'year' => $year, 'month' => $month]) : '' }}'
         }">
             <div class="max-w-7xl mx-auto sm:px-6 lg:px-8">
+
+                {{-- Tampilkan pesan error jika ada --}}
+            @if (session('error'))
+                <div class="mb-4 p-4 bg-red-100 text-red-700 rounded-md">
+                    {{ session('error') }}
+                </div>
+            @endif
 
                 <!-- === TOMBOL KEMBALI BARU === -->
                 <div class="mb-6">
@@ -21,11 +30,39 @@
                         Kembali ke Daftar Pegawai
                     </a>
                 </div>
+
+                <!-- Grup Tombol Aksi Halaman (Bagikan & Unduh Semua) -->
+            <div class="mb-4 flex items-center space-x-2">
+                {{-- Tombol Bagikan Laporan --}}
+               @if($user->shareable_token)
+                <div>
+                    <button @click="showLink = !showLink" class="inline-flex items-center px-4 py-2 bg-blue-600 text-white rounded-md text-xs uppercase font-semibold hover:bg-blue-700">
+                        <svg class="w-4 h-4 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8.684 13.342C8.886 12.938 9 12.482 9 12s-.114-.938-.316-1.342m0 2.684a3 3 0 110-2.684m0 2.684l6.632 3.316m-6.632-6l6.632-3.316m0 0a3 3 0 105.367-2.684 3 3 0 00-5.367 2.684zm0 9.316a3 3 0 105.367 2.684 3 3 0 00-5.367-2.684z"></path></svg>
+                        Bagikan
+                    </button>
+                </div>
+                @endif
+
+                {{-- Tombol Unduh Semua (ZIP) --}}
+                @if($works->isNotEmpty())
+                    <a href="{{ route('hasil-kerja.download-all', ['user' => $user, 'year' => $year, 'month' => $month]) }}" class="inline-flex items-center px-4 py-2 bg-green-600 text-white rounded-md text-xs uppercase font-semibold hover:bg-green-700">
+                        <svg class="w-4 h-4 mr-2" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="M3 16.5v2.25A2.25 2.25 0 005.25 21h13.5A2.25 2.25 0 0021 18.75V16.5M16.5 12L12 16.5m0 0L7.5 12m4.5 4.5V3" /></svg>
+                        Unduh Semua (ZIP)
+                    </a>
+                @endif
+            </div>
+            
+            {{-- Tampilkan Input Link Publik --}}
+            <div x-show="showLink" x-transition class="mb-6 bg-gray-50 p-4 rounded-lg">
+                <label class="block text-sm font-medium text-gray-700">Link Publik (hanya lihat):</label>
+                <input type="text" :value="link" readonly class="w-full mt-1 border-gray-300 rounded-md shadow-sm bg-gray-200 cursor-pointer" onclick="this.select(); document.execCommand('copy'); alert('Link disalin ke clipboard!');">
+                <p class="text-xs text-gray-500 mt-1">Klik pada kolom untuk menyalin link.</p>
+            </div>
                 <!-- ============================ -->
                 <!-- Form Upload (hanya untuk pemilik) -->
                 @if(Auth::id() === $user->id)
                 <div class="bg-white p-6 rounded-lg shadow-sm mb-6">
-                    <h3 class="font-bold text-lg mb-4">Unggah Hasil Kerja Baru ({{ \Carbon\Carbon::create()->month((int)$month)->translatedFormat('F') }} {{ $year }})</h3>
+                    <h3 class="font-bold text-lg mb-4">Unggah Bukti Kerja Baru ({{ \Carbon\Carbon::create()->month((int)$month)->translatedFormat('F') }} {{ $year }})</h3>
                     @if (session('success')) <div class="bg-green-100 text-green-700 p-3 rounded mb-4">{{ session('success') }}</div> @endif
                     <form action="{{ route('hasil-kerja.store') }}" method="POST" enctype="multipart/form-data">
                         @csrf

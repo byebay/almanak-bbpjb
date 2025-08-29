@@ -37,10 +37,11 @@ class UsersImport implements ToModel, WithHeadingRow
             [
                 'name'     => $employeeName,
                 'email'    => $formattedRow['nip'] . '@bbpjb.test',
-                'password' => Hash::make('password123'),
+                'password' => Hash::make('sandi123'),
                 'role'     => 'pegawai',
                 'birth_date' => $formattedRow['tanggal_lahir'],
                 'photo_path' => $photoPath,
+                'shareable_token' => Str::random(60),
             ]
         );
     }

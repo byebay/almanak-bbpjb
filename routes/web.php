@@ -25,7 +25,13 @@ Route::get('/', [PublicController::class, 'index'])->name('public.home');
 
 // 2. Buat route untuk data event kalender yang bisa diakses publik
 Route::get('/public/events', [PublicController::class, 'getEvents'])->name('public.events');
-// --------------------------------
+// Route ini tidak memerlukan login
+// Halaman utama untuk link yang dibagikan
+Route::get('/share/hasil-kerja/{token}/{year}/{month}', [EmployeeWorkController::class, 'showPublic'])->name('hasil-kerja.public.show');
+// Rute untuk melihat file dari halaman publik
+Route::get('/share/view/{work}/{token}', [EmployeeWorkController::class, 'viewPublic'])->name('hasil-kerja.public.view');
+// Rute untuk mengunduh file dari halaman publik
+Route::get('/share/download/{work}/{token}', [EmployeeWorkController::class, 'downloadPublic'])->name('hasil-kerja.public.download');
 
 
 Route::middleware('auth')->group(function () {
@@ -48,9 +54,10 @@ Route::middleware('auth')->group(function () {
     Route::post('/hasil-kerja', [EmployeeWorkController::class, 'store'])->name('hasil-kerja.store');
     Route::get('/hasil-kerja/{work}/view', [EmployeeWorkController::class, 'view'])->name('hasil-kerja.view');
     Route::get('/hasil-kerja/{work}/download', [EmployeeWorkController::class, 'download'])->name('hasil-kerja.download');
+    Route::delete('/hasil-kerja/{work}', [EmployeeWorkController::class, 'destroy'])->name('hasil-kerja.destroy');
+    Route::get('/hasil-kerja/{user}/{year}/{month}/download-all', [EmployeeWorkController::class, 'downloadAllAsZip'])->name('hasil-kerja.download-all');
     Route::get('/hasil-kerja/{year}/{month}', [EmployeeWorkController::class, 'showMonth'])->name('hasil-kerja.month');
     Route::get('/hasil-kerja/{year}/{month}/{user}', [EmployeeWorkController::class, 'showEmployeeWork'])->name('hasil-kerja.employee');
-    Route::delete('/hasil-kerja/{work}', [EmployeeWorkController::class, 'destroy'])->name('hasil-kerja.destroy');
     Route::get('/leaves/manage', [LeaveController::class, 'index'])->name('leaves.manage');
     Route::post('/leaves', [LeaveController::class, 'store'])->name('leaves.store');
     Route::delete('/leaves/{leaveRecord}', [LeaveController::class, 'destroy'])->name('leaves.destroy');

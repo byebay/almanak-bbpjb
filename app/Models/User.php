@@ -24,7 +24,8 @@ class User extends Authenticatable
         'role',
         'nip',
         'birth_date',
-        'photo_path'
+        'photo_path',
+        'shareable_token',
     ];
 
     /**
