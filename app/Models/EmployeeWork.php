@@ -10,10 +10,14 @@ class EmployeeWork extends Model
         'user_id',
         'year',
         'month',
+        'work_date',
         'title',
         'description',
         'file_path',
         'file_type',
+    ];
+    protected $casts = [
+        'work_date' => 'date', // <-- Tambahkan ini
     ];
 
     // Definisikan relasi ke User
