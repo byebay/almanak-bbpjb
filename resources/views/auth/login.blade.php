@@ -28,7 +28,7 @@
         </div>
 
         <!-- Kata Sandi dengan Ikon Mata -->
-        <div class="mt-6" x-data="{ showPassword: false }">
+        <div class="mt-4" x-data="{ showPassword: false }">
             <label for="password" class="block text-sm font-medium text-gray-700">Kata sandi</label>
             <div class="mt-1 relative">
                 <input id="password" name="password" :type="showPassword ? 'text' : 'password'" autocomplete="current-password" required
@@ -51,7 +51,15 @@
             <x-input-error :messages="$errors->get('password')" class="mt-2" />
         </div>
 
-        <div class="mt-8">
+        <!-- Remember Me -->
+            <div class="block mt-2">
+                <label for="remember_me" class="inline-flex items-center">
+                    <input id="remember_me" type="checkbox" class="rounded border-gray-300 text-blue-600 shadow-sm focus:ring-blue-500" name="remember">
+                    <span class="ms-2 text-sm text-gray-600">{{ __('Ingatkan Saya') }}</span>
+                </label>
+            </div>
+
+        <div class="mt-4">
             <button type="submit" class="w-full flex justify-center py-3 px-4 border border-transparent rounded-md shadow-sm text-sm font-medium text-white bg-blue-600 hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500">
                 Masuk
             </button>
