@@ -4,42 +4,57 @@ namespace App\Http\Controllers;
 
 use App\Models\Agenda;
 use App\Models\DailyAttendance;
+use App\Models\LeaveRecord;
+use App\Models\Room;
+use App\Models\Visitor;
 use Illuminate\Http\Request;
 use Illuminate\Support\Carbon;
-use App\Models\Visitor;
 
 class PublicController extends Controller
 {
     /**
      * Menampilkan halaman dashboard publik.
      */
-    public function index()
+    public function index(Request $request)
     {
-        $today = Carbon::today()->toDateString();
+        // Logika pencatatan pengunjung
+        $ipAddress = $request->ip();
+        $userAgent = $request->userAgent();
+        $today = now()->toDateString();
 
-        // Mengambil data absensi hari ini beserta data user-nya
-        $attendancesToday = DailyAttendance::where('date', $today)->with('user')->get();
+        $existingVisitor = Visitor::where('ip_address', $ipAddress)
+                                  ->where('visit_date', $today)
+                                  ->first();
 
-        // 1. Pegawai datang paling awal
-        $earliestAttendance = $attendancesToday
-            ->whereNotNull('user')
-            ->whereIn('status', ['Hadir', 'Terlambat'])
-            ->sortBy('check_in_time')
-            ->first();
+        if (!$existingVisitor) {
+            $newVisitor = new Visitor();
+            $newVisitor->ip_address = $ipAddress;
+            $newVisitor->visit_date = $today;
+            $newVisitor->user_agent = $userAgent;
+            $newVisitor->save();
+        }
+
+        // Logika penghitungan pengunjung yang sudah diperbaiki
+        $startOfMonth = now()->startOfMonth()->toDateString();
+        $visitorCount = Visitor::where('visit_date', '>=', $startOfMonth)->count();
+
+        // Logika untuk statistik kehadiran
+        $todayForAttendance = Carbon::today()->toDateString();
+        $attendanceLogs = DailyAttendance::where('date', $todayForAttendance)->with('user')->get();
+        $leaveLogs = LeaveRecord::where('start_date', '<=', $todayForAttendance)
+                                ->where('end_date', '>=', $todayForAttendance)
+                                ->with('user')
+                                ->get();
+        
+        $earliestAttendance = $attendanceLogs->whereNotNull('user')->whereIn('status', ['Hadir', 'Terlambat'])->sortBy('check_in_time')->first();
         $pegawaiPalingAwal = $earliestAttendance ? $earliestAttendance->user : null;
         
-        // 2. Jumlah hadir & terlambat
-        $jumlahHadir = $attendancesToday->where('status', 'Hadir')->count();
-        $jumlahTerlambat = $attendancesToday->where('status', 'Terlambat')->count();
+        $jumlahHadir = $attendanceLogs->where('status', 'Hadir')->count();
+        $jumlahTerlambat = $attendanceLogs->where('status', 'Terlambat')->count();
 
-        // 3. Pegawai yang cuti & dinas luar
-        $pegawaiCuti = $attendancesToday->where('status', 'Cuti')->whereNotNull('user')->pluck('user')->unique('id');
-        $pegawaiDinasLuar = $attendancesToday->where('status', 'Dinas Luar')->whereNotNull('user')->pluck('user')->unique('id');
-        $visitorCount = Visitor::whereMonth('created_at', Carbon::now()->month)
-                               ->whereYear('created_at', Carbon::now()->year)
-                               ->count();
+        $pegawaiCuti = $leaveLogs->where('status', 'Cuti')->whereNotNull('user')->pluck('user')->unique('id');
+        $pegawaiDinasLuar = $leaveLogs->where('status', 'Dinas Luar')->whereNotNull('user')->pluck('user')->unique('id');
         
-        // Kirim semua data ke view publik yang akan kita buat
         return view('public-dashboard', [
             'pegawaiPalingAwal' => $pegawaiPalingAwal,
             'jumlahHadir' => $jumlahHadir,
@@ -52,16 +67,20 @@ class PublicController extends Controller
 
     /**
      * Menyediakan data agenda untuk FullCalendar.
-     * Fungsi ini bisa dipanggil oleh halaman publik dan internal.
      */
     public function getEvents(Request $request)
     {
-        $agendas = Agenda::where('status', 'Terpublikasi')->get();
+        $agendas = Agenda::where('status', 'Terpublikasi')->with('room')->get();
 
         $events = [];
         foreach ($agendas as $agenda) {
+            $title = $agenda->title;
+            if ($agenda->room) {
+                $title = '[' . $agenda->room->name . '] ' . $agenda->title;
+            }
+
             $events[] = [
-                'title' => $agenda->title,
+                'title' => $title,
                 'start' => $agenda->agenda_date->format('Y-m-d'),
                 'extendedProps' => [
                     'description' => $agenda->description,
@@ -69,7 +88,6 @@ class PublicController extends Controller
                     'end_time' => Carbon::parse($agenda->end_time)->format('H:i'),
                     'file_url' => $agenda->file_path ? asset('storage/' . $agenda->file_path) : null,
                     'file_name' => $agenda->file_path ? basename($agenda->file_path) : null,
-                    'file_extension' => $agenda->file_path ? strtolower(pathinfo($agenda->file_path, PATHINFO_EXTENSION)) : null,
                 ]
             ];
         }
