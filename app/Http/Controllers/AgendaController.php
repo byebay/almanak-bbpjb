@@ -16,17 +16,12 @@ class AgendaController extends Controller
      */
     public function index()
     {
-        /** @var \App\Models\User $authUser */
-        $authUser = Auth::user();
+        
 
         // Dengan SoftDeletes di Model, Laravel secara otomatis hanya mengambil data yang "aktif"
-        if ($authUser->isSuperAdmin()) {
-            $agendas = Agenda::with('user', 'room')->latest()->get();
-        } else {
-            $agendas = Agenda::with('user', 'room')->where('user_id', $authUser->id)->latest()->get();
-        }
-
-        $rooms = Room::orderBy('name')->get(); // Ambil semua ruangan
+        
+        $agendas = Agenda::with(['user', 'room'])->latest()->get();
+        $rooms = Room::orderBy('name')->get();
         return view('agenda.index', compact('agendas', 'rooms')); // Kirim data ruangan ke view
 // Sesuaikan nama view jika perlu
     }
@@ -36,7 +31,8 @@ class AgendaController extends Controller
         $validated = $request->validate([
             'title' => 'required|string|max:255',
             'description' => 'required|string',
-            'agenda_date' => 'required|date',
+            'start_date' => 'required|date',
+            'end_date' => 'nullable|date|after_or_equal:start_date',
             'start_time' => 'required|date_format:H:i',
             'end_time' => 'required|date_format:H:i|after:start_time',
             'file_path' => 'nullable|file|mimes:pdf,docx,jpg,png|max:5120',
@@ -53,7 +49,8 @@ class AgendaController extends Controller
             'user_id' => Auth::id(),
             'title' => $validated['title'],
             'description' => $validated['description'],
-            'agenda_date' => $validated['agenda_date'],
+            'start_date' => $validated['start_date'],
+            'end_date' => $validated['end_date'],
             'start_time' => $validated['start_time'],
             'end_time' => $validated['end_time'],
             'file_path' => $filePath,
@@ -74,21 +71,13 @@ class AgendaController extends Controller
         // 1. Cari agenda secara manual berdasarkan ID dari URL.
         $agenda = Agenda::findOrFail($id);
 
-        /** @var \App\Models\User $authUser */
-        $authUser = Auth::user();
-
-        // 2. Otorisasi Manual: Siapa yang boleh melihat data untuk diedit?
-        // Aturan: Pengguna harus Super Admin ATAU pemilik agenda tersebut.
-        if ($authUser->id !== $agenda->user_id && !$authUser->isSuperAdmin()) {
-            abort(403, 'AKSI TIDAK DIIZINKAN.');
-        }
-
         // 3. Kirim data dalam format JSON yang bersih dan aman.
         return response()->json([
             'id' => $agenda->id,
             'title' => $agenda->title,
             'description' => $agenda->description,
-            'agenda_date' => $agenda->agenda_date->format('Y-m-d'),
+            'start_date' => $agenda->start_date->format('Y-m-d'),
+            'end_date' => $agenda->end_date ? $agenda->end_date->format('Y-m-d') : '',
             'start_time' => \Carbon\Carbon::parse($agenda->start_time)->format('H:i'),
             'end_time' => \Carbon\Carbon::parse($agenda->end_time)->format('H:i'),
             'file_path' => $agenda->file_path,
@@ -100,19 +89,12 @@ class AgendaController extends Controller
     {
         // 1. Cari agenda secara manual berdasarkan ID dari URL.
         $agenda = Agenda::findOrFail($id);
-        
-        /** @var \App\Models\User $authUser */
-        $authUser = Auth::user();
-
-        // 2. Otorisasi Manual untuk Menyimpan Perubahan
-        if ($authUser->id !== $agenda->user_id && !$authUser->isSuperAdmin()) {
-            abort(403, 'AKSI TIDAK DIIZINKAN.');
-        }
 
         $validated = $request->validate([
             'title' => 'required|string|max:255',
             'description' => 'required|string',
-            'agenda_date' => 'required|date',
+            'start_date' => 'required|date',
+            'end_date' => 'nullable|date|after_or_equal:start_date',
             'start_time' => 'required|date_format:H:i',
             'end_time' => 'required|date_format:H:i|after:start_time',
             'file_path' => 'nullable|file|mimes:pdf,docx,jpg,png|max:5120',
@@ -129,7 +111,8 @@ class AgendaController extends Controller
         $agenda->update([
             'title' => $validated['title'],
             'description' => $validated['description'],
-            'agenda_date' => $validated['agenda_date'],
+            'start_date' => $validated['start_date'],
+            'end_date' => $validated['end_date'],
             'start_time' => $validated['start_time'],
             'end_time' => $validated['end_time'],
             'file_path' => $filePath,
@@ -144,14 +127,6 @@ class AgendaController extends Controller
         // --- PERBAIKAN FINAL DI SINI ---
         // 1. Cari agenda secara manual menggunakan ID dari URL.
         $agenda = Agenda::findOrFail($id);
-
-        /** @var \App\Models\User $authUser */
-        $authUser = Auth::user();
-
-        // 2. Lakukan otorisasi pada agenda yang sudah kita temukan.
-        if ($authUser->id !== $agenda->user_id && !$authUser->isSuperAdmin()) {
-            abort(403, 'AKSI TIDAK DIIZINKAN.');
-        }
 
         // 3. Hapus file terkait jika ada.
         if ($agenda->file_path) {
