@@ -15,13 +15,15 @@ use App\Http\Controllers\KinerjaController;
 use App\Http\Controllers\RoomController;
 use App\Http\Controllers\KinerjaDetailController;
 use App\Http\Controllers\AgendaImportController;
+use App\Http\Middleware\LogVisitor; // <-- Import Middleware
 
 Route::get('/', function () {
     return view('welcome');
 });
 
 // 1. Jadikan halaman utama (root) menunjuk ke PublicController
-Route::get('/', [PublicController::class, 'index'])->name('public.home');
+Route::get('/', [PublicController::class, 'index'])->middleware(LogVisitor::class);
+
 
 // 2. Buat route untuk data event kalender yang bisa diakses publik
 Route::get('/public/events', [PublicController::class, 'getEvents'])->name('public.events');
@@ -66,6 +68,7 @@ Route::middleware('auth')->group(function () {
     Route::resource('rooms', RoomController::class)->except(['show', 'create']);Route::put('/kinerja-detail/{kinerjaDetail}', [KinerjaDetailController::class, 'update'])->name('kinerja.detail.update');
     Route::get('/agendas/import', [AgendaImportController::class, 'create'])->name('agendas.import.create');
     Route::post('/agendas/import', [AgendaImportController::class, 'store'])->name('agendas.import.store');
+    
 });
 
 

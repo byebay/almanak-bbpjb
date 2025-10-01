@@ -46,6 +46,9 @@
                     <img src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRL5cmZSSbEF_Aww6083_87Z96cCKwM6CA0ww&s" alt="Logo Balai Bahasa" class="block h-12 w-auto">
                     <span class="font-semibold text-xl text-gray-800 ml-3">Almanak</span>
                 </div>
+                <div class="hidden sm:flex items-center text-sm text-gray-500">
+                        <span>Pengunjung Bulan Ini: <strong class="text-gray-800">{{ $visitorCount }}</strong></span>
+                    </div>
                 <!-- Tombol Login -->
                 <a href="{{ route('login') }}" class="inline-flex items-center px-4 py-2 bg-blue-600 border border-transparent rounded-md font-semibold text-xs text-white uppercase tracking-widest hover:bg-blue-700">
                     Login Pegawai
@@ -126,6 +129,38 @@
             </div>
         </main>
     </div>
+
+    <footer class="bg-blue-700 text-white mt-auto">
+        <div class="max-w-7xl mx-auto py-12 px-4 sm:px-6 lg:px-8">
+            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-5 gap-8">
+                <!-- Kolom Logo -->
+                <div class="lg:col-span-2">
+                    <div class="flex items-center">
+                        <img src="https://i.pinimg.com/1200x/bc/3e/e8/bc3ee8618c9672304e9940969265728c.jpg" alt="Logo Balai Bahasa" class="h-16 w-auto">
+                        <div class="ml-4">
+                            <h3 class="font-bold text-lg">BALAI BAHASA</h3>
+                            <p class="text-sm">PROVINSI JAWA BARAT</p>
+                            <p class="text-xs text-blue-200 mt-1">BADAN PENGEMBANGAN DAN PEMBINAAN BAHASA<br>Kementerian Pendidikan Dasar dan Menengah</p>
+                        </div>
+                    </div>
+                </div>
+                
+                <div>
+                    <h3 class="font-bold uppercase tracking-wider text-sm mb-4">Alamat</h3>
+                    <p class="text-sm text-blue-200">Jl. Sumbawa No.11, Kelurahan Merdeka, Kec. Sumur Bandung, Kota Bandung, Jawa Barat 40113</p>
+                    <p class="text-sm text-blue-200 mt-2"><strong>Telepon :</strong> (022) 4205468</p>
+                    <p class="text-sm text-blue-200 mt-1"><strong>Posel :</strong> balaibahasa.jabar@kemdikbud.go.id</p>
+                </div>
+            </div>
+        </div>
+        
+        <div class="bg-blue-800 py-4">
+            <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+                <p class="text-center text-sm text-blue-200">&copy; Copyright 2025. IT Support Balai Bahasa Provinsi Jawa Barat. All Rights Reserved.</p>
+            </div>
+        </div>
+    </footer>
+                
 
     <!-- Modal untuk Detail Agenda -->
     <div id="agendaDetailModal" class="fixed z-50 inset-0 overflow-y-auto hidden">

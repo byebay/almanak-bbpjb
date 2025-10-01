@@ -6,6 +6,7 @@ use App\Models\Agenda;
 use App\Models\DailyAttendance;
 use Illuminate\Http\Request;
 use Illuminate\Support\Carbon;
+use App\Models\Visitor;
 
 class PublicController extends Controller
 {
@@ -34,6 +35,9 @@ class PublicController extends Controller
         // 3. Pegawai yang cuti & dinas luar
         $pegawaiCuti = $attendancesToday->where('status', 'Cuti')->whereNotNull('user')->pluck('user')->unique('id');
         $pegawaiDinasLuar = $attendancesToday->where('status', 'Dinas Luar')->whereNotNull('user')->pluck('user')->unique('id');
+        $visitorCount = Visitor::whereMonth('created_at', Carbon::now()->month)
+                               ->whereYear('created_at', Carbon::now()->year)
+                               ->count();
         
         // Kirim semua data ke view publik yang akan kita buat
         return view('public-dashboard', [
@@ -42,6 +46,7 @@ class PublicController extends Controller
             'jumlahTerlambat' => $jumlahTerlambat,
             'pegawaiCuti' => $pegawaiCuti,
             'pegawaiDinasLuar' => $pegawaiDinasLuar,
+            'visitorCount' => $visitorCount,
         ]);
     }
 
