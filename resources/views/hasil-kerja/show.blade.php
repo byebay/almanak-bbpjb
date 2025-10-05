@@ -1,4 +1,4 @@
-    <x-app-layout>
+<x-app-layout>
         <x-slot name="header">
             <h2 class="font-semibold text-xl text-gray-800 leading-tight">Bukti Kerja: {{ $user->name }}</h2>
         </x-slot>
@@ -117,14 +117,17 @@
                                 </div>
                                 {{-- Tombol Hapus --}}
                                 @php $authUser = Auth::user(); @endphp
-                                @if($authUser->id === $work->user_id || $authUser->isSuperAdmin() || $authUser->isKepegawaianAdmin())
-                                <form action="{{ route('hasil-kerja.destroy', $work) }}" method="POST" onsubmit="return confirm('Anda yakin ingin menghapus fail ini?');" class="absolute top-0 right-0 m-1 opacity-0 group-hover:opacity-100 transition-opacity">
-                                    @csrf
-                                    @method('DELETE')
-                                    <button type="submit" class="p-1 bg-red-500 text-white rounded-full hover:bg-red-600">
-                                        <svg class="w-4 h-4" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="M6 18L18 6M6 6l12 12" /></svg>
-                                    </button>
-                                </form>
+    
+                                {{-- --- PERBAIKAN FINAL DI SINI --- --}}
+                                {{-- Ganti '===' menjadi '==' untuk menangani perbedaan tipe data --}}
+                                @if($authUser->id == $work->user_id || $authUser->isSuperAdmin() || $authUser->isKepegawaianAdmin())
+                                    <form action="{{ route('hasil-kerja.destroy', $work) }}" method="POST" onsubmit="return confirm('Anda yakin ingin menghapus file ini?');" class="absolute top-0 right-0 m-1 opacity-0 group-hover:opacity-100 transition-opacity">
+                                        @csrf
+                                        @method('DELETE')
+                                        <button type="submit" class="p-1 bg-red-500 text-white rounded-full hover:bg-red-600">
+                                            <svg class="w-4 h-4" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="M6 18L18 6M6 6l12 12" /></svg>
+                                        </button>
+                                    </form>
                                 @endif
                             </div>
                         @empty

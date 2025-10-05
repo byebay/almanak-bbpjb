@@ -74,16 +74,22 @@ class EmployeeWorkController extends Controller
     // Menghapus file hasil kerja
     public function destroy(EmployeeWork $work)
     {
-        $authUser = Auth::user();
-        // Otorisasi: hanya pemilik atau admin yang bisa hapus
-        if ($authUser->id !== $work->user_id && !($authUser->isSuperAdmin() || $authUser->isKepegawaianAdmin() || $authUser->isAnggaranAdmin())) {
-            abort(403);
-        }
+    /** @var \App\Models\User $authUser */
+    $authUser = Auth::user();
 
-        Storage::delete($work->file_path);
-        $work->delete();
+    // --- PERBAIKAN FINAL DI SINI ---
+    // Ganti '!==' menjadi '!=' untuk menangani perbedaan tipe data di server
+    if ($authUser->id != $work->user_id && !$authUser->isSuperAdmin() && !$authUser->isKepegawaianAdmin()) {
+        // Jika tidak diizinkan, tolak aksi.
+        abort(403, 'AKSI TIDAK DIIZINKAN.');
+    }
+    // ---------------------------------
 
-        return back()->with('success', 'Bukti kerja berhasil dihapus.');
+    // Jika lolos, baru lanjutkan proses hapus
+    Storage::disk('public')->delete($work->file_path);
+    $work->delete();
+
+    return back()->with('success', 'Bukti kerja berhasil dihapus.');
     }
 
      public function view(EmployeeWork $work)
