@@ -77,27 +77,32 @@ class DashboardController extends Controller
 
     public function getEvents(Request $request)
     {
-        // --- PERBAIKAN UTAMA DI SINI ---
-        // Ambil hanya agenda yang statusnya 'Terpublikasi'
-        $agendas = Agenda::where('status', 'Terpublikasi')->get();
-        // ------------------------------------
-
+        $agendas = Agenda::where('status', 'Terpublikasi')->with('room')->get();
         $events = [];
         foreach ($agendas as $agenda) {
+            $title = $agenda->title;
+            if ($agenda->room) {
+                $title = '[' . $agenda->room->name . '] ' . $agenda->title;
+            }
+
+            $endDateForCalendar = null;
+            if ($agenda->end_date) {
+                $endDateForCalendar = $agenda->end_date->addDay()->format('Y-m-d');
+            }
+
             $events[] = [
-                'title' => $agenda->title,
-                'start' => $agenda->agenda_date->format('Y-m-d'),
+                'title' => $title,
+                'start' => $agenda->start_date->format('Y-m-d'),
+                'end'   => $endDateForCalendar,
                 'extendedProps' => [
                     'description' => $agenda->description,
                     'start_time' => Carbon::parse($agenda->start_time)->format('H:i'),
                     'end_time' => Carbon::parse($agenda->end_time)->format('H:i'),
                     'file_url' => $agenda->file_path ? asset('storage/' . $agenda->file_path) : null,
-                    'file_name' => $agenda->file_path ? basename($agenda->file_path) : null,
-                    'file_extension' => $agenda->file_path ? strtolower(pathinfo($agenda->file_path, PATHINFO_EXTENSION)) : null,
+                    'room_name' => $agenda->room ? $agenda->room->name : null,
                 ]
             ];
         }
-
         return response()->json($events);
     }
 }

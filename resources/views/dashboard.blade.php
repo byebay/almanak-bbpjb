@@ -112,7 +112,7 @@
             <!-- Kalender Agenda (sesuai struktur Anda) -->
             <div class="bg-white overflow-hidden shadow-sm sm:rounded-lg">
                 <div class="p-6 text-gray-900">
-                    <h3 class="text-2xl font-bold mb-4">Kalender Agenda BBJB</h3>
+                    <h3 class="text-2xl font-bold mb-4">Kalender Agenda BBPJB</h3>
                     <div id='calendar'></div>
                 </div>
             </div>
@@ -238,7 +238,7 @@
 
                             const eventDetail = `
                                 <div class="pb-3">
-                                    <p class="text-3xl text-center font-bold text-black mb-1 font-montserrat">${event.title}</p>
+                                    <p class="text-lg text-center font-bold text-black mb-1 font-montserrat">${event.title}</p>
                                     <p class="text-l text-center text-gray-600">Waktu: ${event.extendedProps.start_time} - ${event.extendedProps.end_time}</p>
                                     <p class="text-l font-semibold text-gray-600 mt-2 whitespace-pre-wrap">Deskripsi Kegiatan:</p>
                                     <p class="text-l text-gray-500 mt-2 whitespace-pre-wrap">${event.extendedProps.description}</p>

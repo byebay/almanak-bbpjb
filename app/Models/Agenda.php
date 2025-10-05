@@ -19,7 +19,8 @@ class Agenda extends Model
         'user_id',
         'title',
         'description',
-        'agenda_date',
+        'start_date', // Diubah dari agenda_date
+        'end_date',
         'start_time',
         'end_time',
         'file_path',
@@ -31,7 +32,8 @@ class Agenda extends Model
      * Casts atribut ke tipe data asli.
      */
     protected $casts = [
-        'agenda_date' => 'date',
+        'start_date' => 'date', // Diubah dari agenda_date
+        'end_date' => 'date',
         'start_time' => 'datetime:H:i',
         'end_time' => 'datetime:H:i',
     ];

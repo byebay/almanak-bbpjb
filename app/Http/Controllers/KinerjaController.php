@@ -96,18 +96,14 @@ class KinerjaController extends Controller
 
     public function destroy(Kinerja $kinerja)
     {
-        // Hapus semua file bukti dari detail terkait terlebih dahulu
         foreach ($kinerja->details as $detail) {
-            // Perbaikan: Cek jika file_bukti adalah string dan ada isinya
-            if ($detail->file_bukti && is_string($detail->file_bukti)) {
+            if ($detail->file_bukti) {
                 Storage::disk('public')->delete($detail->file_bukti);
             }
         }
-        
-        $kinerja->delete(); // Ini akan otomatis menghapus detailnya karena ada onDelete('cascade')
-        
-        return redirect()->route('kinerja.index')->with('success', 'Kegiatan berhasil dihapus.');
 
+        $kinerja->delete();
+        return redirect()->route('kinerja.index')->with('success', 'Laporan Realisasi Kegiatan berhasil dihapus.');
     }
     // Fungsi lainnya akan kita tambahkan nanti
 }

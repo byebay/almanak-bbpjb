@@ -6,7 +6,7 @@
 >
     <div class="flex items-center justify-center p-4 border-b border-blue-200">
         <a href="{{ route('dashboard') }}" class="flex items-center space-x-3">
-            <img src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTRVuB5izhn6_SweD4kY9qdmzSinIWC-_jr2w&s" alt="Logo Balai Bahasa" class="block h-10 w-auto">
+            <img src="storage/photos/logo.jpeg" alt="Logo Balai Bahasa" class="block h-10 w-auto">
             <span class="font-bold text-xl text-gray-800">Almanak</span>
         </a>
     </div>
@@ -14,10 +14,10 @@
     <nav class="flex-1 px-2 py-4 space-y-2">
         {{-- PERUBAHAN DI SINI: Menambahkan ikon SVG di setiap link --}}
         
-        {{-- <x-nav-link :href="route('laporan.statistik')" :active="request()->routeIs('laporan.statistik')" class="w-full flex items-center p-2 rounded-md text-gray-600 hover:bg-gray-100 hover:text-gray-900">
+        <!-- <x-nav-link :href="route('laporan.statistik')" :active="request()->routeIs('laporan.statistik')" class="w-full flex items-center p-2 rounded-md text-gray-600 hover:bg-gray-100 hover:text-gray-900">
             <svg class="h-5 w-5 mr-3" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2H9a2 2 0 01-2-2V5z"/></svg>
             {{ __('Statistik Kehadiran') }}
-        </x-nav-link> --}}
+        </x-nav-link> -->
 
         <x-nav-link :href="route('dashboard')" :active="request()->routeIs('dashboard')" class="w-full flex items-center p-2 rounded-md text-gray-600 hover:bg-gray-100 hover:text-gray-900">
             <svg class="h-5 w-5 mr-3" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1 1h-3m-6 0a1 1 0 001-1v-4a1 1 0 011-1h2a1 1 0 011 1v4a1 1 0 001 1m-6 0h6"/></svg>
@@ -76,14 +76,14 @@
             </div>
         </div>
 
-        <x-nav-link :href="route('rooms.status')" :active="request()->routeIs('rooms.status')" class="w-full flex items-center p-2 rounded-md text-gray-600 hover:bg-gray-100 hover:text-gray-900">
+        <!-- <x-nav-link :href="route('rooms.status')" :active="request()->routeIs('rooms.status')" class="w-full flex items-center p-2 rounded-md text-gray-600 hover:bg-gray-100 hover:text-gray-900">
             <svg class="h-5 w-5 mr-3" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor">
                 <path stroke-linecap="round" stroke-linejoin="round" d="M2.25 21h19.5m-18-18h16.5M2.25 9h16.5m-16.5 6H21m-1.5-1.5V5.625c0-1.036-.84-1.875-1.875-1.875H5.625c-1.036 0-1.875.84-1.875 1.875v12.75c0 1.036.84 1.875 1.875 1.875h12.75c1.035 0 1.875-.84 1.875-1.875V15M12 12h9" />
             </svg>
             {{ __('Status Ruangan') }}
-        </x-nav-link>
+        </x-nav-link> -->
 
-        @if(Auth::check() && Auth::user()->isSuperAdmin())
+        <!-- @if(Auth::check() && Auth::user()->isSuperAdmin())
             <x-nav-link :href="route('rooms.index')" :active="request()->routeIs('rooms.index', 'rooms.edit')" class="w-full flex items-center p-2 rounded-md text-gray-600 hover:bg-gray-100 hover:text-gray-900">
                 <svg class="h-5 w-5 mr-3" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor">
                     <path stroke-linecap="round" stroke-linejoin="round" d="M10.343 3.94c.09-.542.56-.94 1.11-.94h1.093c.55 0 1.02.398 1.11.94l.149.894c.07.424.384.764.78.93.398.164.855.142 1.205-.108l.737-.527a1.125 1.125 0 011.45.12l.773.774c.39.39.44 1.022.12 1.45l-.527.737c-.25.35-.272.806-.108 1.204.165.397.505.71.93.78l.893.15c.543.09.94.56.94 1.109v1.094c0 .55-.397 1.02-.94 1.11l-.893.149c-.425.07-.765.383-.93.78-.164.398-.142.854.108 1.204l.527.738c.32.427.27 1.06-.12 1.45l-.773.773a1.125 1.125 0 01-1.449.12l-.738-.527c-.35-.25-.806-.272-1.203-.107-.397.165-.71.505-.781.93l-.149.894c-.09.542-.56.94-1.11.94h-1.094c-.55 0-1.019-.398-1.11-.94l-.148-.894c-.071-.424-.384-.764-.781-.93-.398-.164-.854-.142-1.204.108l-.738.527a1.125 1.125 0 01-1.45-.12l-.773-.774a1.125 1.125 0 01-.12-1.45l.527-.738c.25-.35.273-.806.108-1.204-.165-.397-.505-.71-.93-.78l-.894-.15c-.542-.09-.94-.56-.94-1.109v-1.094c0-.55.398-1.02.94-1.11l.894-.149c.424-.07.765-.383.93-.78.164-.398.142-.854-.107-1.204l-.527-.738a1.125 1.125 0 01.12-1.45l.773-.773a1.125 1.125 0 011.45-.12l.737.527c.35.25.807.272 1.204.107.397-.165.71-.505.78-.93l.15-.893z" />
@@ -91,7 +91,7 @@
                 </svg>
                 {{ __('Manajemen Ruangan') }}
             </x-nav-link>
-        @endif
+        @endif -->
 
         
 
