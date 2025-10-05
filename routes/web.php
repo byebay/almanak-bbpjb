@@ -7,7 +7,7 @@ use App\Http\Controllers\DashboardController;
 use App\Http\Controllers\UserImportController;  
 use App\Http\Controllers\AttendanceImportController;
 use App\Http\Controllers\AttendanceReportController;
-use App\Http\Controllers\EmployeeWorkController;
+// use App\Http\Controllers\EmployeeWorkController;
 use App\Http\Controllers\LeaveController;
 use App\Http\Controllers\AgendaController;
 use App\Http\Controllers\AttendanceStatisticController;
@@ -16,6 +16,7 @@ use App\Http\Controllers\RoomController;
 use App\Http\Controllers\KinerjaDetailController;
 use App\Http\Controllers\AgendaImportController;
 use App\Http\Middleware\LogVisitor; // <-- Import Middleware
+use App\Http\Controllers\SharedLinkController;
 
 Route::get('/', function () {
     return view('welcome');
@@ -29,11 +30,11 @@ Route::get('/', [PublicController::class, 'index'])->middleware(LogVisitor::clas
 Route::get('/public/events', [PublicController::class, 'getEvents'])->name('public.events');
 // Route ini tidak memerlukan login
 // Halaman utama untuk link yang dibagikan
-Route::get('/share/hasil-kerja/{token}/{year}/{month}', [EmployeeWorkController::class, 'showPublic'])->name('hasil-kerja.public.show');
-// Rute untuk melihat file dari halaman publik
-Route::get('/share/view/{work}/{token}', [EmployeeWorkController::class, 'viewPublic'])->name('hasil-kerja.public.view');
-// Rute untuk mengunduh file dari halaman publik
-Route::get('/share/download/{work}/{token}', [EmployeeWorkController::class, 'downloadPublic'])->name('hasil-kerja.public.download');
+// Route::get('/share/hasil-kerja/{token}/{year}/{month}', [EmployeeWorkController::class, 'showPublic'])->name('hasil-kerja.public.show');
+// // Rute untuk melihat file dari halaman publik
+// Route::get('/share/view/{work}/{token}', [EmployeeWorkController::class, 'viewPublic'])->name('hasil-kerja.public.view');
+// // Rute untuk mengunduh file dari halaman publik
+// Route::get('/share/download/{work}/{token}', [EmployeeWorkController::class, 'downloadPublic'])->name('hasil-kerja.public.download');
 
 
 Route::middleware('auth')->group(function () {
@@ -52,14 +53,14 @@ Route::middleware('auth')->group(function () {
     Route::resource('agenda-harian', AgendaController::class);
     Route::get('/dashboard/events', [DashboardController::class, 'getEvents'])->name('dashboard.events');
     Route::get('/laporan/statistik', [AttendanceStatisticController::class, 'index'])->name('laporan.statistik');
-    Route::get('/hasil-kerja', [EmployeeWorkController::class, 'index'])->name('hasil-kerja.index');
-    Route::post('/hasil-kerja', [EmployeeWorkController::class, 'store'])->name('hasil-kerja.store');
-    Route::get('/hasil-kerja/{work}/view', [EmployeeWorkController::class, 'view'])->name('hasil-kerja.view');
-    Route::get('/hasil-kerja/{work}/download', [EmployeeWorkController::class, 'download'])->name('hasil-kerja.download');
-    Route::delete('/hasil-kerja/{work}', [EmployeeWorkController::class, 'destroy'])->name('hasil-kerja.destroy');
-    Route::get('/hasil-kerja/{user}/{year}/{month}/download-all', [EmployeeWorkController::class, 'downloadAllAsZip'])->name('hasil-kerja.download-all');
-    Route::get('/hasil-kerja/{year}/{month}', [EmployeeWorkController::class, 'showMonth'])->name('hasil-kerja.month');
-    Route::get('/hasil-kerja/{year}/{month}/{user}', [EmployeeWorkController::class, 'showEmployeeWork'])->name('hasil-kerja.employee');
+    // Route::get('/hasil-kerja', [EmployeeWorkController::class, 'index'])->name('hasil-kerja.index');
+    // Route::post('/hasil-kerja', [EmployeeWorkController::class, 'store'])->name('hasil-kerja.store');
+    // Route::get('/hasil-kerja/{work}/view', [EmployeeWorkController::class, 'view'])->name('hasil-kerja.view');
+    // Route::get('/hasil-kerja/{work}/download', [EmployeeWorkController::class, 'download'])->name('hasil-kerja.download');
+    // Route::delete('/hasil-kerja/{work}', [EmployeeWorkController::class, 'destroy'])->name('hasil-kerja.destroy');
+    // Route::get('/hasil-kerja/{user}/{year}/{month}/download-all', [EmployeeWorkController::class, 'downloadAllAsZip'])->name('hasil-kerja.download-all');
+    // Route::get('/hasil-kerja/{year}/{month}', [EmployeeWorkController::class, 'showMonth'])->name('hasil-kerja.month');
+    // Route::get('/hasil-kerja/{year}/{month}/{user}', [EmployeeWorkController::class, 'showEmployeeWork'])->name('hasil-kerja.employee');
     Route::get('/leaves/manage', [LeaveController::class, 'index'])->name('leaves.manage');
     Route::post('/leaves', [LeaveController::class, 'store'])->name('leaves.store');
     Route::delete('/leaves/{leaveRecord}', [LeaveController::class, 'destroy'])->name('leaves.destroy');
@@ -68,6 +69,9 @@ Route::middleware('auth')->group(function () {
     Route::resource('rooms', RoomController::class)->except(['show', 'create']);Route::put('/kinerja-detail/{kinerjaDetail}', [KinerjaDetailController::class, 'update'])->name('kinerja.detail.update');
     Route::get('/agendas/import', [AgendaImportController::class, 'create'])->name('agendas.import.create');
     Route::post('/agendas/import', [AgendaImportController::class, 'store'])->name('agendas.import.store');
+    Route::get('/galeri-tautan', [SharedLinkController::class, 'index'])->name('galeri-tautan.index');
+    Route::post('/galeri-tautan', [SharedLinkController::class, 'store'])->name('galeri-tautan.store');
+    Route::delete('/galeri-tautan/{link}', [SharedLinkController::class, 'destroy'])->name('galeri-tautan.destroy');
     
 });
 

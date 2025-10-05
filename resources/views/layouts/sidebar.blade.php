@@ -29,9 +29,12 @@
             {{ __('Agenda Harian') }}
         </x-nav-link>
 
-        <x-nav-link :href="route('hasil-kerja.index')" :active="request()->routeIs('hasil-kerja.*')" class="w-full flex items-center p-2 rounded-md text-gray-600 hover:bg-gray-100 hover:text-gray-900">
-            <svg class="h-5 w-5 mr-3" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>
-            {{ __('Bukti Kerja') }}
+        <x-nav-link :href="route('galeri-tautan.index')" :active="request()->routeIs('galeri-tautan.*')">
+                 <!-- Ikon Tautan (Link) -->
+                     <svg class="h-5 w-5 mr-3" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor">
+                        <path stroke-linecap="round" stroke-linejoin="round" d="M13.19 8.688a4.5 4.5 0 011.242 7.244l-4.5 4.5a4.5 4.5 0 01-6.364-6.364l1.757-1.757m13.35-.622l1.757-1.757a4.5 4.5 0 00-6.364-6.364l-4.5 4.5a4.5 4.5 0 001.242 7.244" />
+                    </svg>
+                {{ __('Galeri Tautan') }}
         </x-nav-link>
 
         <x-nav-link :href="route('kinerja.index')" :active="request()->routeIs('kinerja.*')" class="w-full flex items-center p-2 rounded-md text-gray-600 hover:bg-gray-100 hover:text-gray-900">
