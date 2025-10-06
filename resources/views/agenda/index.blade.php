@@ -34,38 +34,53 @@
                                 </tr>
                             </thead>
                             <tbody class="bg-white divide-y divide-gray-200">
-                                @forelse ($agendas as $agenda)
-                                    <tr>
-                                        <td class="px-6 py-4">
-                                            <div class="text-sm text-gray-900">
-                                                {{ $agenda->start_date->translatedFormat('d F Y') }}
-                                                @if($agenda->end_date && $agenda->end_date->ne($agenda->start_date))
-                                                    <span class="block text-xs text-gray-500">hingga {{ $agenda->end_date->translatedFormat('d F Y') }}</span>
-                                                @endif
-                                            </div>
-                                        </td>
-                                        <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">{{ $agenda->start_time->format('H:i') }} - {{ $agenda->end_time->format('H:i') }}</td>
-                                        <td class="px-6 py-4">{{ $agenda->title }}</td>
-                                        <td class="px-6 py-4 text-sm text-gray-500">{{ $agenda->room->name ?? '-' }}</td>
-                                        <td class="px-6 py-4 text-sm text-gray-500">{{ $agenda->user->name }}</td>
-                                        <td class="px-6 py-4 whitespace-nowrap text-sm font-medium">
-                                            <div class="flex items-center space-x-3">
-                                                <button onclick="openModal('edit', {{ $agenda->id }})" class="text-indigo-600 hover:text-indigo-900" title="Edit">
-                                                    <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" viewBox="0 0 20 20" fill="currentColor"><path d="M17.414 2.586a2 2 0 00-2.828 0L7 10.172V13h2.828l7.586-7.586a2 2 0 000-2.828z" /><path fill-rule="evenodd" d="M2 6a2 2 0 012-2h4a1 1 0 010 2H4v10h10v-4a1 1 0 112 0v4a2 2 0 01-2 2H4a2 2 0 01-2-2V6z" clip-rule="evenodd" /></svg>
-                                                </button>
-                                                <form action="{{ route('agenda-harian.destroy', $agenda->id) }}" method="POST" onsubmit="return confirm('Apakah Anda yakin?');">
-                                                    @csrf @method('DELETE')
-                                                    <button type="submit" class="text-red-600 hover:text-red-900" title="Hapus">
-                                                        <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" viewBox="0 0 20 20" fill="currentColor"><path fill-rule="evenodd" d="M9 2a1 1 0 00-.894.553L7.382 4H4a1 1 0 000 2v10a2 2 0 002 2h8a2 2 0 002-2V6a1 1 0 100-2h-3.382l-.724-1.447A1 1 0 0011 2H9zM7 8a1 1 0 012 0v6a1 1 0 11-2 0V8zm4 0a1 1 0 012 0v6a1 1 0 11-2 0V8z" clip-rule="evenodd" /></svg>
-                                                    </button>
-                                                </form>
-                                            </div>
-                                        </td>
-                                    </tr>
-                                @empty
-                                    <tr><td colspan="6" class="text-center py-4 text-gray-500">Tidak ada agenda yang ditemukan.</td></tr>
-                                @endforelse
-                            </tbody>
+                            {{-- --- PERUBAHAN DI SINI --- --}}
+                            @php
+                                // Kamus mini untuk bulan dalam Bahasa Indonesia
+                                $bulanIndonesia = [
+                                    1 => 'Januari', 2 => 'Februari', 3 => 'Maret', 4 => 'April', 
+                                    5 => 'Mei', 6 => 'Juni', 7 => 'Juli', 8 => 'Agustus', 
+                                    9 => 'September', 10 => 'Oktober', 11 => 'November', 12 => 'Desember'
+                                ];
+                            @endphp
+
+                            @forelse ($agendas as $agenda)
+                                <tr>
+                                    <td class="px-6 py-4">
+                                        <div class="text-sm text-gray-900">
+                                            @php
+                                                // Ambil nama bulan dari kamus kita
+                                                $bulanMulai = $bulanIndonesia[$agenda->start_date->month];
+                                                $tanggalMulai = $agenda->start_date->format('d');
+                                                $tahunMulai = $agenda->start_date->format('Y');
+                                            @endphp
+                                            {{ $tanggalMulai }} {{ $bulanMulai }} {{ $tahunMulai }}
+                                            
+                                            @if($agenda->end_date && $agenda->end_date->ne($agenda->start_date))
+                                                @php
+                                                    $bulanSelesai = $bulanIndonesia[$agenda->end_date->month];
+                                                    $tanggalSelesai = $agenda->end_date->format('d');
+                                                    $tahunSelesai = $agenda->end_date->format('Y');
+                                                @endphp
+                                                <span class="block text-xs text-gray-500">
+                                                    hingga {{ $tanggalSelesai }} {{ $bulanSelesai }} {{ $tahunSelesai }}
+                                                </span>
+                                            @endif
+                                        </div>
+                                    </td>
+                                    <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">{{ $agenda->start_time->format('H:i') }} - {{ $agenda->end_time->format('H:i') }}</td>
+                                    <td class="px-6 py-4">{{ $agenda->title }}</td>
+                                    <td class="px-6 py-4 text-sm text-gray-500">{{ $agenda->room->name ?? '-' }}</td>
+                                    <td class="px-6 py-4 text-sm text-gray-500">{{ $agenda->user->name }}</td>
+                                    <td class="px-6 py-4 whitespace-nowrap text-sm font-medium">
+                                        {{-- (Tombol Aksi Edit & Hapus di sini) --}}
+                                    </td>
+                                </tr>
+                            @empty
+                                <tr><td colspan="6" class="text-center py-4 text-gray-500">Tidak ada agenda yang ditemukan.</td></tr>
+                            @endforelse
+                            {{-- ----------------------------- --}}
+                        </tbody>
                         </table>
                     </div>
                 </div>
