@@ -247,53 +247,41 @@
                 },
 
                 dateClick: function(info) {
-                    const clickedDate = info.dateStr;
-                    const allEvents = calendar.getEvents();
-                    const eventsOnDate = allEvents.filter(event => toLocalISOString(event.start) === clickedDate);
-                    if (eventsOnDate.length > 0) {
-                        const dateObj = new Date(info.date);
-                        modalTitle.textContent = `Agenda pada tanggal ${dateObj.toLocaleDateString('id-ID', { day: '2-digit', month: 'long', year: 'numeric' })}`;
-                        modalBody.innerHTML = '';
-                        eventsOnDate.forEach(event => {
-                            let fileHtml = '';
-                            const props = event.extendedProps;
-                            if (props.file_url) {
-                                let fileContent = '';
-                                // Jika file adalah gambar
-                                if (['jpg', 'jpeg', 'png', 'gif'].includes(props.file_extension)) {
-                                    fileContent = `<img src="${props.file_url}" alt="File Dukung" class="mt-2 rounded-md border max-w-full h-auto">`;
-                                } 
-                                // Jika file adalah PDF
-                                else if (props.file_extension === 'pdf') {
-                                    fileContent = `<iframe src="${props.file_url}" class="mt-2 w-full h-96 rounded-md border"></iframe>`;
-                                } 
-                                // Untuk tipe file lainnya
-                                else {
-                                    fileContent = `<a href="${props.file_url}" target="_blank" class="text-sm text-blue-600 hover:underline">${props.file_name}</a>`;
+                        const clickedDateStr = toLocalISOString(info.date);
+                        const allEvents = calendar.getEvents();
+                        const eventsOnDate = allEvents.filter(event => toLocalISOString(event.start) === clickedDateStr);
+
+                        if (eventsOnDate.length > 0) {
+                            const dateObj = new Date(info.date);
+                            modalTitle.textContent = `Agenda pada tanggal ${dateObj.toLocaleDateString('id-ID', { day: '2-digit', month: 'long', year: 'numeric' })}`;
+                            modalBody.innerHTML = '';
+                            
+                            eventsOnDate.forEach(event => {
+                                const props = event.extendedProps;
+                                let fileHtml = '';
+                                if (props.file_url) {
+                                    let fileContent = '';
+                                    if (['jpg', 'jpeg', 'png', 'gif'].includes(props.file_extension)) {
+                                        fileContent = `<img src="${props.file_url}" alt="File Dukung" class="mt-2 rounded-md border max-w-full h-auto">`;
+                                    } else if (props.file_extension === 'pdf') {
+                                        fileContent = `<iframe src="${props.file_url}" class="mt-2 w-full h-96 rounded-md border"></iframe>`;
+                                    } else {
+                                        fileContent = `<a href="${props.file_url}" target="_blank" class="text-sm text-blue-600 hover:underline">${props.file_name}</a>`;
+                                    }
+                                    fileHtml = `<div class="mt-3 pt-3 border-t border-gray-200"><p class="text-l text-gray-600 font-semibold">Data Dukung:</p>${fileContent}</div>`;
                                 }
 
-                                fileHtml = `
-                                    <div class="mt-3 pt-3 border-t border-gray-200">
-                                        <p class="text-l text-gray-600 font-semibold">Data Dukung:</p>
-                                        ${fileContent}
-                                    </div>
-                                `;
-                            }
+                                let roomHtml = '';
+                                if (props.room_name) {
+                                    roomHtml = `<div class="mt-2 flex items-center justify-center text-sm text-gray-500 bg-blue-50 rounded-full px-3 py-1"><span>${props.room_name}</span></div>`;
+                                }
 
-                            const eventDetail = `
-                                <div class="pb-3">
-                                    <p class="text-3xl text-center font-bold text-black mb-1 font-montserrat">${event.title}</p>
-                                    <p class="text-l text-center text-gray-600">Waktu: ${event.extendedProps.start_time} - ${event.extendedProps.end_time}</p>
-                                    <p class="text-l font-semibold text-gray-600 mt-2 whitespace-pre-wrap">Deskripsi Kegiatan:</p>
-                                    <p class="text-l text-gray-500 mt-2 whitespace-pre-wrap">${event.extendedProps.description}</p>
-                                    ${fileHtml}
-                                </div>
-                                <hr class="last:hidden">`;
-                            modalBody.innerHTML += eventDetail;
-                        });
-                        modal.classList.remove('hidden');
+                                const eventDetail = `<div class="pb-3"><p class="text-3xl text-center font-bold text-black mb-1">${event.title}</p><p class="text-l text-center text-gray-600">Waktu: ${props.start_time} - ${props.end_time}</p>${roomHtml}<p class="text-l font-semibold text-gray-600 mt-2 whitespace-pre-wrap">Deskripsi Kegiatan:</p><p class="text-l text-gray-500 mt-2 whitespace-pre-wrap">${props.description}</p>${fileHtml}</div><hr class="last:hidden">`;
+                                modalBody.innerHTML += eventDetail;
+                            });
+                            modal.classList.remove('hidden');
+                        }
                     }
-                }
             });
             calendar.render();
             window.closeModal = function() { modal.classList.add('hidden'); }
