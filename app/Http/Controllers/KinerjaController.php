@@ -3,10 +3,12 @@
 namespace App\Http\Controllers;
 
 use App\Models\Kinerja;
+use App\Exports\KinerjaExport; // <-- Tambahkan ini
 use Illuminate\Http\Request;
 use Illuminate\Support\Carbon;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Storage;
+use Maatwebsite\Excel\Facades\Excel; // <-- Tambahkan ini
 
 class KinerjaController extends Controller
 {
@@ -106,4 +108,30 @@ class KinerjaController extends Controller
         return redirect()->route('kinerja.index')->with('success', 'Laporan Realisasi Kegiatan berhasil dihapus.');
     }
     // Fungsi lainnya akan kita tambahkan nanti
+// app/Http/Controllers/KinerjaController.php
+
+    public function exportExcel(Request $request)
+    {
+    $validated = $request->validate([
+        'year' => 'required|integer|min:2023',
+        'month' => 'required|integer|between:1,12',
+    ]);
+
+    $year = $validated['year'];
+    $user = Auth::user();
+
+    // --- PERBAIKAN FINAL DI SINI ---
+    // Lakukan konversi (casting) tipe data dari string ke integer secara manual
+    $month = (int)$validated['month'];
+    // -------------------------------
+
+    // Sekarang, $month dijamin bertipe integer
+    $namaBulan = \Carbon\Carbon::create()->month($month)->translatedFormat('F');
+
+    // Nama file yang akan diunduh
+    $fileName = 'Laporan Realisasi - ' . $namaBulan . ' ' . $year . '.xlsx';
+
+    // Pastikan KinerjaExport juga menerima integer
+    return Excel::download(new KinerjaExport((int)$year, $month, $user->id), $fileName);
+    }
 }

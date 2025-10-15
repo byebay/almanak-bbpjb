@@ -33,6 +33,33 @@
             @endif
 
             {{-- Tombol Aksi --}}
+            <div class="bg-white p-6 rounded-lg shadow-sm mb-6">
+                <h3 class="font-bold text-lg mb-4">Unduh Laporan Bulanan</h3>
+                <form action="{{ route('kinerja.export') }}" method="GET" class="flex items-end space-x-4">
+                    <div>
+                        <label for="year" class="block font-medium text-sm text-gray-700">Tahun:</label>
+                        <select name="year" id="year" class="border-gray-300 rounded-md shadow-sm mt-1">
+                            @for ($y = now()->year; $y >= 2023; $y--)
+                                <option value="{{ $y }}">{{ $y }}</option>
+                            @endfor
+                        </select>
+                    </div>
+                    <div>
+                        <label for="month" class="block font-medium text-sm text-gray-700">Bulan:</label>
+                        <select name="month" id="month" class="border-gray-300 rounded-md shadow-sm mt-1">
+                            @foreach (range(1, 12) as $m)
+                                <option value="{{ $m }}" {{ $m == now()->month ? 'selected' : '' }}>
+                                    {{ \Carbon\Carbon::create()->month($m)->translatedFormat('F') }}
+                                </option>
+                            @endforeach
+                        </select>
+                    </div>
+                    <button type="submit" class="px-4 py-2 bg-green-600 text-white rounded-md hover:bg-green-700 flex items-center">
+                        <svg class="w-4 h-4 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4"></path></svg>
+                        Unduh Excel
+                    </button>
+                </form>
+            </div>
             
             <div class="flex justify-between mb-4">
                 <button onclick="openModal()" class="inline-flex items-center px-16 py-2 bg-[#1A7EFB] text-white rounded-md hover:bg-blue-700">

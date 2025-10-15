@@ -65,6 +65,7 @@ Route::middleware('auth')->group(function () {
     Route::post('/leaves', [LeaveController::class, 'store'])->name('leaves.store');
     Route::delete('/leaves/{leaveRecord}', [LeaveController::class, 'destroy'])->name('leaves.destroy');
     Route::resource('kinerja', KinerjaController::class);
+    Route::get('/realisasi-kegiatan/export', [KinerjaController::class, 'exportExcel'])->name('kinerja.export');
     Route::get('/status-ruangan', [RoomController::class, 'showStatus'])->name('rooms.status');
     Route::resource('rooms', RoomController::class)->except(['show', 'create']);Route::put('/kinerja-detail/{kinerjaDetail}', [KinerjaDetailController::class, 'update'])->name('kinerja.detail.update');
     Route::get('/agendas/import', [AgendaImportController::class, 'create'])->name('agendas.import.create');
