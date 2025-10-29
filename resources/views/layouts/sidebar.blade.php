@@ -44,11 +44,35 @@
             {{ __('Realisasi Kegiatan') }}
         </x-nav-link>
 
-        @if(Auth::check() && Auth::user()->isSuperAdmin())
-            <x-nav-link :href="route('users.import.create')" :active="request()->routeIs('users.import.*')" class="w-full flex items-center p-2 rounded-md text-gray-600 hover:bg-gray-100 hover:text-gray-900">
-                <svg class="h-5 w-5 mr-3" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0zm6 3a2 2 0 11-4 0 2 2 0 014 0zM7 10a2 2 0 11-4 0 2 2 0 014 0z"/></svg>
-                {{ __('Unggah Data Pegawai') }}
-            </x-nav-link>
+        @if(Auth::check() && (Auth::user()->isSuperAdmin() || Auth::user()->isKepegawaianAdmin()))
+             @php
+                $isPegawaiMenuActive = request()->routeIs(['admin.users.*', 'users.import.*']);
+            @endphp
+                <div x-data="{ open: {{ $isPegawaiMenuActive ? 'true' : 'false' }} }" class="space-y-1">
+                    <button @click="open = !open" class="w-full flex items-center p-2 rounded-md text-gray-600 hover:bg-gray-100 hover:text-gray-900 {{ $isPegawaiMenuActive ? 'text-gray-900 font-bold' : '' }}">
+                        <svg class="h-5 w-5 mr-3" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0zm6 3a2 2 0 11-4 0 2 2 0 014 0zM7 10a2 2 0 11-4 0 2 2 0 014 0z"/></svg>
+                        <span class="flex-1 text-left">{{ __('Manajemen Pegawai') }}</span>
+                        <svg class="h-4 w-4 transform transition-transform" :class="{'rotate-90': open}" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7" /></svg>
+                    </button>
+                <div x-show="open" x-transition class="space-y-1 pl-4" style="display: none;">
+                                
+                                {{-- --- PERUBAHAN DI SINI: MENAMBAHKAN IKON --- --}}
+                @if(Auth::user()->isSuperAdmin())
+                    <x-nav-link :href="route('admin.users.index')" :active="request()->routeIs('admin.users.*')" class="w-full flex items-center p-2 rounded-md">
+                                        <!-- Ikon Daftar Pengguna -->
+                        <svg class="h-5 w-5 mr-3" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="M18 18.72a9.094 9.094 0 0 0 3.741-.479 3 3 0 0 0-3.741-5.198M9 15a3 3 0 1 1-6 0 3 3 0 0 1 6 0Zm12 0a3 3 0 1 1-6 0 3 3 0 0 1 6 0Z M9 9.75a3 3 0 0 1 3-3h.008v.008h-.008a3 3 0 0 1-3 3Zm.008 0H9.75m5.622-1.622a3 3 0 0 1 3.001 3.001M15 9.75a3 3 0 0 1 3-3h.008v.008h-.008a3 3 0 0 1-3 3Zm.008 0H15.75m-3.75 0a3 3 0 0 1 3-3h.008v.008h-.008a3 3 0 0 1-3 3Zm.008 0H12.75m-3.75 0a3 3 0 0 1 3-3h.008v.008h-.008a3 3 0 0 1-3 3Z" /></svg>
+                        {{ __('Daftar & Kelola Pegawai') }}
+                        </x-nav-link>
+                @endif
+                                
+                    <x-nav-link :href="route('users.import.create')" :active="request()->routeIs('users.import.*')" class="w-full flex items-center p-2 rounded-md">
+                                    <!-- Ikon Impor -->
+                        <svg class="h-5 w-5 mr-3" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="M12 16.5V9.75m0 0l3 3m-3-3l-3 3M6.75 19.5v-2.25A2.25 2.25 0 0 1 9 15h6a2.25 2.25 0 0 1 2.25 2.25v2.25" /></svg>
+                                    {{ __('Impor Pegawai (Excel)') }}
+                    </x-nav-link>
+                                {{-- ------------------------------------------- --}}
+                </div>
+                </div>
         @endif
 
         @php
@@ -98,11 +122,11 @@
 
         
 
-         @if(Auth::check() && Auth::user()->isSuperAdmin())
+         {{-- @if(Auth::check() && Auth::user()->isSuperAdmin())
             <x-nav-link :href="route('agendas.import.create')" :active="request()->routeIs('agendas.import.create')">
                 {{ __('Impor Agenda Lama') }}
             </x-nav-link>
-        @endif
+        @endif --}}
 
     </nav>
 
