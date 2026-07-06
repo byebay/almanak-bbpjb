@@ -7,7 +7,7 @@
                 <div class="shrink-0 flex items-center">
                     <a href="{{ route('dashboard') }}">
                         <!-- Ganti logo default dengan logo Balai Bahasa -->
-                        <img src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTRVuB5izhn6_SweD4kY9qdmzSinIWC-_jr2w&s" alt="Logo Balai Bahasa" class="block h-12 w-auto">
+                        <img src="storage/photos/logo.jpg" alt="Logo Balai Bahasa" class="block h-12 w-auto">
                     </a>
                 </div>
                 <div class="hidden space-x-8 sm:-my-px sm:ms-10 sm:flex">
