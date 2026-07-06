@@ -6,6 +6,7 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
+use Illuminate\Support\Facades\Storage;
 
 class User extends Authenticatable
 {
@@ -23,7 +24,8 @@ class User extends Authenticatable
         'role',
         'nip',
         'birth_date',
-        'photo_path'
+        'photo_path',
+        'shareable_token',
     ];
 
     /**
@@ -81,4 +83,31 @@ class User extends Authenticatable
         return in_array(trim($this->role), ['admin_anggaran', 'super_admin']);
     }
     // ------------------------------------
+
+    /**
+     * Accessor untuk mendapatkan URL foto pegawai.
+     * Akan mencari file jpg, png, atau jpeg.
+     */
+    public function getPhotoUrlAttribute()
+    {
+        // Jika ada path foto yang tersimpan di database, gunakan itu.
+        if ($this->photo_path && Storage::disk('public')->exists($this->photo_path)) {
+            return asset('storage/' . $this->photo_path);
+        }
+
+        // Jika tidak ada, kembalikan foto placeholder dengan inisial nama.
+        $initials = strtoupper(substr($this->name, 0, 2));
+        return 'https://via.placeholder.com/150/007BFF/FFFFFF?text=' . urlencode($initials);
+    }
+
+    public function getRoleName(): string
+    {
+    return match ($this->role) {
+        'super_admin' => 'Super Admin',
+        'admin_kepegawaian' => 'Admin Kepegawaian',
+        'admin_anggaran' => 'Admin Anggaran',
+        'pegawai' => 'Pegawai',
+        default => 'Tidak Diketahui',
+    };
+}
 }

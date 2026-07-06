@@ -11,6 +11,9 @@
                     </a>
                 </div>
                 <div class="hidden space-x-8 sm:-my-px sm:ms-10 sm:flex">
+                    <x-nav-link :href="route('laporan.statistik')" :active="request()->routeIs('laporan.statistik')">
+                        {{ __('Statistik Kehadiran') }}
+                    </x-nav-link>
                     <x-nav-link :href="route('dashboard')" :active="request()->routeIs('dashboard')">
                         {{ __('Dasbor') }}
                     </x-nav-link>
@@ -30,6 +33,27 @@
                     @if(Auth::check() && Auth::user()->isKepegawaianAdmin())
                         <x-nav-link :href="route('attendances.import.create')" :active="request()->routeIs('attendances.import.*')">
                             {{ __('Impor Absensi') }}
+                        </x-nav-link>
+                    @endif
+
+                    @if(Auth::check() && Auth::user()->isKepegawaianAdmin())
+                        <x-nav-link :href="route('leaves.manage')" :active="request()->routeIs('leaves.manage')">
+                            {{ __('Kelola Cuti & DL') }}
+                        </x-nav-link>
+                    @endif
+
+                    <x-nav-link :href="route('hasil-kerja.index')" :active="request()->routeIs('hasil-kerja.*')">
+                        {{ __('Hasil Kerja') }}
+                    </x-nav-link>
+
+                    <x-nav-link :href="route('rooms.status')" :active="request()->routeIs('rooms.status')">
+                        {{ __('Status Ruangan') }}
+                    </x-nav-link>
+
+                    {{-- Hanya untuk Super Admin --}}
+                    @if(Auth::check() && Auth::user()->isSuperAdmin())
+                        <x-nav-link :href="route('rooms.index')" :active="request()->routeIs('rooms.*') && !request()->routeIs('rooms.status')">
+                            {{ __('Manajemen Ruangan') }}
                         </x-nav-link>
                     @endif
 
