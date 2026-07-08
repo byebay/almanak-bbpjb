@@ -6,7 +6,7 @@
 >
     <div class="flex items-center justify-center p-4 border-b border-blue-200">
         <a href="{{ route('dashboard') }}" class="flex items-center space-x-3">
-            <img src="storage/photos/logo.jpg" alt="Logo Balai Bahasa" class="block h-10 w-auto">
+            <img src="{{ asset('storage/photos/logo.jpg') }}" alt="Logo Balai Bahasa" class="block h-10 w-auto">
             <span class="font-bold text-xl text-gray-800">Almanak</span>
         </a>
     </div>
