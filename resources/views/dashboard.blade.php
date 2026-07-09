@@ -20,6 +20,52 @@
     #modalBody .font-montserrat {
         font-family: 'Montserrat', sans-serif;
     }
+
+    .fc .fc-toolbar.fc-header-toolbar {
+        display: flex;
+        flex-wrap: wrap;
+        align-items: center;
+        justify-content: space-between;
+        row-gap: 0.75rem;
+        margin-bottom: 1.25rem;
+    }
+
+    .fc .fc-toolbar-title {
+        font-size: 1.35rem;
+        font-weight: 700;
+        color: #1e293b;
+        margin: 0;
+    }
+
+    .fc .fc-toolbar-chunk {
+        display: flex;
+        align-items: center;
+        gap: 0.5rem;
+    }
+
+    /* === Responsive mobile === */
+    @media (max-width: 640px) {
+        .fc .fc-toolbar.fc-header-toolbar {
+            flex-direction: column;
+            align-items: center;
+        }
+        /* chunk pertama = tombol2 (right), chunk kedua = judul (left) */
+        .fc .fc-toolbar-chunk:first-child {
+            order: 1; /* tombol2 di atas */
+            flex-wrap: wrap;
+            justify-content: center;
+        }
+        .fc .fc-toolbar-chunk:last-child {
+            order: 2; /* judul (Juli 2026) di bawah tombol, di atas kalender */
+        }
+        .fc .fc-toolbar-title {
+            font-size: 1.1rem;
+        }
+        .fc .fc-button {
+            font-size: 0.75rem;
+            padding: 0.3rem 0.6rem;
+        }
+    }
 </style>
 
 <x-app-layout>
@@ -171,7 +217,11 @@
             const calendar = new FullCalendar.Calendar(calendarEl, {
                 initialView: 'dayGridMonth',
                 locale: 'id',
-                headerToolbar: { left: 'prev,next today', center: 'title', right: 'dayGridMonth,dayGridWeek' },
+                    headerToolbar: {
+                    left: 'title',
+                    center: '',
+                    right: 'prev,next today dayGridMonth,dayGridWeek'
+                },
                 aspectRatio: 2,
                 buttonText: {
                     today: 'Hari Ini',
