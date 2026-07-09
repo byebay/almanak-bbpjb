@@ -86,13 +86,13 @@
     <div class="min-h-screen">
         <!-- Header Publik -->
         <header class="bg-white shadow">
-            <div class="max-w-7xl mx-auto py-4 px-4 sm:px-6 lg:px-8 flex justify-between items-center">
+            <div class="max-w-7xl mx-auto py-4 px-4 sm:px-6 lg:px-8 flex flex-wrap justify-between items-center gap-y-4">
                 <!-- Logo -->
                 <div class="flex items-center">
                     <img src="storage/photos/logo.jpg" alt="Logo Balai Bahasa" class="block h-12 w-auto">
                     <span class="font-semibold text-xl text-gray-800 ml-3">Almanak</span>
                 </div>
-                <div class="hidden sm:flex items-center text-sm text-gray-500">
+                <div class="flex items-center text-sm text-gray-500 order-last sm:order-none w-full sm:w-auto justify-center sm:justify-start">
                         <span>Pengunjung Bulan Ini: <strong class="text-gray-800">{{ $visitorCount }}</strong></span>
                     </div>
                 <!-- Tombol Login -->
