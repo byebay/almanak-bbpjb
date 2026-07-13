@@ -23,9 +23,10 @@
             {{-- Kartu Login Utama --}}
             <div class="w-full max-w-4xl flex flex-col sm:flex-row bg-white rounded-2xl shadow-2xl overflow-hidden">
                 
-                <!-- Kolom Kiri: Biru Solid -->
-                <div class="relative w-full sm:w-1/2 hidden sm:block bg-blue-600">
-                    <!-- Anda bisa menambahkan elemen dekoratif di sini jika mau -->
+                <!-- Kolom Kiri: Background Gambar -->
+                <div class="relative w-full sm:w-1/2 hidden sm:block">
+                    <div class="absolute inset-0 bg-cover bg-no-repeat" style="background-image: url('{{ asset('storage/photos/background_login.png') }}'); background-position: right center;"></div>
+                    <div class="absolute inset-0 bg-blue-600/40"></div>
                 </div>
 
                 <!-- Kolom Kanan: Form Login -->

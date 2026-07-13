@@ -73,11 +73,11 @@
                 order: 2; /* judul (Juli 2026) di bawah tombol, di atas kalender */
             }
             .fc .fc-toolbar-title {
-                font-size: 1.1rem;
+                font-size: 1.5rem;
             }
             .fc .fc-button {
-                font-size: 0.75rem;
-                padding: 0.3rem 0.6rem;
+                font-size: 0.8rem;
+                padding: 0.4rem 0.6rem;
             }
         }
     </style>
@@ -87,18 +87,20 @@
         <!-- Header Publik -->
         <header class="bg-white shadow">
             <div class="max-w-7xl mx-auto py-4 px-4 sm:px-6 lg:px-8 flex justify-between items-center">
-                <!-- Logo -->
                 <div class="flex items-center">
                     <img src="storage/photos/logo.jpg" alt="Logo Balai Bahasa" class="block h-12 w-auto">
                     <span class="font-semibold text-xl text-gray-800 ml-3">Almanak</span>
                 </div>
                 <div class="hidden sm:flex items-center text-sm text-gray-500">
-                        <span>Pengunjung Bulan Ini: <strong class="text-gray-800">{{ $visitorCount }}</strong></span>
-                    </div>
-                <!-- Tombol Login -->
+                    <span>Pengunjung Bulan Ini: <strong class="text-gray-800">{{ $visitorCount }}</strong></span>
+                </div>
                 <a href="{{ route('login') }}" class="inline-flex items-center px-4 py-2 bg-blue-600 border border-transparent rounded-md font-semibold text-xs text-white uppercase tracking-widest hover:bg-blue-700">
                     Login Pegawai
                 </a>
+            </div>
+            {{-- Strip khusus mobile --}}
+            <div class="sm:hidden text-center text-sm text-gray-500 pb-3 -mt-1">
+                Pengunjung Bulan Ini: <strong class="text-gray-700">{{ $visitorCount }}</strong>
             </div>
         </header>
 
