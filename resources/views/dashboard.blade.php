@@ -214,6 +214,8 @@
                 return `${year}-${month}-${day}`;
             }
 
+            const getAspectRatio = () => window.innerWidth < 640 ? 0.7 : 2;
+
             const calendar = new FullCalendar.Calendar(calendarEl, {
                 initialView: 'dayGridMonth',
                 locale: 'id',
@@ -222,7 +224,11 @@
                     center: '',
                     right: 'prev,next today dayGridMonth,dayGridWeek'
                 },
-                aspectRatio: 2,
+                aspectRatio: getAspectRatio(),
+                expandRows: true,
+                windowResize: function(arg) {
+                    calendar.setOption('aspectRatio', getAspectRatio());
+                },
                 buttonText: {
                     today: 'Hari Ini',
                     month: 'Bulan',
