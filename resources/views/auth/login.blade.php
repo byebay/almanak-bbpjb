@@ -8,7 +8,7 @@
         <!-- Logo dan Judul -->
         <div class="text-center mb-8">
             <a href="/" class="inline-block">
-                <img src="storage/photos/logo.jpg" alt="Logo Balai Bahasa" class="w-20 h-20 mx-auto">
+                <img src="{{ asset('image/logo.jpg') }}" alt="Logo Balai Bahasa" class="w-20 h-20 mx-auto">
             </a>
             <h2 class="mt-4 text-2xl font-bold text-gray-900">Almanak</h2>
             <p class="mt-1 text-sm text-gray-600">

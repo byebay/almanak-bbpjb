@@ -25,7 +25,7 @@
                 
                 <!-- Kolom Kiri: Background Gambar -->
                 <div class="relative w-full sm:w-1/2 hidden sm:block">
-                    <div class="absolute inset-0 bg-cover bg-no-repeat" style="background-image: url('{{ asset('storage/photos/background_login.png') }}'); background-position: right center;"></div>
+                    <div class="absolute inset-0 bg-cover bg-no-repeat" style="background-image: url('{{ asset('image/background_login.png') }}'); background-position: right center;"></div>
                     <div class="absolute inset-0 bg-blue-600/40"></div>
                 </div>
 
