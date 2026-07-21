@@ -130,23 +130,60 @@
 
     </nav>
 
+    @php
+        $nip = trim(Auth::user()->nip ?? '');
+        $isBirthday = false;
+        
+        if ($nip && strlen($nip) >= 8) {
+            $birthDateStr = substr($nip, 0, 8);
+            if (ctype_digit($birthDateStr)) {
+                $birthMonth = substr($birthDateStr, 4, 2);
+                $birthDay = substr($birthDateStr, 6, 2);
+                
+                $currentMonth = date('m');
+                $currentDay = date('d');
+                
+                if ($birthMonth === $currentMonth && $birthDay === $currentDay) {
+                    $isBirthday = true;
+                }
+            }
+        }
+    @endphp
+
     <div class="mt-auto p-4 border-t border-gray-200">
     {{-- 1. Bungkus semuanya dengan komponen Alpine.js --}}
     <div x-data="{ open: false }" class="relative">
         
         {{-- 2. Tombol Pemicu Dropdown --}}
-        <button @click="open = ! open" class="w-full flex items-center justify-between text-left p-2 rounded-md hover:bg-gray-100 focus:outline-none focus:ring-2 focus:ring-blue-500">
-            <div class="flex items-center">
-                {{-- Anda bisa menambahkan foto profil di sini nanti --}}
-                {{-- <img src="{{ Auth::user()->photo_url }}" alt="Foto Profil" class="w-8 h-8 rounded-full mr-3 object-cover"> --}}
-                <div>
-                    <p class="font-semibold text-sm text-gray-800">{{ Auth::user()->name }}</p>
-                    <p class="text-xs text-gray-500">{{ Auth::user()->getRoleName() }}</p> {{-- Asumsi ada fungsi getRoleName() di Model User --}}
+        <div class="{{ $isBirthday ? 'p-[2px] rounded-md bg-gradient-to-r from-purple-500 to-blue-500' : '' }}">
+            <button @click="open = ! open; if(open && {{ $isBirthday ? 'true' : 'false' }}) { fireCracker($event) }" class="w-full flex items-center justify-between text-left p-2 rounded-md hover:bg-gray-100 focus:outline-none focus:ring-2 focus:ring-blue-500 {{ $isBirthday ? 'bg-white relative overflow-hidden' : '' }}">
+                
+                @if($isBirthday)
+                <style>
+                    .t-wrap { position: absolute; bottom: -30px; z-index: 0; }
+                    .t-bal { width: 14px; height: 18px; border-radius: 50% 50% 50% 50% / 40% 40% 60% 60%; position: relative; opacity: 0.7; }
+                    .t-knot { position: absolute; bottom: -3px; left: 50%; transform: translateX(-50%); width: 0; height: 0; border-left: 3px solid transparent; border-right: 3px solid transparent; }
+                    .t-str { position: absolute; bottom: -15px; left: 50%; width: 1px; height: 15px; background: rgba(0,0,0,0.2); }
+                    @keyframes tFloat { 0% { transform: translateY(0); opacity: 0; } 10% { opacity: 1; } 80% { opacity: 1; } 100% { transform: translateY(-80px); opacity: 0; } }
+                    @keyframes tSway { 0% { transform: translateX(-4px) rotate(-10deg); } 100% { transform: translateX(4px) rotate(10deg); } }
+                </style>
+                <div id="tinyBalloonsContainer" class="absolute inset-0 pointer-events-none rounded-md overflow-hidden"></div>
+                @endif
+                
+                <div class="flex items-center relative z-10">
+                    {{-- Anda bisa menambahkan foto profil di sini nanti --}}
+                    {{-- <img src="{{ Auth::user()->photo_url }}" alt="Foto Profil" class="w-8 h-8 rounded-full mr-3 object-cover"> --}}
+                    <div>
+                        <p class="font-semibold text-sm text-gray-800 flex items-center gap-1">
+                            {{ Auth::user()->name }}
+                        </p>
+                        <p class="text-xs text-gray-500">{{ Auth::user()->getRoleName() }}</p> {{-- Asumsi ada fungsi getRoleName() di Model User --}}
+                    </div>
                 </div>
-            </div>
-            {{-- Ikon Panah Dropdown --}}
-            <svg class="w-4 h-4 text-gray-500 transform transition-transform duration-200" :class="{'rotate-180': open}" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"></path></svg>
-        </button>
+                {{-- Ikon Panah Dropdown --}}
+                <svg class="w-4 h-4 text-gray-500 transform transition-transform duration-200 relative z-10" :class="{'rotate-180': open}" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"></path></svg>
+            </button>
+        </div>
 
         {{-- 3. Konten Dropdown yang Muncul/Hilang --}}
         <div x-show="open"
@@ -178,5 +215,183 @@
         </div>
     </div>
 </div>
+
+@if($isBirthday)
+<style>
+.g-balloon-wrapper {
+    position: fixed;
+    bottom: -150px;
+    z-index: 9999;
+    pointer-events: none;
+}
+.g-balloon {
+    width: 60px;
+    height: 75px;
+    border-radius: 50% 50% 50% 50% / 40% 40% 60% 60%;
+    opacity: 0.85;
+    box-shadow: inset -10px -10px 15px rgba(0,0,0,0.15);
+    position: relative;
+    transform-origin: bottom center;
+}
+.g-balloon-knot {
+    position: absolute;
+    bottom: -8px;
+    left: 50%;
+    transform: translateX(-50%);
+    width: 0;
+    height: 0;
+    border-left: 6px solid transparent;
+    border-right: 6px solid transparent;
+}
+.g-balloon-string {
+    position: absolute;
+    bottom: -60px;
+    left: 50%;
+    width: 1px;
+    height: 60px;
+    background: rgba(0,0,0,0.25);
+}
+@keyframes gBalloonFloatUp {
+    0% { transform: translateY(0); }
+    100% { transform: translateY(-120vh); }
+}
+@keyframes gBalloonSway {
+    0% { transform: translateX(-15px) rotate(-8deg); }
+    100% { transform: translateX(15px) rotate(8deg); }
+}
+</style>
+<script>
+    function launchBalloons() {
+        const colors = ['#EA4335', '#4285F4', '#34A853', '#FBBC05', '#8B5CF6', '#EC4899'];
+        for(let i=0; i<15; i++) {
+            setTimeout(() => {
+                const wrapper = document.createElement('div');
+                wrapper.className = 'g-balloon-wrapper';
+                wrapper.style.left = (Math.random() * 90 + 5) + 'vw';
+                
+                const balloon = document.createElement('div');
+                balloon.className = 'g-balloon';
+                
+                const color = colors[Math.floor(Math.random() * colors.length)];
+                const duration = 6 + Math.random() * 4; // longer duration for smoothness
+                const swayDuration = 2 + Math.random() * 2; // sway speed
+                
+                wrapper.style.animation = `gBalloonFloatUp ${duration}s linear forwards`;
+                balloon.style.animation = `gBalloonSway ${swayDuration}s ease-in-out infinite alternate`;
+                balloon.style.backgroundColor = color;
+                
+                const knot = document.createElement('div');
+                knot.className = 'g-balloon-knot';
+                knot.style.borderBottom = `8px solid ${color}`;
+                
+                const string = document.createElement('div');
+                string.className = 'g-balloon-string';
+                
+                balloon.appendChild(knot);
+                balloon.appendChild(string);
+                wrapper.appendChild(balloon);
+                document.body.appendChild(wrapper);
+                
+                setTimeout(() => wrapper.remove(), duration * 1000);
+            }, Math.random() * 2500);
+        }
+    }
+    
+    // Continuous tiny balloons inside the profile button
+    function spawnTinyBalloon() {
+        const container = document.getElementById('tinyBalloonsContainer');
+        if(!container) return;
+
+        const colors = ['#3B82F6', '#EC4899', '#F59E0B', '#10B981', '#8B5CF6'];
+        const rightPos = 10 + Math.random() * 30; // Between right 10% and 40%
+        const color = colors[Math.floor(Math.random() * colors.length)];
+        const floatDuration = 2.5 + Math.random() * 2; // 2.5 to 4.5s
+        const swayDuration = 1 + Math.random() * 1; // 1 to 2s
+
+        const wrap = document.createElement('div');
+        wrap.className = 't-wrap';
+        wrap.style.right = rightPos + '%';
+        wrap.style.animation = `tFloat ${floatDuration}s linear forwards`;
+
+        const bal = document.createElement('div');
+        bal.className = 't-bal';
+        bal.style.backgroundColor = color;
+        bal.style.animation = `tSway ${swayDuration}s ease-in-out infinite alternate`;
+
+        const knot = document.createElement('div');
+        knot.className = 't-knot';
+        knot.style.borderBottom = `4px solid ${color}`;
+
+        const str = document.createElement('div');
+        str.className = 't-str';
+
+        bal.appendChild(knot);
+        bal.appendChild(str);
+        wrap.appendChild(bal);
+        container.appendChild(wrap);
+
+        // Remove after animation completes
+        setTimeout(() => {
+            if (wrap.parentNode) wrap.remove();
+        }, floatDuration * 1000);
+
+        // Schedule next balloon
+        setTimeout(spawnTinyBalloon, 1500 + Math.random() * 1500);
+    }
+
+    // Launch balloons on load as well
+    document.addEventListener('DOMContentLoaded', () => {
+        if(!sessionStorage.getItem('firstBalloonsLaunched')) {
+            sessionStorage.setItem('firstBalloonsLaunched', 'true');
+            setTimeout(launchBalloons, 500);
+        }
+        
+        // Start tiny balloons (launch two staggered loops to have 1-3 balloons visible)
+        setTimeout(spawnTinyBalloon, 1000);
+        setTimeout(spawnTinyBalloon, 2500);
+    });
+
+    function fireCracker(e) {
+        const btn = e.currentTarget;
+        const rect = btn.getBoundingClientRect();
+        const startX = rect.left + rect.width / 2;
+        const startY = rect.top;
+
+        const colors = ['#A855F7', '#3B82F6', '#EC4899', '#F59E0B', '#10B981', '#34D399', '#F87171'];
+        for(let i = 0; i < 40; i++) {
+            const particle = document.createElement('div');
+            const isCircle = Math.random() > 0.5;
+            
+            particle.style.position = 'fixed';
+            particle.style.left = startX + 'px';
+            particle.style.top = startY + 'px';
+            particle.style.width = isCircle ? '6px' : (6 + Math.random() * 4) + 'px';
+            particle.style.height = isCircle ? '6px' : (8 + Math.random() * 4) + 'px';
+            particle.style.backgroundColor = colors[Math.floor(Math.random() * colors.length)];
+            particle.style.borderRadius = isCircle ? '50%' : '2px';
+            particle.style.pointerEvents = 'none';
+            particle.style.zIndex = '10000';
+            document.body.appendChild(particle);
+
+            const angle = (Math.random() * Math.PI / 1.5) + Math.PI / 6; // 30deg to 150deg (upwards)
+            const velocity = 40 + Math.random() * 70;
+            const tx = Math.cos(angle) * velocity;
+            const ty = -Math.sin(angle) * velocity - 40;
+            const rotation = Math.random() * 360 + 360; 
+
+            particle.animate([
+                { transform: 'translate(0, 0) rotate(0deg)', opacity: 1 },
+                { transform: `translate(${tx}px, ${ty}px) rotate(${rotation}deg)`, opacity: 0 }
+            ], {
+                duration: 1200 + Math.random() * 800,
+                easing: 'cubic-bezier(0, .9, .57, 1)',
+                fill: 'forwards'
+            });
+
+            setTimeout(() => particle.remove(), 2500);
+        }
+    }
+</script>
+@endif
 
 </aside>
