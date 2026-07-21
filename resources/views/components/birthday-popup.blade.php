@@ -31,8 +31,7 @@
          class="fixed inset-0 z-[100] flex items-center justify-center bg-gray-900 bg-opacity-50 backdrop-blur-sm"
          style="display: none;">
          
-        <div @click.away="showBirthdayPopup = false; sessionStorage.setItem('birthdayPopupClosed', 'true')" 
-             class="bg-white rounded-2xl shadow-2xl p-8 max-w-md w-full mx-4 text-center relative overflow-hidden">
+        <div class="bg-white rounded-2xl shadow-2xl p-8 max-w-md w-full mx-4 text-center relative overflow-hidden">
             
             <!-- Confetti background effect (simple css dots) -->
             <div class="absolute inset-0 opacity-20 pointer-events-none" style="background-image: radial-gradient(#60A5FA 2px, transparent 2px), radial-gradient(#3B82F6 2px, transparent 2px); background-size: 30px 30px; background-position: 0 0, 15px 15px;"></div>
