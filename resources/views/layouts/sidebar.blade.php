@@ -202,6 +202,10 @@
                     {{ __('Profil Saya') }}
                 </x-dropdown-link>
 
+                <x-dropdown-link :href="route('profile.change-password')">
+                    {{ __('Ganti Kata Sandi') }}
+                </x-dropdown-link>
+
                 <!-- Tombol Logout -->
                 <form method="POST" action="{{ route('logout') }}">
                     @csrf

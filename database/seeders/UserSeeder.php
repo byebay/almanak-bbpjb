@@ -39,7 +39,7 @@ class UserSeeder extends Seeder
 
         User::create([
             'name' => 'Bayu',
-            'nip' => '200507212020041005',
+            'nip' => '200507222020041005',
             'email' => 'dwikabayu@gmail.com',
             'role' => 'pegawai',
             'password' => Hash::make('password'),
