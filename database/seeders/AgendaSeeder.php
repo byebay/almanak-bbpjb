@@ -18,7 +18,7 @@ class AgendaSeeder extends Seeder
             Agenda::create([
                 'title' => 'Rapat Koordinasi Awal Bulan',
                 'description' => 'Membahas rencana kerja bulan Agustus.',
-                'agenda_date' => now()->startOfMonth()->addDays(5)->toDateString(),
+                'start_date' => now()->startOfMonth()->addDays(5)->toDateString(),
                 'start_time' => '09:00:00',
                 'end_time' => '11:00:00',
                 'status' => 'Terpublikasi',
@@ -29,7 +29,7 @@ class AgendaSeeder extends Seeder
             Agenda::create([
                 'title' => 'Bimbingan Teknis Penulisan',
                 'description' => 'Pelatihan untuk para penulis pemula.',
-                'agenda_date' => now()->startOfMonth()->addDays(10)->toDateString(),
+                'start_date' => now()->startOfMonth()->addDays(10)->toDateString(),
                 'start_time' => '13:00:00',
                 'end_time' => '15:00:00',
                 'status' => 'Terpublikasi',
@@ -40,7 +40,7 @@ class AgendaSeeder extends Seeder
              Agenda::create([
                 'title' => 'Diskusi Kelompok Terpumpun',
                 'description' => 'Diskusi internal KKLP Penerjemahan.',
-                'agenda_date' => now()->startOfMonth()->addDays(12)->toDateString(),
+                'start_date' => now()->startOfMonth()->addDays(12)->toDateString(),
                 'start_time' => '10:00:00',
                 'end_time' => '12:00:00',
                 'status' => 'Terpublikasi',

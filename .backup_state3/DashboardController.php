@@ -206,4 +206,19 @@ class DashboardController extends Controller
 
         return response()->json($events);
     }
+
+    public function exportVisitorStats(Request $request)
+    {
+        $period = $request->query('period', 'daily'); // Default 'daily' jika tidak ada
+        
+        $periodName = 'Harian';
+        if ($period === 'monthly') {
+            $periodName = 'Bulanan';
+        } elseif ($period === 'yearly') {
+            $periodName = 'Tahunan';
+        }
+
+        $fileName = "Statistik_Pengunjung_{$periodName}_BBPJB_" . date('Ymd') . ".xlsx";
+        return Excel::download(new VisitorStatsExport($period), $fileName);
+    }
 }
