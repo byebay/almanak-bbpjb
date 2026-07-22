@@ -42,6 +42,7 @@ Route::middleware('auth')->group(function () {
     Route::get('/dashboard', [DashboardController::class, 'index'])->name('dashboard');
     // Dashboard internal juga butuh data event
     Route::get('/dashboard/events', [DashboardController::class, 'getEvents'])->name('dashboard.events');
+    Route::get('/dashboard/visitor-stats/export', [DashboardController::class, 'exportVisitorStats'])->name('dashboard.visitor.export');
     Route::post('/dashboard/events', [DashboardController::class, 'storeEvent'])->name('dashboard.events.store');
     Route::get('/profile', [ProfileController::class, 'edit'])->name('profile.edit');
     Route::patch('/profile', [ProfileController::class, 'update'])->name('profile.update');

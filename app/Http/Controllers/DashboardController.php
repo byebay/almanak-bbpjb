@@ -206,4 +206,9 @@ class DashboardController extends Controller
 
         return response()->json($events);
     }
+
+    public function exportVisitorStats()
+    {
+        return Excel::download(new VisitorStatsExport, 'Statistik_Pengunjung_BBPJB_'.date('Ymd').'.xlsx');
+    }
 }
