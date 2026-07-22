@@ -43,6 +43,8 @@
             </div>
         </div>
 
+        <x-birthday-popup />
+
         @stack('scripts')
     </body>
 </html>

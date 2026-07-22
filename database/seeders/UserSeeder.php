@@ -37,6 +37,13 @@ class UserSeeder extends Seeder
             'password' => Hash::make('password'),
         ]);
 
+        User::create([
+            'name' => 'Bayu',
+            'nip' => '200507222020041005',
+            'email' => 'dwikabayu@gmail.com',
+            'role' => 'pegawai',
+            'password' => Hash::make('password'),
+        ]);
         // Buat 37 Pegawai biasa menggunakan Factory
         // Total akan ada 40 pengguna di database
         User::factory(37)->create();

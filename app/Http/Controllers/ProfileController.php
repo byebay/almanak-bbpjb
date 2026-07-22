@@ -57,4 +57,34 @@ class ProfileController extends Controller
 
         return Redirect::to('/');
     }
+
+    /**
+     * Display the change password request form.
+     */
+    public function showChangePasswordForm(Request $request): \Illuminate\View\View
+    {
+        return view('profile.change-password');
+    }
+
+    /**
+     * Send password reset link to the specified email address.
+     */
+    public function sendChangePasswordLink(Request $request): \Illuminate\Http\RedirectResponse
+    {
+        $request->validate([
+            'email' => ['required', 'email'],
+        ]);
+
+        $user = $request->user();
+        
+        // Generate password reset token for the authenticated user
+        $token = \Illuminate\Support\Facades\Password::getRepository()->create($user);
+
+        // Send the custom notification to the requested destination email
+        \Illuminate\Support\Facades\Notification::route('mail', $request->email)
+            ->notify(new \App\Notifications\CustomPasswordReset($token, $user->email));
+
+        return back()->with('status', 'Tautan ganti kata sandi telah dikirim ke posel tujuan.');
+    }
 }
+
