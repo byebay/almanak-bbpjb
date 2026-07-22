@@ -43,12 +43,9 @@ Route::middleware('auth')->group(function () {
     // Dashboard internal juga butuh data event
     Route::get('/dashboard/events', [DashboardController::class, 'getEvents'])->name('dashboard.events');
     Route::get('/dashboard/visitor-stats/export', [DashboardController::class, 'exportVisitorStats'])->name('dashboard.visitor.export');
-    Route::post('/dashboard/events', [DashboardController::class, 'storeEvent'])->name('dashboard.events.store');
     Route::get('/profile', [ProfileController::class, 'edit'])->name('profile.edit');
     Route::patch('/profile', [ProfileController::class, 'update'])->name('profile.update');
     Route::delete('/profile', [ProfileController::class, 'destroy'])->name('profile.destroy');
-    Route::get('/profile/change-password', [ProfileController::class, 'showChangePasswordForm'])->name('profile.change-password');
-    Route::post('/profile/change-password', [ProfileController::class, 'sendChangePasswordLink'])->name('profile.change-password.send');
     Route::get('/users/import', [UserImportController::class, 'create'])->name('users.import.create');
     Route::post('/users/import', [UserImportController::class, 'store'])->name('users.import.store');
     Route::get('/admin/manage-users', [UserManagementController::class, 'index'])->name('admin.users.index');
