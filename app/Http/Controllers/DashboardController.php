@@ -90,42 +90,50 @@ class DashboardController extends Controller
             $dailyData[$stat->date] = $stat->total;
         }
 
+        $driver = \Illuminate\Support\Facades\DB::connection()->getDriverName();
+        $monthSelect = $driver === 'sqlite' ? "strftime('%Y-%m', visit_date)" : ($driver === 'pgsql' ? "TO_CHAR(visit_date, 'YYYY-MM')" : "DATE_FORMAT(visit_date, '%Y-%m')");
+
         // 2. Data Bulanan (Tahun Ini)
         $monthlyLabels = [];
         $monthlyData = [];
         for ($i = 1; $i <= 12; $i++) {
-            $month = Carbon::today()->startOfYear()->addMonths($i - 1);
-            $monthlyLabels[] = $month->translatedFormat('M'); // Hanya singkatan bulan
-            $monthlyData[$month->format('Y-m')] = 0;
+            $monthlyLabels[] = Carbon::create()->month($i)->translatedFormat('M'); // Jan, Feb, Mar...
+            $monthlyData[] = 0;
         }
-        $visitorMonthly = Visitor::whereNotNull('visit_date')
+
+        $monthlyStats = Visitor::whereNotNull('visit_date')
             ->where('visit_date', '>=', Carbon::today()->startOfYear()->format('Y-m-d'))
             ->where('visit_date', '<=', Carbon::today()->endOfYear()->format('Y-m-d'))
-            ->select(DB::raw("TO_CHAR(visit_date, 'YYYY-MM') as month"), DB::raw('count(*) as total'))
+            ->select(DB::raw("{$monthSelect} as month"), DB::raw('count(*) as total'))
             ->groupBy('month')
             ->get();
-        foreach ($visitorMonthly as $stat) {
-            if (isset($monthlyData[$stat->month])) {
-                $monthlyData[$stat->month] = $stat->total;
+        foreach ($monthlyStats as $stat) {
+            $monthIndex = (int)substr($stat->month, -2) - 1;
+            if (isset($monthlyData[$monthIndex])) {
+                $monthlyData[$monthIndex] = $stat->total;
             }
         }
+
+        $yearSelect = $driver === 'sqlite' ? "strftime('%Y', visit_date)" : ($driver === 'pgsql' ? "EXTRACT(YEAR FROM visit_date)" : "YEAR(visit_date)");
 
         // 3. Data Tahunan (5 Tahun Terakhir)
         $yearlyLabels = [];
         $yearlyData = [];
+        $currentYear = Carbon::today()->year;
         for ($i = 4; $i >= 0; $i--) {
-            $year = Carbon::today()->subYears($i)->format('Y');
-            $yearlyLabels[] = $year;
-            $yearlyData[$year] = 0;
+            $yearlyLabels[] = (string)($currentYear - $i);
+            $yearlyData[] = 0;
         }
-        $visitorYearly = Visitor::whereNotNull('visit_date')
+
+        $yearlyStats = Visitor::whereNotNull('visit_date')
             ->where('visit_date', '>=', Carbon::today()->subYears(4)->startOfYear()->format('Y-m-d'))
-            ->select(DB::raw("EXTRACT(YEAR FROM visit_date) as year"), DB::raw('count(*) as total'))
+            ->select(DB::raw("{$yearSelect} as year"), DB::raw('count(*) as total'))
             ->groupBy('year')
             ->get();
-        foreach ($visitorYearly as $stat) {
-            if (isset($yearlyData[$stat->year])) {
-                $yearlyData[$stat->year] = $stat->total;
+        foreach ($yearlyStats as $stat) {
+            $yearIndex = array_search($stat->year, $yearlyLabels);
+            if ($yearIndex !== false) {
+                $yearlyData[$yearIndex] = $stat->total;
             }
         }
 

@@ -18,6 +18,10 @@ class VisitorStatsExport implements FromView, ShouldAutoSize
         $stats = collect();
         $title = '';
 
+        $driver = \Illuminate\Support\Facades\DB::connection()->getDriverName();
+        $monthSelect = $driver === 'sqlite' ? "strftime('%Y-%m', visit_date)" : ($driver === 'pgsql' ? "TO_CHAR(visit_date, 'YYYY-MM')" : "DATE_FORMAT(visit_date, '%Y-%m')");
+        $yearSelect = $driver === 'sqlite' ? "strftime('%Y', visit_date)" : ($driver === 'pgsql' ? "EXTRACT(YEAR FROM visit_date)" : "YEAR(visit_date)");
+
         if ($this->period === 'daily') {
             $title = 'Laporan Pengunjung Harian (Bulan Ini)';
             $stats = Visitor::whereNotNull('visit_date')
@@ -32,7 +36,7 @@ class VisitorStatsExport implements FromView, ShouldAutoSize
             $stats = Visitor::whereNotNull('visit_date')
                 ->where('visit_date', '>=', Carbon::today()->startOfYear()->format('Y-m-d'))
                 ->where('visit_date', '<=', Carbon::today()->endOfYear()->format('Y-m-d'))
-                ->select(DB::raw("TO_CHAR(visit_date, 'YYYY-MM') as month"), DB::raw('count(*) as total'))
+                ->select(DB::raw("{$monthSelect} as month"), DB::raw('count(*) as total'))
                 ->groupBy('month')
                 ->orderBy('month', 'asc')
                 ->get();
@@ -40,7 +44,7 @@ class VisitorStatsExport implements FromView, ShouldAutoSize
             $title = 'Laporan Pengunjung Tahunan (5 Tahun Terakhir)';
             $stats = Visitor::whereNotNull('visit_date')
                 ->where('visit_date', '>=', Carbon::today()->subYears(4)->startOfYear()->format('Y-m-d'))
-                ->select(DB::raw("EXTRACT(YEAR FROM visit_date) as year"), DB::raw('count(*) as total'))
+                ->select(DB::raw("{$yearSelect} as year"), DB::raw('count(*) as total'))
                 ->groupBy('year')
                 ->orderBy('year', 'asc')
                 ->get();
