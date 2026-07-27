@@ -43,6 +43,7 @@ Route::get('/wilayah/{kode}', [PublicController::class, 'showWilayah'])->name('p
 
 Route::middleware('auth')->group(function () {
     Route::get('/dashboard', [DashboardController::class, 'index'])->name('dashboard');
+    Route::get('/sebaran-pegawai', [DashboardController::class, 'sebaranPegawai'])->name('sebaran-pegawai');
     // Dashboard internal juga butuh data event
     Route::get('/dashboard/events', [DashboardController::class, 'getEvents'])->name('dashboard.events');
     Route::get('/dashboard/visitor-stats/export', [DashboardController::class, 'exportVisitorStats'])->name('dashboard.visitor.export');

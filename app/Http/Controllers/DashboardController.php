@@ -229,4 +229,9 @@ class DashboardController extends Controller
         $fileName = "Statistik_Pengunjung_{$periodName}_BBPJB_" . date('Ymd') . ".xlsx";
         return Excel::download(new VisitorStatsExport($period), $fileName);
     }
+
+    public function sebaranPegawai()
+    {
+        return view('sebaran-pegawai');
+    }
 }
