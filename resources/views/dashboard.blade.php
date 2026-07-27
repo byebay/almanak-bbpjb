@@ -192,8 +192,10 @@
                             </a>
                         </div>
                     </div>
-                    <div class="relative h-72 w-full">
-                        <canvas id="visitorChart"></canvas>
+                    <div class="relative w-full overflow-x-auto">
+                        <div class="relative h-72" style="min-width: 800px;">
+                            <canvas id="visitorChart"></canvas>
+                        </div>
                     </div>
                 </div>
             </div>
