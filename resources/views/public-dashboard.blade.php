@@ -168,6 +168,15 @@
                     </div>
                 </div>
 
+                <!-- Peta Sebaran Program Jawa Barat -->
+                <div class="bg-white overflow-hidden shadow-sm sm:rounded-lg">
+                    <div class="p-6 text-gray-900">
+                        <h3 class="text-2xl font-bold mb-4">Peta Sebaran Program Jawa Barat</h3>
+                        <p class="text-sm text-gray-600 mb-4">Klik wilayah pada peta untuk melihat detail program dan informasi wilayah.</p>
+                        @include('components.svg.jabar')
+                    </div>
+                </div>
+
                 <!-- Kalender Agenda -->
                 <div class="bg-white overflow-hidden shadow-sm sm:rounded-lg">
                     <div class="p-6 text-gray-900">

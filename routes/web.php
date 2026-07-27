@@ -8,6 +8,8 @@ use App\Http\Controllers\UserImportController;
 use App\Http\Controllers\UserManagementController; 
 use App\Http\Controllers\AttendanceImportController;
 use App\Http\Controllers\AttendanceReportController;
+use App\Http\Controllers\WilayahController;
+use App\Http\Controllers\ProgramController;
 // use App\Http\Controllers\EmployeeWorkController;
 use App\Http\Controllers\LeaveController;
 use App\Http\Controllers\AgendaController;
@@ -29,6 +31,7 @@ Route::get('/', [PublicController::class, 'index'])->middleware(LogVisitor::clas
 
 // 2. Buat route untuk data event kalender yang bisa diakses publik
 Route::get('/public/events', [PublicController::class, 'getEvents'])->name('public.events');
+Route::get('/wilayah/{kode}', [PublicController::class, 'showWilayah'])->name('public.wilayah.show');
 // Route ini tidak memerlukan login
 // Halaman utama untuk link yang dibagikan
 // Route::get('/share/hasil-kerja/{token}/{year}/{month}', [EmployeeWorkController::class, 'showPublic'])->name('hasil-kerja.public.show');
@@ -56,6 +59,9 @@ Route::middleware('auth')->group(function () {
     Route::get('/admin/users/{user}/edit', [UserManagementController::class, 'edit'])->name('admin.users.edit');
     Route::put('/admin/users/{user}', [UserManagementController::class, 'update'])->name('admin.users.update');
     Route::patch('/admin/users/{user}/reset-password', [UserManagementController::class, 'resetPassword'])->name('admin.users.reset_password');
+
+    Route::resource('admin/wilayah', WilayahController::class)->except(['show']);
+    Route::resource('admin/programs', ProgramController::class)->except(['show']);
     Route::get('/attendances/import', [AttendanceImportController::class, 'create'])->name('attendances.import.create');
     Route::post('/attendances/import', [AttendanceImportController::class, 'store'])->name('attendances.import.store');
     Route::get('/reports/attendance', [AttendanceReportController::class, 'index'])->name('reports.attendance.index');

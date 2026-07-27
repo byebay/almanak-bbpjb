@@ -6,6 +6,7 @@ use App\Models\Agenda;
 use App\Models\DailyAttendance;
 use App\Models\LeaveRecord;
 use App\Models\Visitor;
+use App\Models\Wilayah;
 use Illuminate\Http\Request;
 use Illuminate\Support\Carbon;
 
@@ -59,6 +60,23 @@ class PublicController extends Controller
     /**
      * Menyediakan data agenda untuk FullCalendar.
      */
+    public function showWilayah($kode)
+    {
+        $wilayah = Wilayah::with('programs')->where('kode', $kode)->firstOrFail();
+
+        return response()->json([
+            'nama_wilayah' => $wilayah->nama_wilayah,
+            'informasi' => $wilayah->informasi ?? 'Informasi wilayah belum tersedia.',
+            'programs' => $wilayah->programs->map(function ($program) {
+                return [
+                    'nama_program' => $program->nama_program,
+                    'deskripsi' => $program->deskripsi,
+                    'tahun' => $program->tahun,
+                ];
+            }),
+        ]);
+    }
+
     public function getEvents(Request $request)
     {
         $agendas = Agenda::where('status', 'Terpublikasi')->with('room')->get();
