@@ -9,6 +9,7 @@ use App\Models\Visitor;
 use App\Models\Wilayah;
 use Illuminate\Http\Request;
 use Illuminate\Support\Carbon;
+use Illuminate\Support\Facades\DB;
 
 class PublicController extends Controller
 {
@@ -53,8 +54,88 @@ class PublicController extends Controller
         $jumlahTerlambat = $attendanceLogs->where('status', 'Terlambat')->count();
         $pegawaiCuti = $leaveLogs->where('status', 'Cuti')->whereNotNull('user')->pluck('user')->unique('id');
         $pegawaiDinasLuar = $leaveLogs->where('status', 'Dinas Luar')->whereNotNull('user')->pluck('user')->unique('id');
+
+        // --- LOGIKA STATISTIK PENGUNJUNG (Chart) ---
+        $dailyLabels = [];
+        $dailyData = [];
+        $daysInMonth = Carbon::today()->daysInMonth;
+        for ($i = 1; $i <= $daysInMonth; $i++) {
+            $date = Carbon::today()->startOfMonth()->addDays($i - 1);
+            $dailyLabels[] = $i;
+            $dailyData[$date->format('Y-m-d')] = 0;
+        }
+        $visitorDaily = Visitor::whereNotNull('visit_date')
+            ->where('visit_date', '>=', Carbon::today()->startOfMonth()->format('Y-m-d'))
+            ->where('visit_date', '<=', Carbon::today()->endOfMonth()->format('Y-m-d'))
+            ->select(DB::raw('visit_date as date'), DB::raw('count(*) as total'))
+            ->groupBy('visit_date')
+            ->get();
+        foreach ($visitorDaily as $stat) {
+            $dailyData[$stat->date] = $stat->total;
+        }
+
+        $driver = DB::connection()->getDriverName();
+        $monthSelect = $driver === 'sqlite' ? "strftime('%Y-%m', visit_date)" : ($driver === 'pgsql' ? "TO_CHAR(visit_date, 'YYYY-MM')" : "DATE_FORMAT(visit_date, '%Y-%m')");
+
+        $monthlyLabels = [];
+        $monthlyData = [];
+        for ($i = 1; $i <= 12; $i++) {
+            $monthlyLabels[] = Carbon::create()->month($i)->translatedFormat('M');
+            $monthlyData[] = 0;
+        }
+        $monthlyStats = Visitor::whereNotNull('visit_date')
+            ->where('visit_date', '>=', Carbon::today()->startOfYear()->format('Y-m-d'))
+            ->where('visit_date', '<=', Carbon::today()->endOfYear()->format('Y-m-d'))
+            ->select(DB::raw("{$monthSelect} as month"), DB::raw('count(*) as total'))
+            ->groupBy('month')
+            ->get();
+        foreach ($monthlyStats as $stat) {
+            $monthIndex = (int)substr($stat->month, -2) - 1;
+            if (isset($monthlyData[$monthIndex])) {
+                $monthlyData[$monthIndex] = $stat->total;
+            }
+        }
+
+        $yearSelect = $driver === 'sqlite' ? "strftime('%Y', visit_date)" : ($driver === 'pgsql' ? "EXTRACT(YEAR FROM visit_date)" : "YEAR(visit_date)");
+
+        $yearlyLabels = [];
+        $yearlyData = [];
+        $currentYear = Carbon::today()->year;
+        for ($i = 4; $i >= 0; $i--) {
+            $yearlyLabels[] = (string)($currentYear - $i);
+            $yearlyData[] = 0;
+        }
+        $yearlyStats = Visitor::whereNotNull('visit_date')
+            ->where('visit_date', '>=', Carbon::today()->subYears(4)->startOfYear()->format('Y-m-d'))
+            ->select(DB::raw("{$yearSelect} as year"), DB::raw('count(*) as total'))
+            ->groupBy('year')
+            ->get();
+        foreach ($yearlyStats as $stat) {
+            $yearIndex = array_search($stat->year, $yearlyLabels);
+            if ($yearIndex !== false) {
+                $yearlyData[$yearIndex] = $stat->total;
+            }
+        }
+
+        $chartDataGrouped = [
+            'daily' => [
+                'labels' => $dailyLabels,
+                'data' => array_values($dailyData),
+                'subtitle' => 'Periode: ' . Carbon::today()->translatedFormat('F Y')
+            ],
+            'monthly' => [
+                'labels' => $monthlyLabels,
+                'data' => array_values($monthlyData),
+                'subtitle' => 'Periode: Tahun ' . Carbon::today()->translatedFormat('Y')
+            ],
+            'yearly' => [
+                'labels' => $yearlyLabels,
+                'data' => array_values($yearlyData),
+                'subtitle' => 'Periode: ' . Carbon::today()->subYears(4)->format('Y') . ' - ' . Carbon::today()->format('Y')
+            ],
+        ];
         
-        return view('public-dashboard', compact('visitorCount', 'pegawaiPalingAwal', 'jumlahHadir', 'jumlahTerlambat', 'pegawaiCuti', 'pegawaiDinasLuar'));
+        return view('public-dashboard', compact('visitorCount', 'pegawaiPalingAwal', 'jumlahHadir', 'jumlahTerlambat', 'pegawaiCuti', 'pegawaiDinasLuar', 'chartDataGrouped'));
     }
 
     /**

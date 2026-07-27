@@ -178,10 +178,32 @@
                 </div>
 
                 <!-- Kalender Agenda -->
-                <div class="bg-white overflow-hidden shadow-sm sm:rounded-lg">
+                <div class="bg-white overflow-hidden shadow-sm sm:rounded-lg mb-6">
                     <div class="p-6 text-gray-900">
                         <h3 class="text-2xl font-bold mb-4">Kalender Agenda BBPJB</h3>
                         <div id='calendar'></div>
+                    </div>
+                </div>
+
+                <!-- Statistik Pengunjung dengan Grafik (Publik) -->
+                <div class="bg-white overflow-hidden shadow-sm sm:rounded-lg">
+                    <div class="p-6 text-gray-900">
+                        <div class="flex flex-col sm:flex-row justify-between items-start sm:items-center mb-6 gap-4">
+                            <div>
+                                <h3 class="text-2xl font-bold">Statistik Pengunjung</h3>
+                                <p id="chartSubtitleText" class="text-sm text-gray-500 mt-1"></p>
+                            </div>
+                            <div class="flex flex-col sm:flex-row items-start sm:items-center gap-3 w-full sm:w-auto">
+                                <select id="chartPeriodFilter" class="border-gray-300 focus:border-blue-500 focus:ring-blue-500 rounded-md shadow-sm text-sm w-full sm:w-auto">
+                                    <option value="daily">Harian (Bulan Ini)</option>
+                                    <option value="monthly">Bulanan (Tahun Ini)</option>
+                                    <option value="yearly">Tahunan (5 Tahun Terakhir)</option>
+                                </select>
+                            </div>
+                        </div>
+                        <div class="relative h-72 w-full">
+                            <canvas id="visitorChart"></canvas>
+                        </div>
                     </div>
                 </div>
 
@@ -247,9 +269,10 @@
         </div>
     </div>
     
-    {{-- JavaScript untuk Swiper dan FullCalendar --}}
+    {{-- JavaScript untuk Swiper, FullCalendar, dan Chart.js --}}
     <script src="https://cdn.jsdelivr.net/npm/swiper@11/swiper-bundle.min.js"></script>
     <script src='https://cdn.jsdelivr.net/npm/fullcalendar@6.1.15/index.global.min.js'></script>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
     <script>
         document.addEventListener('DOMContentLoaded', function() {
             // Inisialisasi Swiper Slider
@@ -354,6 +377,66 @@
             });
             calendar.render();
             window.closeModal = function() { modal.classList.add('hidden'); }
+
+            // === Inisialisasi Chart.js Statistik Pengunjung ===
+            const ctx = document.getElementById('visitorChart').getContext('2d');
+            const chartDataGrouped = @json($chartDataGrouped);
+            
+            // Buat grafik awal (Daily)
+            let visitorChart = new Chart(ctx, {
+                type: 'bar',
+                data: {
+                    labels: chartDataGrouped.daily.labels,
+                    datasets: [{
+                        label: 'Jumlah Pengunjung',
+                        data: chartDataGrouped.daily.data,
+                        backgroundColor: 'rgba(59, 130, 246, 0.8)',
+                        borderColor: 'rgb(37, 99, 235)',
+                        borderWidth: 1,
+                        borderRadius: 4,
+                        barPercentage: 0.7 
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    scales: {
+                        x: { grid: { display: false } },
+                        y: {
+                            beginAtZero: true,
+                            ticks: { precision: 0 },
+                            grid: { display: false }
+                        }
+                    },
+                    plugins: {
+                        legend: { display: false },
+                        tooltip: {
+                            callbacks: {
+                                label: function(context) {
+                                    return context.parsed.y + ' Pengunjung';
+                                }
+                            }
+                        }
+                    }
+                }
+            });
+
+            // Set subtitle awal
+            document.getElementById('chartSubtitleText').textContent = chartDataGrouped.daily.subtitle;
+
+            // Logika ganti data saat Dropdown dipilih
+            document.getElementById('chartPeriodFilter').addEventListener('change', function(e) {
+                const period = e.target.value; 
+                const newData = chartDataGrouped[period];
+                
+                // Animasi pertukaran data yang mulus
+                visitorChart.data.labels = newData.labels;
+                visitorChart.data.datasets[0].data = newData.data;
+                visitorChart.update();
+
+                // Update subtitle
+                document.getElementById('chartSubtitleText').textContent = newData.subtitle;
+            });
         });
     </script>
 </body>
