@@ -18,6 +18,7 @@ class Program extends Model
         'status',
         'tanggal_mulai',
         'tanggal_selesai',
+        'file_path',
         'created_by',
     ];
 
