@@ -130,11 +130,26 @@ document.addEventListener('DOMContentLoaded', function () {
 
                 infoNama.textContent = data.nama_wilayah;
                 
-                let html = `<p class="mb-4 text-gray-600">${data.informasi}</p>`;
+                let html = data.informasi ? `<p class="mb-4 text-gray-600">${data.informasi}</p>` : '';
                 if (data.programs && data.programs.length > 0) {
                     html += `<h4 class="font-bold mb-2 text-gray-800">Daftar Program:</h4><ul class="space-y-3 max-h-80 overflow-y-auto pr-2">`;
                     data.programs.forEach(p => {
-                        let tgl = p.tahun || '-';
+                        const formatTanggal = (value, options) => new Intl.DateTimeFormat('id-ID', options).format(new Date(`${value}T00:00:00`));
+                        let tanggal = '-';
+                        if (p.tanggal_mulai) {
+                            const mulai = new Date(`${p.tanggal_mulai}T00:00:00`);
+                            const selesai = p.tanggal_selesai ? new Date(`${p.tanggal_selesai}T00:00:00`) : null;
+
+                            if (!selesai || mulai.getTime() === selesai.getTime()) {
+                                tanggal = formatTanggal(p.tanggal_mulai, { day: 'numeric', month: 'long', year: 'numeric' });
+                            } else if (mulai.getFullYear() === selesai.getFullYear() && mulai.getMonth() === selesai.getMonth()) {
+                                tanggal = `${mulai.getDate()} - ${formatTanggal(p.tanggal_selesai, { day: 'numeric', month: 'long', year: 'numeric' })}`;
+                            } else if (mulai.getFullYear() === selesai.getFullYear()) {
+                                tanggal = `${formatTanggal(p.tanggal_mulai, { day: 'numeric', month: 'long' })} - ${formatTanggal(p.tanggal_selesai, { day: 'numeric', month: 'long', year: 'numeric' })}`;
+                            } else {
+                                tanggal = `${formatTanggal(p.tanggal_mulai, { day: 'numeric', month: 'long', year: 'numeric' })} - ${formatTanggal(p.tanggal_selesai, { day: 'numeric', month: 'long', year: 'numeric' })}`;
+                            }
+                        }
                         
                         let status = p.status || 'direncanakan';
                         let statusColor = status === 'selesai' ? 'text-green-600' : (status === 'berjalan' ? 'text-blue-600' : 'text-orange-600');
@@ -152,7 +167,7 @@ document.addEventListener('DOMContentLoaded', function () {
 
                         html += `<li class="p-3 border border-gray-200 bg-gray-50 rounded-md shadow-sm">
                             <div class="font-semibold text-gray-800 text-base">${p.nama_program}</div>
-                            <div class="text-xs text-gray-500 mb-2">Status: <span class="capitalize font-medium ${statusColor}">${status}</span> | Tahun: ${tgl}</div>
+                            <div class="text-xs text-gray-500 mb-2">Status: <span class="capitalize font-medium ${statusColor}">${status}</span> | Tanggal: ${tanggal}</div>
                             <div class="text-sm text-gray-700">${p.deskripsi || ''}</div>
                             ${fileHtml}
                         </li>`;

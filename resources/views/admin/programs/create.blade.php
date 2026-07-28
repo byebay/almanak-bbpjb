@@ -30,6 +30,12 @@
                         </div>
 
                         <div>
+                            <x-input-label for="deskripsi" :value="__('Deskripsi Program')" />
+                            <textarea id="deskripsi" name="deskripsi" class="mt-1 block w-full border-gray-300 focus:border-indigo-500 focus:ring-indigo-500 rounded-md shadow-sm" rows="4">{{ old('deskripsi') }}</textarea>
+                            <x-input-error :messages="$errors->get('deskripsi')" class="mt-2" />
+                        </div>
+
+                        <div>
                             <x-input-label for="status" :value="__('Status Program')" />
                             <select id="status" name="status" class="mt-1 block w-full border-gray-300 rounded-md shadow-sm focus:border-indigo-500 focus:ring-indigo-500">
                                 <option value="direncanakan" {{ old('status') == 'direncanakan' ? 'selected' : '' }}>Direncanakan</option>
@@ -39,16 +45,17 @@
                             <x-input-error :messages="$errors->get('status')" class="mt-2" />
                         </div>
 
-                        <div>
-                            <x-input-label for="tanggal_mulai" :value="__('Tanggal')" />
-                            <x-text-input id="tanggal_mulai" name="tanggal_mulai" type="date" class="mt-1 block w-full" :value="old('tanggal_mulai')" />
-                            <x-input-error :messages="$errors->get('tanggal_mulai')" class="mt-2" />
-                        </div>
-
-                        <div>
-                            <x-input-label for="deskripsi" :value="__('Deskripsi Program')" />
-                            <textarea id="deskripsi" name="deskripsi" class="mt-1 block w-full border-gray-300 focus:border-indigo-500 focus:ring-indigo-500 rounded-md shadow-sm" rows="4">{{ old('deskripsi') }}</textarea>
-                            <x-input-error :messages="$errors->get('deskripsi')" class="mt-2" />
+                        <div class="grid grid-cols-1 gap-6 md:grid-cols-2">
+                            <div>
+                                <x-input-label for="tanggal_mulai" :value="__('Tanggal Mulai')" />
+                                <x-text-input id="tanggal_mulai" name="tanggal_mulai" type="date" class="mt-1 block w-full" :value="old('tanggal_mulai')" />
+                                <x-input-error :messages="$errors->get('tanggal_mulai')" class="mt-2" />
+                            </div>
+                            <div>
+                                <x-input-label for="tanggal_selesai" :value="__('Tanggal Selesai')" />
+                                <x-text-input id="tanggal_selesai" name="tanggal_selesai" type="date" class="mt-1 block w-full" :value="old('tanggal_selesai')" />
+                                <x-input-error :messages="$errors->get('tanggal_selesai')" class="mt-2" />
+                            </div>
                         </div>
 
                         <div class="flex justify-end gap-3">

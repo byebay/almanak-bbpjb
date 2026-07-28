@@ -38,7 +38,8 @@
                                     <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">Wilayah</th>
                                     <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">Deskripsi</th>
                                     <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">Status</th>
-                                    <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">Tanggal</th>
+                                    <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">Tanggal Mulai</th>
+                                    <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">Tanggal Selesai</th>
                                     <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">File</th>
                                     <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">Pembuat</th>
                                     <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">Aksi</th>
@@ -63,7 +64,10 @@
                                             </span>
                                         </td>
                                         <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-900">
-                                            {{ $program->tanggal_mulai ? \Carbon\Carbon::parse($program->tanggal_mulai)->locale('id')->translatedFormat('d F Y') : '-' }}
+                                            {{ $program->tanggal_mulai ? \Carbon\Carbon::parse($program->tanggal_mulai)->format('d/m/Y') : '-' }}
+                                        </td>
+                                        <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-900">
+                                            {{ $program->tanggal_selesai ? \Carbon\Carbon::parse($program->tanggal_selesai)->format('d/m/Y') : '-' }}
                                         </td>
                                         <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-900">
                                             @if($program->file_path)
@@ -138,9 +142,15 @@
                 </div>
 
                 <div>
-                    <x-input-label for="tanggal_mulai" :value="__('Tanggal')" />
+                    <x-input-label for="tanggal_mulai" :value="__('Tanggal Mulai')" />
                     <x-text-input id="tanggal_mulai" name="tanggal_mulai" type="date" class="mt-1 block w-full" :value="old('tanggal_mulai')" />
                     <x-input-error :messages="$errors->get('tanggal_mulai')" class="mt-2" />
+                </div>
+
+                <div>
+                    <x-input-label for="tanggal_selesai" :value="__('Tanggal Selesai')" />
+                    <x-text-input id="tanggal_selesai" name="tanggal_selesai" type="date" class="mt-1 block w-full" :value="old('tanggal_selesai')" />
+                    <x-input-error :messages="$errors->get('tanggal_selesai')" class="mt-2" />
                 </div>
 
                 <div>
@@ -208,9 +218,15 @@
                     </div>
 
                     <div>
-                        <x-input-label for="tanggal_mulai_{{ $program->id }}" :value="__('Tanggal')" />
+                        <x-input-label for="tanggal_mulai_{{ $program->id }}" :value="__('Tanggal Mulai')" />
                         <x-text-input id="tanggal_mulai_{{ $program->id }}" name="tanggal_mulai" type="date" class="mt-1 block w-full" :value="old('tanggal_mulai', $program->tanggal_mulai)" />
                         <x-input-error :messages="$errors->get('tanggal_mulai')" class="mt-2" />
+                    </div>
+
+                    <div>
+                        <x-input-label for="tanggal_selesai_{{ $program->id }}" :value="__('Tanggal Selesai')" />
+                        <x-text-input id="tanggal_selesai_{{ $program->id }}" name="tanggal_selesai" type="date" class="mt-1 block w-full" :value="old('tanggal_selesai', $program->tanggal_selesai)" />
+                        <x-input-error :messages="$errors->get('tanggal_selesai')" class="mt-2" />
                     </div>
 
                     <div>

@@ -30,6 +30,7 @@ class ProgramController extends Controller
             'wilayah_id' => 'nullable|exists:wilayah,id',
             'deskripsi' => 'nullable|string',
             'tanggal_mulai' => 'nullable|date',
+            'tanggal_selesai' => 'nullable|date|after_or_equal:tanggal_mulai',
             'status' => 'required|in:direncanakan,berjalan,selesai',
             'file_path' => 'nullable|file|mimes:pdf,docx,jpg,jpeg,png,webp|max:5120',
         ]);
@@ -60,6 +61,7 @@ class ProgramController extends Controller
             'wilayah_id' => 'nullable|exists:wilayah,id',
             'deskripsi' => 'nullable|string',
             'tanggal_mulai' => 'nullable|date',
+            'tanggal_selesai' => 'nullable|date|after_or_equal:tanggal_mulai',
             'status' => 'required|in:direncanakan,berjalan,selesai',
             'file_path' => 'nullable|file|mimes:pdf,docx,jpg,jpeg,png,webp|max:5120',
         ]);
