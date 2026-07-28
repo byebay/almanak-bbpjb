@@ -22,11 +22,21 @@
                             <x-input-label for="wilayah_id" :value="__('Wilayah')" />
                             <select id="wilayah_id" name="wilayah_id" class="mt-1 block w-full border-gray-300 rounded-md shadow-sm focus:border-indigo-500 focus:ring-indigo-500">
                                 <option value="">Pilih Wilayah</option>
-                                @foreach ($wilayahs as $wilayah)
-                                    <option value="{{ $wilayah->id }}" {{ old('wilayah_id') == $wilayah->id ? 'selected' : '' }}>{{ $wilayah->nama_wilayah }}</option>
+                                @foreach ($wilayahOptions as $id => $nama)
+                                    <option value="{{ $id }}" {{ old('wilayah_id') == $id ? 'selected' : '' }}>{{ $nama }}</option>
                                 @endforeach
                             </select>
                             <x-input-error :messages="$errors->get('wilayah_id')" class="mt-2" />
+                        </div>
+
+                        <div>
+                            <x-input-label for="status" :value="__('Status Program')" />
+                            <select id="status" name="status" class="mt-1 block w-full border-gray-300 rounded-md shadow-sm focus:border-indigo-500 focus:ring-indigo-500">
+                                <option value="direncanakan" {{ old('status') == 'direncanakan' ? 'selected' : '' }}>Direncanakan</option>
+                                <option value="berjalan" {{ old('status') == 'berjalan' ? 'selected' : '' }}>Berjalan</option>
+                                <option value="selesai" {{ old('status') == 'selesai' ? 'selected' : '' }}>Selesai</option>
+                            </select>
+                            <x-input-error :messages="$errors->get('status')" class="mt-2" />
                         </div>
 
                         <div>

@@ -147,12 +147,15 @@ class PublicController extends Controller
 
         return response()->json([
             'nama_wilayah' => $wilayah->nama_wilayah,
-            'informasi' => $wilayah->informasi ?? 'Informasi wilayah belum tersedia.',
+            'informasi' => $wilayah->informasi ?? 'Belum ada informasi umum untuk wilayah ini.',
             'programs' => $wilayah->programs->map(function ($program) {
                 return [
                     'nama_program' => $program->nama_program,
                     'deskripsi' => $program->deskripsi,
                     'tahun' => $program->tahun,
+                    'status' => $program->status,
+                    'tanggal_mulai' => $program->tanggal_mulai,
+                    'tanggal_selesai' => $program->tanggal_selesai,
                 ];
             }),
         ]);

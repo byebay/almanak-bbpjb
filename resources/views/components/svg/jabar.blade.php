@@ -123,11 +123,32 @@ document.addEventListener('DOMContentLoaded', function () {
                 const data = await res.json();
 
                 infoNama.textContent = data.nama_wilayah;
-                infoDetail.textContent = data.informasi;
+                
+                let html = `<p class="mb-4 text-gray-600">${data.informasi}</p>`;
+                if (data.programs && data.programs.length > 0) {
+                    html += `<h4 class="font-bold mb-2 text-gray-800">Daftar Program:</h4><ul class="space-y-3 max-h-80 overflow-y-auto pr-2">`;
+                    data.programs.forEach(p => {
+                        let tgl = p.tahun || '-';
+                        
+                        let status = p.status || 'direncanakan';
+                        let statusColor = status === 'selesai' ? 'text-green-600' : (status === 'berjalan' ? 'text-blue-600' : 'text-orange-600');
+                        
+                        html += `<li class="p-3 border border-gray-200 bg-gray-50 rounded-md shadow-sm">
+                            <div class="font-semibold text-gray-800 text-base">${p.nama_program}</div>
+                            <div class="text-xs text-gray-500 mb-2">Status: <span class="capitalize font-medium ${statusColor}">${status}</span> | Tahun: ${tgl}</div>
+                            <div class="text-sm text-gray-700">${p.deskripsi || ''}</div>
+                        </li>`;
+                    });
+                    html += `</ul>`;
+                } else {
+                    html += `<div class="p-3 bg-yellow-50 text-yellow-800 border border-yellow-200 rounded-md text-sm">Belum ada program terdaftar di wilayah ini.</div>`;
+                }
+                
+                infoDetail.innerHTML = html;
                 infoPanel.style.display = 'block';
             } catch (err) {
                 infoNama.textContent = this.getAttribute('xlink:title') || kode;
-                infoDetail.textContent = 'Informasi belum tersedia untuk wilayah ini.';
+                infoDetail.innerHTML = '<p class="text-gray-500">Informasi belum tersedia untuk wilayah ini.</p>';
                 infoPanel.style.display = 'block';
             }
         });

@@ -87,6 +87,9 @@
                 <svg class="h-5 w-5 mr-3" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 7h18M3 12h18M3 17h18"/></svg>
                 {{ __('Manajemen Wilayah') }}
             </x-nav-link>
+        @endif
+
+        @if(Auth::check())
             <x-nav-link :href="route('admin.programs.index')" :active="request()->routeIs('admin.programs.*')" class="w-full flex items-center p-2 rounded-md text-gray-600 hover:bg-gray-100 hover:text-gray-900">
                 <svg class="h-5 w-5 mr-3" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M20 13V6a2 2 0 00-2-2H6a2 2 0 00-2 2v7M8 17h8m-4-4v4"/></svg>
                 {{ __('Manajemen Program') }}

@@ -92,18 +92,13 @@
                     <img src="{{ asset('image/logo.jpg') }}" alt="Logo Balai Bahasa" class="block h-12 w-auto">
                     <span class="font-semibold text-xl text-gray-800 ml-3">Almanak</span>
                 </div>
-                <div class="hidden sm:flex items-center text-sm text-gray-500 order-last sm:order-none w-full sm:w-auto justify-center sm:justify-start">
-                        <span>Pengunjung Bulan Ini: <strong class="text-gray-800">{{ $visitorCount }}</strong></span>
-                    </div>
+
                 <!-- Tombol Login -->
                 <a href="{{ route('login') }}" class="inline-flex items-center px-4 py-2 bg-blue-600 border border-transparent rounded-md font-semibold text-xs text-white uppercase tracking-widest hover:bg-blue-700">
                     Login Pegawai
                 </a>
             </div>
-            {{-- Strip khusus mobile --}}
-            <div class="sm:hidden text-center text-sm text-gray-500 pb-3 -mt-1">
-                Pengunjung Bulan Ini: <strong class="text-gray-700">{{ $visitorCount }}</strong>
-            </div>
+
         </header>
 
         <!-- Konten Utama (Slider & Kalender) -->
@@ -169,7 +164,7 @@
                 </div>
 
                 <!-- Peta Sebaran Program Jawa Barat -->
-                <div class="bg-white overflow-hidden shadow-sm sm:rounded-lg">
+                <div class="bg-white overflow-hidden shadow-sm sm:rounded-lg mb-6">
                     <div class="p-6 text-gray-900">
                         <h3 class="text-2xl font-bold mb-4">Peta Sebaran Program Jawa Barat</h3>
                         <p class="text-sm text-gray-600 mb-4">Klik wilayah pada peta untuk melihat detail program dan informasi wilayah.</p>
