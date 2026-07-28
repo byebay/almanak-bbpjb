@@ -232,6 +232,7 @@ class DashboardController extends Controller
 
     public function sebaranPegawai()
     {
-        return view('sebaran-pegawai');
+        // Halaman peta kini menjadi satu dengan pengelolaan program.
+        return redirect()->route('admin.programs.index');
     }
 }

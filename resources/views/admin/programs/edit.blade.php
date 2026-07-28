@@ -41,9 +41,9 @@
                         </div>
 
                         <div>
-                            <x-input-label for="tahun" :value="__('Tahun')" />
-                            <x-text-input id="tahun" name="tahun" type="text" class="mt-1 block w-full" :value="old('tahun', $program->tahun)" />
-                            <x-input-error :messages="$errors->get('tahun')" class="mt-2" />
+                            <x-input-label for="tanggal_mulai" :value="__('Tanggal')" />
+                            <x-text-input id="tanggal_mulai" name="tanggal_mulai" type="date" class="mt-1 block w-full" :value="old('tanggal_mulai', $program->tanggal_mulai)" />
+                            <x-input-error :messages="$errors->get('tanggal_mulai')" class="mt-2" />
                         </div>
 
                         <div>
@@ -52,9 +52,13 @@
                             <x-input-error :messages="$errors->get('deskripsi')" class="mt-2" />
                         </div>
 
-                        <div class="flex items-center gap-4">
-                            <x-primary-button>{{ __('Perbarui') }}</x-primary-button>
-                            <a href="{{ route('admin.programs.index') }}" class="text-gray-600 hover:underline">{{ __('Batal') }}</a>
+                        <div class="flex justify-end gap-3">
+                            <a href="{{ route('admin.programs.index') }}" class="inline-flex justify-center rounded-md border border-gray-300 shadow-sm px-4 py-2 bg-white text-base font-medium text-gray-700 hover:bg-gray-50">
+                                {{ __('Batal') }}
+                            </a>
+                            <button type="submit" class="inline-flex justify-center rounded-md border border-transparent shadow-sm px-4 py-2 bg-blue-600 text-base font-medium text-white hover:bg-blue-700">
+                                {{ __('Perbarui') }}
+                            </button>
                         </div>
                     </form>
                 </div>

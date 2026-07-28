@@ -27,7 +27,7 @@ class ProgramController extends Controller
             'nama_program' => 'required|string|max:255',
             'wilayah_id' => 'nullable|exists:wilayah,id',
             'deskripsi' => 'nullable|string',
-            'tahun' => 'nullable|digits:4',
+            'tanggal_mulai' => 'nullable|date',
             'status' => 'required|in:direncanakan,berjalan,selesai',
         ]);
 
@@ -50,7 +50,7 @@ class ProgramController extends Controller
             'nama_program' => 'required|string|max:255',
             'wilayah_id' => 'nullable|exists:wilayah,id',
             'deskripsi' => 'nullable|string',
-            'tahun' => 'nullable|digits:4',
+            'tanggal_mulai' => 'nullable|date',
             'status' => 'required|in:direncanakan,berjalan,selesai',
         ]);
         $program->update($validated);
