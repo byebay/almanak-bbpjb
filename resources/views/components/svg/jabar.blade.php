@@ -82,6 +82,33 @@
             </div>
         </div>
     </x-modal>
+
+    <x-modal name="program-detail" :show="false" maxWidth="2xl">
+        <div class="p-6">
+            <h2 class="text-2xl font-bold text-gray-900 mb-4" id="pd-title"></h2>
+            <div class="space-y-4">
+                <div>
+                    <span class="font-medium text-gray-500 block text-sm">Status</span>
+                    <span id="pd-status" class="inline-flex rounded-full px-2.5 py-1 text-xs font-medium"></span>
+                </div>
+                <div>
+                    <span class="font-medium text-gray-500 block text-sm">Tanggal Pelaksanaan</span>
+                    <span id="pd-tanggal" class="text-gray-900"></span>
+                </div>
+                <div>
+                    <span class="font-medium text-gray-500 block text-sm">Deskripsi</span>
+                    <div id="pd-deskripsi" class="text-gray-900 whitespace-pre-line mt-1"></div>
+                </div>
+                <div id="pd-file-container" class="hidden mt-4 pt-4 border-t border-gray-200">
+                    <span class="font-medium text-gray-500 block text-sm mb-2">File Dukung</span>
+                    <div id="pd-file-content"></div>
+                </div>
+            </div>
+            <div class="mt-6 flex justify-end">
+                <button type="button" x-on:click="$dispatch('close-modal', 'program-detail')" class="px-4 py-2 bg-gray-200 text-gray-800 rounded-md hover:bg-gray-300 font-medium">Tutup</button>
+            </div>
+        </div>
+    </x-modal>
 </div>
 
 <style>
@@ -169,6 +196,7 @@ document.addEventListener('DOMContentLoaded', function () {
 
                 infoNama.textContent = data.nama_wilayah;
                 
+                window.regionProgramsData = data.programs || [];
                 let html = data.informasi ? `<p class="mb-4 text-gray-600">${data.informasi}</p>` : '';
                 if (data.programs && data.programs.length > 0) {
                     html += `<h4 class="font-bold mb-2 text-gray-800">Daftar Program:</h4><ul class="space-y-3 max-h-[550px] overflow-y-auto pr-2">`;
@@ -200,9 +228,9 @@ document.addEventListener('DOMContentLoaded', function () {
                                     <div class="text-xs text-gray-500 mt-1">Status: <span class="capitalize font-medium ${statusColor}">${status}</span> | Tanggal: ${tanggal}</div>
                                 </div>
                                 <div class="flex-shrink-0">
-                                    <a href="/programs/${p.id}" class="inline-flex items-center px-3 py-1.5 bg-blue-600 hover:bg-blue-700 text-white text-xs font-semibold rounded-md transition shadow-sm">
+                                    <button type="button" onclick="showProgramDetailModal(${p.id}, '${tanggal}', '${status}')" class="inline-flex items-center px-3 py-1.5 bg-blue-600 hover:bg-blue-700 text-white text-xs font-semibold rounded-md transition shadow-sm">
                                         Detail
-                                    </a>
+                                    </button>
                                 </div>
                             </div>
                         </li>`;
@@ -222,4 +250,46 @@ document.addEventListener('DOMContentLoaded', function () {
         });
     });
 });
+
+window.showProgramDetailModal = function(id, tanggal, status) {
+    const p = (window.regionProgramsData || []).find(prog => prog.id == id);
+    if (!p) return;
+
+    document.getElementById('pd-title').textContent = p.nama_program || '-';
+    
+    const statusEl = document.getElementById('pd-status');
+    statusEl.textContent = status.charAt(0).toUpperCase() + status.slice(1);
+    statusEl.className = 'inline-flex rounded-full px-2.5 py-1 text-xs font-medium ' + 
+        (status === 'selesai' ? 'bg-green-100 text-green-800' : 
+        (status === 'berjalan' ? 'bg-blue-100 text-blue-800' : 'bg-yellow-100 text-yellow-800'));
+    
+    document.getElementById('pd-tanggal').textContent = tanggal || '-';
+    document.getElementById('pd-deskripsi').textContent = p.deskripsi || '-';
+    
+    const fileContainer = document.getElementById('pd-file-container');
+    const fileContent = document.getElementById('pd-file-content');
+    
+    if (p.file_path) {
+        fileContainer.classList.remove('hidden');
+        const ext = p.file_path.split('.').pop().toLowerCase();
+        const url = `/storage/${p.file_path}`;
+        const isImage = ['jpg', 'jpeg', 'png', 'webp'].includes(ext);
+        
+        if (isImage) {
+            fileContent.innerHTML = `<img src="${url}" alt="File dukung" class="max-w-full md:max-w-lg rounded-md border border-gray-200">`;
+        } else {
+            fileContent.innerHTML = `<a href="${url}" target="_blank" download class="inline-flex items-center px-4 py-2 bg-blue-50 text-blue-700 rounded-md hover:bg-blue-100 text-sm font-medium">
+                <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 mr-2" viewBox="0 0 20 20" fill="currentColor">
+                    <path fill-rule="evenodd" d="M3 17a1 1 0 011-1h12a1 1 0 110 2H4a1 1 0 01-1-1zm3.293-7.707a1 1 0 011.414 0L9 10.586V3a1 1 0 112 0v7.586l1.293-1.293a1 1 0 111.414 1.414l-3 3a1 1 0 01-1.414 0l-3-3a1 1 0 010-1.414z" clip-rule="evenodd" />
+                </svg>
+                Unduh File (${ext.toUpperCase()})
+            </a>`;
+        }
+    } else {
+        fileContainer.classList.add('hidden');
+        fileContent.innerHTML = '';
+    }
+    
+    window.dispatchEvent(new CustomEvent('open-modal', { detail: 'program-detail' }));
+};
 </script>
