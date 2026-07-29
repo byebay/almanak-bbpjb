@@ -10,11 +10,26 @@ use Illuminate\Support\Facades\Storage;
 
 class ProgramController extends Controller
 {
-    public function index()
+    public function index(Request $request)
     {
-        $programs = Program::with(['wilayah', 'creator'])->orderBy('nama_program')->paginate(10);
+        $search = $request->input('search');
+
+        $programs = Program::with(['wilayah', 'creator'])
+            ->when($search, function ($query, $search) {
+                $query->where(function ($q) use ($search) {
+                    $q->where('nama_program', 'like', '%' . $search . '%')
+                        ->orWhereHas('wilayah', function ($wilayahQuery) use ($search) {
+                            $wilayahQuery->where('nama_wilayah', 'like', '%' . $search . '%');
+                        });
+                });
+            })
+            ->orderBy('nama_program')
+            ->paginate(10)
+            ->withQueryString()
+            ->fragment('daftar-program');
+
         $wilayahOptions = Wilayah::orderBy('nama_wilayah')->pluck('nama_wilayah', 'id');
-        return view('admin.programs.index', compact('programs', 'wilayahOptions'));
+        return view('admin.programs.index', compact('programs', 'wilayahOptions', 'search'));
     }
 
     public function create()
@@ -46,6 +61,12 @@ class ProgramController extends Controller
         Program::create($validated);
 
         return redirect()->route('admin.programs.index')->with('success', 'Program baru berhasil ditambahkan.');
+    }
+
+    public function show(Program $program)
+    {
+        $program->load(['wilayah', 'creator']);
+        return view('admin.programs.show', compact('program'));
     }
 
     public function edit(Program $program)

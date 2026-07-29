@@ -9,7 +9,7 @@
         <div class="max-w-7xl mx-auto sm:px-6 lg:px-8">
             <div class="bg-white overflow-hidden shadow-sm sm:rounded-lg">
                 <div class="p-6 bg-white border-b border-gray-200">
-                    <form method="POST" action="{{ route('admin.programs.update', $program) }}" class="space-y-6">
+                    <form method="POST" action="{{ route('admin.programs.update', $program) }}" class="space-y-6" enctype="multipart/form-data">
                         @csrf
                         @method('PUT')
 
@@ -59,8 +59,18 @@
                             <x-input-error :messages="$errors->get('deskripsi')" class="mt-2" />
                         </div>
 
+                        <div>
+                            <x-input-label for="file_path" :value="__('File Dukung (Opsional)')" />
+                            <input type="file" name="file_path" id="file_path" class="mt-1 block w-full text-sm" accept=".pdf,.docx,.jpg,.jpeg,.png,.webp">
+                            <span class="text-xs text-gray-500 mt-1 block">Format didukung: PDF, DOCX, JPG, JPEG, PNG, WEBP. Maks 5MB.</span>
+                            @if($program->file_path)
+                                <span class="text-xs text-blue-600 mt-1 block">File saat ini: <a href="{{ Storage::url($program->file_path) }}" target="_blank" class="hover:underline">Lihat File</a></span>
+                            @endif
+                            <x-input-error :messages="$errors->get('file_path')" class="mt-2" />
+                        </div>
+
                         <div class="flex justify-end gap-3">
-                            <a href="{{ route('admin.programs.index') }}" class="inline-flex justify-center rounded-md border border-gray-300 shadow-sm px-4 py-2 bg-white text-base font-medium text-gray-700 hover:bg-gray-50">
+                            <a href="{{ route('admin.programs.show', $program) }}" class="inline-flex justify-center rounded-md border border-gray-300 shadow-sm px-4 py-2 bg-white text-base font-medium text-gray-700 hover:bg-gray-50">
                                 {{ __('Batal') }}
                             </a>
                             <button type="submit" class="inline-flex justify-center rounded-md border border-transparent shadow-sm px-4 py-2 bg-blue-600 text-base font-medium text-white hover:bg-blue-700">

@@ -60,7 +60,7 @@ Route::middleware('auth')->group(function () {
     Route::put('/admin/users/{user}', [UserManagementController::class, 'update'])->name('admin.users.update');
     Route::patch('/admin/users/{user}/reset-password', [UserManagementController::class, 'resetPassword'])->name('admin.users.reset_password');
 
-    Route::resource('admin/programs', ProgramController::class)->names('admin.programs')->except(['show']);
+    Route::resource('admin/programs', ProgramController::class)->names('admin.programs');
     Route::get('/attendances/import', [AttendanceImportController::class, 'create'])->name('attendances.import.create');
     Route::post('/attendances/import', [AttendanceImportController::class, 'store'])->name('attendances.import.store');
     Route::get('/reports/attendance', [AttendanceReportController::class, 'index'])->name('reports.attendance.index');
