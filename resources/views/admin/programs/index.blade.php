@@ -90,9 +90,21 @@
                                             {{ $program->tanggal_selesai ? \Carbon\Carbon::parse($program->tanggal_selesai)->format('d/m/Y') : '-' }}
                                         </td>
                                         <td class="px-6 py-4 whitespace-nowrap text-sm font-medium">
-                                            <a href="{{ route('admin.programs.show', $program) }}" class="inline-flex items-center px-3 py-1.5 bg-gray-100 text-gray-700 rounded-md hover:bg-gray-200 text-sm">
-                                                Detail
-                                            </a>
+                                            <div class="flex gap-3 items-center">
+                                                <button type="button" onclick="openEditProgramModal({{ $program }})" class="text-indigo-600 hover:text-indigo-900" title="Edit Program">
+                                                    <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" viewBox="0 0 20 20" fill="currentColor"><path d="M17.414 2.586a2 2 0 00-2.828 0L7 10.172V13h2.828l7.586-7.586a2 2 0 000-2.828z" /><path fill-rule="evenodd" d="M2 6a2 2 0 012-2h4a1 1 0 010 2H4v10h10v-4a1 1 0 112 0v4a2 2 0 01-2 2H4a2 2 0 01-2-2V6z" clip-rule="evenodd" /></svg>
+                                                </button>
+                                                <form action="{{ route('admin.programs.destroy', $program->id) }}" method="POST" class="inline" onsubmit="return confirm('Apakah Anda yakin ingin menghapus program ini?');">
+                                                    @csrf
+                                                    @method('DELETE')
+                                                    <button type="submit" class="text-red-600 hover:text-red-900" title="Hapus Program">
+                                                        <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" viewBox="0 0 20 20" fill="currentColor"><path fill-rule="evenodd" d="M9 2a1 1 0 00-.894.553L7.382 4H4a1 1 0 000 2v10a2 2 0 002 2h8a2 2 0 002-2V6a1 1 0 100-2h-3.382l-.724-1.447A1 1 0 0011 2H9zM7 8a1 1 0 012 0v6a1 1 0 11-2 0V8zm4 0a1 1 0 012 0v6a1 1 0 11-2 0V8z" clip-rule="evenodd" /></svg>
+                                                    </button>
+                                                </form>
+                                                <a href="{{ route('admin.programs.show', $program) }}" class="inline-flex items-center px-3 py-1 bg-gray-100 text-gray-700 rounded-md hover:bg-gray-200 text-sm border border-gray-200 shadow-sm">
+                                                    Detail
+                                                </a>
+                                            </div>
                                         </td>
                                     </tr>
                                 @empty
@@ -192,4 +204,90 @@
             </div>
         </form>
     </x-modal>
+
+    <x-modal name="edit-program" focusable>
+        <form method="POST" id="editProgramForm" class="p-6" enctype="multipart/form-data">
+            @csrf
+            @method('PUT')
+
+            <h2 class="text-lg font-medium text-gray-900 mb-6">
+                {{ __('Edit Program') }}
+            </h2>
+
+            <div class="space-y-6">
+                <div>
+                    <x-input-label for="edit_nama_program" :value="__('Nama Program')" />
+                    <x-text-input id="edit_nama_program" name="nama_program" type="text" class="mt-1 block w-full" required />
+                </div>
+
+                <div>
+                    <x-input-label for="edit_wilayah_id" :value="__('Wilayah')" />
+                    <select id="edit_wilayah_id" name="wilayah_id" class="mt-1 block w-full border-gray-300 rounded-md shadow-sm focus:border-indigo-500 focus:ring-indigo-500">
+                        <option value="">Pilih Wilayah</option>
+                        @foreach ($wilayahOptions as $id => $nama)
+                            <option value="{{ $id }}">{{ $nama }}</option>
+                        @endforeach
+                    </select>
+                </div>
+
+                <div>
+                    <x-input-label for="edit_status" :value="__('Status Program')" />
+                    <select id="edit_status" name="status" class="mt-1 block w-full border-gray-300 rounded-md shadow-sm focus:border-indigo-500 focus:ring-indigo-500">
+                        <option value="direncanakan">Direncanakan</option>
+                        <option value="berjalan">Berjalan</option>
+                        <option value="selesai">Selesai</option>
+                    </select>
+                </div>
+
+                <div>
+                    <x-input-label for="edit_tanggal_mulai" :value="__('Tanggal Mulai')" />
+                    <x-text-input id="edit_tanggal_mulai" name="tanggal_mulai" type="date" class="mt-1 block w-full" />
+                </div>
+
+                <div>
+                    <x-input-label for="edit_tanggal_selesai" :value="__('Tanggal Selesai')" />
+                    <x-text-input id="edit_tanggal_selesai" name="tanggal_selesai" type="date" class="mt-1 block w-full" />
+                </div>
+
+                <div>
+                    <x-input-label for="edit_deskripsi" :value="__('Deskripsi Program')" />
+                    <textarea id="edit_deskripsi" name="deskripsi" class="mt-1 block w-full border-gray-300 focus:border-indigo-500 focus:ring-indigo-500 rounded-md shadow-sm" rows="4"></textarea>
+                </div>
+
+                <div>
+                    <x-input-label for="edit_file_path" :value="__('File Dukung (Opsional)')" />
+                    <input type="file" name="file_path" id="edit_file_path" class="mt-1 block w-full text-sm" accept=".pdf,.docx,.jpg,.jpeg,.png,.webp">
+                    <span class="text-xs text-gray-500 mt-1 block">Format didukung: PDF, DOCX, JPG, JPEG, PNG, WEBP. Maks 5MB. Memilih file baru akan menimpa file lama.</span>
+                </div>
+            </div>
+
+            <div class="mt-6 flex justify-end gap-3">
+                <button type="button" x-on:click="$dispatch('close')" class="inline-flex justify-center rounded-md border border-gray-300 shadow-sm px-4 py-2 bg-white text-base font-medium text-gray-700 hover:bg-gray-50">
+                    {{ __('Batal') }}
+                </button>
+                <button type="submit" class="inline-flex justify-center rounded-md border border-transparent shadow-sm px-4 py-2 bg-blue-600 text-base font-medium text-white hover:bg-blue-700">
+                    {{ __('Simpan Perubahan') }}
+                </button>
+            </div>
+        </form>
+    </x-modal>
+
+    <script>
+        function openEditProgramModal(program) {
+            document.getElementById('editProgramForm').action = `/admin/programs/${program.id}`;
+            document.getElementById('edit_nama_program').value = program.nama_program || '';
+            document.getElementById('edit_wilayah_id').value = program.wilayah_id || '';
+            document.getElementById('edit_status').value = program.status || 'direncanakan';
+            
+            // Format dates from YYYY-MM-DD HH:MM:SS to YYYY-MM-DD if needed
+            let start = program.tanggal_mulai ? program.tanggal_mulai.split(' ')[0] : '';
+            let end = program.tanggal_selesai ? program.tanggal_selesai.split(' ')[0] : '';
+            
+            document.getElementById('edit_tanggal_mulai').value = start;
+            document.getElementById('edit_tanggal_selesai').value = end;
+            document.getElementById('edit_deskripsi').value = program.deskripsi || '';
+            
+            window.dispatchEvent(new CustomEvent('open-modal', { detail: 'edit-program' }));
+        }
+    </script>
 </x-app-layout>
