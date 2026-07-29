@@ -16,15 +16,16 @@ class ProgramController extends Controller
 
         $programs = Program::with(['wilayah', 'creator'])
             ->when($search, function ($query, $search) {
-                $query->where(function ($q) use ($search) {
-                    $q->where('nama_program', 'like', '%' . $search . '%')
-                        ->orWhereHas('wilayah', function ($wilayahQuery) use ($search) {
-                            $wilayahQuery->where('nama_wilayah', 'like', '%' . $search . '%');
+                $searchLower = strtolower($search);
+                $query->where(function ($q) use ($searchLower) {
+                    $q->whereRaw('LOWER(nama_program) like ?', ['%' . $searchLower . '%'])
+                        ->orWhereHas('wilayah', function ($wilayahQuery) use ($searchLower) {
+                            $wilayahQuery->whereRaw('LOWER(nama_wilayah) like ?', ['%' . $searchLower . '%']);
                         });
                 });
             })
             ->orderBy('nama_program')
-            ->paginate(10)
+            ->paginate(5)
             ->withQueryString()
             ->fragment('daftar-program');
 
