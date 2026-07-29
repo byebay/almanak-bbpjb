@@ -12,7 +12,7 @@ class ProgramController extends Controller
 {
     public function index()
     {
-        $programs = Program::with(['wilayah', 'creator'])->orderBy('nama_program')->get();
+        $programs = Program::with(['wilayah', 'creator'])->orderBy('nama_program')->paginate(10);
         $wilayahOptions = Wilayah::orderBy('nama_wilayah')->pluck('nama_wilayah', 'id');
         return view('admin.programs.index', compact('programs', 'wilayahOptions'));
     }

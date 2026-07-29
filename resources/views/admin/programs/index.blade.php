@@ -54,7 +54,7 @@
                                         <td class="px-6 py-4 whitespace-nowrap text-sm">
                                             @php
                                                 $statusStyles = [
-                                                    'direncanakan' => 'bg-amber-100 text-amber-800',
+                                                    'direncanakan' => 'bg-yellow-100 text-yellow-800',
                                                     'berjalan' => 'bg-blue-100 text-blue-800',
                                                     'selesai' => 'bg-green-100 text-green-800',
                                                 ];
@@ -100,6 +100,12 @@
                             </tbody>
                         </table>
                     </div>
+
+                    @if ($programs->hasPages())
+                        <div class="mt-6">
+                            {{ $programs->links() }}
+                        </div>
+                    @endif
                 </div>
             </div>
         </div>

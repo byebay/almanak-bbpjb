@@ -152,7 +152,7 @@ document.addEventListener('DOMContentLoaded', function () {
                         }
                         
                         let status = p.status || 'direncanakan';
-                        let statusColor = status === 'selesai' ? 'text-green-600' : (status === 'berjalan' ? 'text-blue-600' : 'text-orange-600');
+                        let statusColor = status === 'selesai' ? 'text-green-600' : (status === 'berjalan' ? 'text-blue-600' : 'text-yellow-600');
                         
                         // Added file dukung link logic in the pop-up
                         let fileHtml = '';

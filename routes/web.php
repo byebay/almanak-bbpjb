@@ -8,7 +8,6 @@ use App\Http\Controllers\UserImportController;
 use App\Http\Controllers\UserManagementController; 
 use App\Http\Controllers\AttendanceImportController;
 use App\Http\Controllers\AttendanceReportController;
-use App\Http\Controllers\WilayahController;
 use App\Http\Controllers\ProgramController;
 // use App\Http\Controllers\EmployeeWorkController;
 use App\Http\Controllers\LeaveController;
@@ -61,7 +60,6 @@ Route::middleware('auth')->group(function () {
     Route::put('/admin/users/{user}', [UserManagementController::class, 'update'])->name('admin.users.update');
     Route::patch('/admin/users/{user}/reset-password', [UserManagementController::class, 'resetPassword'])->name('admin.users.reset_password');
 
-    Route::resource('admin/wilayah', WilayahController::class)->names('admin.wilayah')->except(['show']);
     Route::resource('admin/programs', ProgramController::class)->names('admin.programs')->except(['show']);
     Route::get('/attendances/import', [AttendanceImportController::class, 'create'])->name('attendances.import.create');
     Route::post('/attendances/import', [AttendanceImportController::class, 'store'])->name('attendances.import.store');
