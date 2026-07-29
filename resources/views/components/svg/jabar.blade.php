@@ -71,7 +71,7 @@
 
     <div id="peta-wilayah-tooltip" class="peta-wilayah-tooltip" hidden></div>
 
-    <x-modal name="region-info" :show="false" maxWidth="2xl">
+    <x-modal name="region-info" :show="false" maxWidth="4xl">
         <div class="p-6">
             <div class="mb-4 border-b pb-2">
                 <h3 id="info-nama" class="text-xl font-bold text-gray-800 uppercase"></h3>
@@ -171,7 +171,7 @@ document.addEventListener('DOMContentLoaded', function () {
                 
                 let html = data.informasi ? `<p class="mb-4 text-gray-600">${data.informasi}</p>` : '';
                 if (data.programs && data.programs.length > 0) {
-                    html += `<h4 class="font-bold mb-2 text-gray-800">Daftar Program:</h4><ul class="space-y-3 max-h-80 overflow-y-auto pr-2">`;
+                    html += `<h4 class="font-bold mb-2 text-gray-800">Daftar Program:</h4><ul class="space-y-3 max-h-[550px] overflow-y-auto pr-2">`;
                     data.programs.forEach(p => {
                         const formatTanggal = (value, options) => new Intl.DateTimeFormat('id-ID', options).format(new Date(`${value}T00:00:00`));
                         let tanggal = '-';
@@ -193,22 +193,18 @@ document.addEventListener('DOMContentLoaded', function () {
                         let status = p.status || 'direncanakan';
                         let statusColor = status === 'selesai' ? 'text-green-600' : (status === 'berjalan' ? 'text-blue-600' : 'text-yellow-600');
                         
-                        // Added file dukung link logic in the pop-up
-                        let fileHtml = '';
-                        if (p.file_path) {
-                            fileHtml = `<div class="mt-2 text-sm">
-                                <a href="/storage/${p.file_path}" target="_blank" class="text-blue-600 hover:underline flex items-center">
-                                    <svg class="w-4 h-4 mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15.172 7l-6.586 6.586a2 2 0 102.828 2.828l6.414-6.586a4 4 0 00-5.656-5.656l-6.415 6.585a6 6 0 108.486 8.486L20.5 13"></path></svg>
-                                    Lihat File Dukung
-                                </a>
-                            </div>`;
-                        }
-
                         html += `<li class="p-3 border border-gray-200 bg-gray-50 rounded-md shadow-sm">
-                            <div class="font-semibold text-gray-800 text-base">${p.nama_program}</div>
-                            <div class="text-xs text-gray-500 mb-2">Status: <span class="capitalize font-medium ${statusColor}">${status}</span> | Tanggal: ${tanggal}</div>
-                            <div class="text-sm text-gray-700">${p.deskripsi || ''}</div>
-                            ${fileHtml}
+                            <div class="flex justify-between items-center gap-4">
+                                <div>
+                                    <div class="font-semibold text-gray-800 text-base">${p.nama_program}</div>
+                                    <div class="text-xs text-gray-500 mt-1">Status: <span class="capitalize font-medium ${statusColor}">${status}</span> | Tanggal: ${tanggal}</div>
+                                </div>
+                                <div class="flex-shrink-0">
+                                    <a href="/programs/${p.id}" class="inline-flex items-center px-3 py-1.5 bg-blue-600 hover:bg-blue-700 text-white text-xs font-semibold rounded-md transition shadow-sm">
+                                        Detail
+                                    </a>
+                                </div>
+                            </div>
                         </li>`;
                     });
                     html += `</ul>`;

@@ -143,18 +143,21 @@ class PublicController extends Controller
      */
     public function showWilayah($kode)
     {
-        $wilayah = Wilayah::with('programs')->where('kode', $kode)->firstOrFail();
+        $wilayah = Wilayah::where('kode', $kode)->firstOrFail();
+        $programs = $wilayah->programs()->orderByRaw('tanggal_mulai DESC, id DESC')->get();
 
         return response()->json([
             'nama_wilayah' => $wilayah->nama_wilayah,
             'informasi' => $wilayah->informasi,
-            'programs' => $wilayah->programs->map(function ($program) {
+            'programs' => $programs->map(function ($program) {
                 return [
+                    'id' => $program->id,
                     'nama_program' => $program->nama_program,
                     'deskripsi' => $program->deskripsi,
                     'status' => $program->status,
                     'tanggal_mulai' => $program->tanggal_mulai,
                     'tanggal_selesai' => $program->tanggal_selesai,
+                    'file_path' => $program->file_path,
                 ];
             }),
         ]);

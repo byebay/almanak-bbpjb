@@ -55,10 +55,6 @@
                             </p>
                         </div>
 
-                        <div>
-                            <p class="text-sm font-medium text-gray-500">Pembuat</p>
-                            <p class="mt-1 text-sm text-gray-900">{{ $program->creator->name ?? '-' }}</p>
-                        </div>
                     </div>
 
                     <div class="mt-6">

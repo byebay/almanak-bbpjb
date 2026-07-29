@@ -32,6 +32,7 @@ Route::get('/', [PublicController::class, 'index'])->middleware(LogVisitor::clas
 Route::get('/public/events', [PublicController::class, 'getEvents'])->name('public.events');
 Route::get('/wilayah/{kode}', [PublicController::class, 'showWilayah'])->name('public.wilayah.show');
 // Route ini tidak memerlukan login
+Route::get('/programs/{program}', [ProgramController::class, 'show'])->name('programs.show');
 // Halaman utama untuk link yang dibagikan
 // Route::get('/share/hasil-kerja/{token}/{year}/{month}', [EmployeeWorkController::class, 'showPublic'])->name('hasil-kerja.public.show');
 // // Rute untuk melihat file dari halaman publik
