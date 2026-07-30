@@ -195,52 +195,9 @@ document.addEventListener('DOMContentLoaded', function () {
                 const data = await res.json();
 
                 infoNama.textContent = data.nama_wilayah;
-                
                 window.regionProgramsData = data.programs || [];
-                let html = data.informasi ? `<p class="mb-4 text-gray-600">${data.informasi}</p>` : '';
-                if (data.programs && data.programs.length > 0) {
-                    html += `<h4 class="font-bold mb-2 text-gray-800">Daftar Program:</h4><ul class="space-y-3 max-h-[550px] overflow-y-auto pr-2">`;
-                    data.programs.forEach(p => {
-                        const formatTanggal = (value, options) => new Intl.DateTimeFormat('id-ID', options).format(new Date(`${value}T00:00:00`));
-                        let tanggal = '-';
-                        if (p.tanggal_mulai) {
-                            const mulai = new Date(`${p.tanggal_mulai}T00:00:00`);
-                            const selesai = p.tanggal_selesai ? new Date(`${p.tanggal_selesai}T00:00:00`) : null;
-
-                            if (!selesai || mulai.getTime() === selesai.getTime()) {
-                                tanggal = formatTanggal(p.tanggal_mulai, { day: 'numeric', month: 'long', year: 'numeric' });
-                            } else if (mulai.getFullYear() === selesai.getFullYear() && mulai.getMonth() === selesai.getMonth()) {
-                                tanggal = `${mulai.getDate()} - ${formatTanggal(p.tanggal_selesai, { day: 'numeric', month: 'long', year: 'numeric' })}`;
-                            } else if (mulai.getFullYear() === selesai.getFullYear()) {
-                                tanggal = `${formatTanggal(p.tanggal_mulai, { day: 'numeric', month: 'long' })} - ${formatTanggal(p.tanggal_selesai, { day: 'numeric', month: 'long', year: 'numeric' })}`;
-                            } else {
-                                tanggal = `${formatTanggal(p.tanggal_mulai, { day: 'numeric', month: 'long', year: 'numeric' })} - ${formatTanggal(p.tanggal_selesai, { day: 'numeric', month: 'long', year: 'numeric' })}`;
-                            }
-                        }
-                        
-                        let status = p.status || 'direncanakan';
-                        let statusColor = status === 'selesai' ? 'text-green-600' : (status === 'berjalan' ? 'text-blue-600' : 'text-yellow-600');
-                        
-                        html += `<li class="p-3 border border-gray-200 bg-gray-50 rounded-md shadow-sm">
-                            <div class="flex justify-between items-center gap-4">
-                                <div>
-                                    <div class="font-semibold text-gray-800 text-base">${p.nama_program}</div>
-                                    <div class="text-xs text-gray-500 mt-1">Status: <span class="capitalize font-medium ${statusColor}">${status}</span> | Tanggal: ${tanggal}</div>
-                                </div>
-                                <div class="flex-shrink-0">
-                                    <button type="button" onclick="showProgramDetailModal(${p.id}, '${tanggal}', '${status}')" class="inline-flex items-center px-3 py-1.5 bg-blue-600 hover:bg-blue-700 text-white text-xs font-semibold rounded-md transition shadow-sm">
-                                        Detail
-                                    </button>
-                                </div>
-                            </div>
-                        </li>`;
-                    });
-                    html += `</ul>`;
-                } else {
-                    html += `<div class="p-3 bg-yellow-50 text-yellow-800 border border-yellow-200 rounded-md text-sm">Belum ada program terdaftar di wilayah ini.</div>`;
-                }
-                
-                infoDetail.innerHTML = html;
+                window.regionInfoText = data.informasi || '';
+                window.renderProgramsPage(1);
                 window.dispatchEvent(new CustomEvent('open-modal', { detail: 'region-info' }));
             } catch (err) {
                 infoNama.textContent = this.getAttribute('xlink:title') || kode;
@@ -250,6 +207,74 @@ document.addEventListener('DOMContentLoaded', function () {
         });
     });
 });
+
+window.renderProgramsPage = function(page) {
+    const data = window.regionProgramsData || [];
+    const limit = 5;
+    let totalPages = Math.ceil(data.length / limit);
+    if (totalPages === 0) totalPages = 1;
+    if (page < 1) page = 1;
+    if (page > totalPages) page = totalPages;
+    
+    const start = (page - 1) * limit;
+    const end = start + limit;
+    const paginatedItems = data.slice(start, end);
+    
+    const infoDetail = document.getElementById('info-detail');
+    let html = window.regionInfoText ? `<p class="mb-4 text-gray-600">${window.regionInfoText}</p>` : '';
+    
+    if (data.length > 0) {
+        html += `<h4 class="font-bold mb-2 text-gray-800">Daftar Program:</h4><ul class="space-y-3 pr-2">`;
+        paginatedItems.forEach(p => {
+            const formatTanggal = (value, options) => new Intl.DateTimeFormat('id-ID', options).format(new Date(`${value}T00:00:00`));
+            let tanggal = '-';
+            if (p.tanggal_mulai) {
+                const mulai = new Date(`${p.tanggal_mulai}T00:00:00`);
+                const selesai = p.tanggal_selesai ? new Date(`${p.tanggal_selesai}T00:00:00`) : null;
+
+                if (!selesai || mulai.getTime() === selesai.getTime()) {
+                    tanggal = formatTanggal(p.tanggal_mulai, { day: 'numeric', month: 'long', year: 'numeric' });
+                } else if (mulai.getFullYear() === selesai.getFullYear() && mulai.getMonth() === selesai.getMonth()) {
+                    tanggal = `${mulai.getDate()} - ${formatTanggal(p.tanggal_selesai, { day: 'numeric', month: 'long', year: 'numeric' })}`;
+                } else if (mulai.getFullYear() === selesai.getFullYear()) {
+                    tanggal = `${formatTanggal(p.tanggal_mulai, { day: 'numeric', month: 'long' })} - ${formatTanggal(p.tanggal_selesai, { day: 'numeric', month: 'long', year: 'numeric' })}`;
+                } else {
+                    tanggal = `${formatTanggal(p.tanggal_mulai, { day: 'numeric', month: 'long', year: 'numeric' })} - ${formatTanggal(p.tanggal_selesai, { day: 'numeric', month: 'long', year: 'numeric' })}`;
+                }
+            }
+            
+            let status = p.status || 'direncanakan';
+            let statusColor = status === 'selesai' ? 'text-green-600' : (status === 'berjalan' ? 'text-blue-600' : 'text-yellow-600');
+            
+            html += `<li class="p-3 border border-gray-200 bg-gray-50 rounded-md shadow-sm">
+                <div class="flex justify-between items-center gap-4">
+                    <div>
+                        <div class="font-semibold text-gray-800 text-base">${p.nama_program}</div>
+                        <div class="text-xs text-gray-500 mt-1">Status: <span class="capitalize font-medium ${statusColor}">${status}</span> | Tanggal: ${tanggal}</div>
+                    </div>
+                    <div class="flex-shrink-0">
+                        <button type="button" onclick="showProgramDetailModal(${p.id}, '${tanggal}', '${status}')" class="inline-flex items-center px-3 py-1.5 bg-blue-600 hover:bg-blue-700 text-white text-xs font-semibold rounded-md transition shadow-sm">
+                            Detail
+                        </button>
+                    </div>
+                </div>
+            </li>`;
+        });
+        html += `</ul>`;
+        
+        if (totalPages > 1) {
+            html += `<div class="mt-4 flex justify-between items-center">
+                <button type="button" onclick="renderProgramsPage(${page - 1})" class="px-3 py-1 bg-gray-200 text-gray-700 rounded-md hover:bg-gray-300 disabled:opacity-50" ${page === 1 ? 'disabled' : ''}>Sebelumnya</button>
+                <span class="text-sm text-gray-600 font-medium">Halaman ${page} dari ${totalPages}</span>
+                <button type="button" onclick="renderProgramsPage(${page + 1})" class="px-3 py-1 bg-gray-200 text-gray-700 rounded-md hover:bg-gray-300 disabled:opacity-50" ${page === totalPages ? 'disabled' : ''}>Selanjutnya</button>
+            </div>`;
+        }
+    } else {
+        html += `<div class="p-3 bg-yellow-50 text-yellow-800 border border-yellow-200 rounded-md text-sm">Belum ada program terdaftar di wilayah ini.</div>`;
+    }
+    
+    infoDetail.innerHTML = html;
+};
 
 window.showProgramDetailModal = function(id, tanggal, status) {
     const p = (window.regionProgramsData || []).find(prog => prog.id == id);
