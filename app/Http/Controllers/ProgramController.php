@@ -25,7 +25,7 @@ class ProgramController extends Controller
                 });
             })
             ->orderBy('nama_program')
-            ->paginate(5)
+            ->paginate(10)
             ->withQueryString()
             ->fragment('daftar-program');
 

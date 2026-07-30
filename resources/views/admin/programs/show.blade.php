@@ -88,13 +88,13 @@
                         <a href="{{ route('admin.programs.index') }}" class="inline-flex items-center px-4 py-2 bg-gray-100 text-gray-700 rounded-md hover:bg-gray-200 text-sm font-medium">
                             Kembali
                         </a>
-                        <a href="{{ route('admin.programs.edit', $program) }}" class="inline-flex items-center px-4 py-2 bg-indigo-600 text-white rounded-md hover:bg-indigo-700 text-sm font-medium">
+                        <button type="button" x-data="" x-on:click.prevent="$dispatch('open-modal', 'edit-program')" class="inline-flex items-center px-4 py-2 bg-indigo-600 text-white rounded-md hover:bg-indigo-700 text-sm font-medium">
                             <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 mr-2" viewBox="0 0 20 20" fill="currentColor">
                                 <path d="M17.414 2.586a2 2 0 00-2.828 0L7 10.172V13h2.828l7.586-7.586a2 2 0 000-2.828z" />
                                 <path fill-rule="evenodd" d="M2 6a2 2 0 012-2h4a1 1 0 010 2H4v10h10v-4a1 1 0 112 0v4a2 2 0 01-2 2H4a2 2 0 01-2-2V6z" clip-rule="evenodd" />
                             </svg>
                             Edit
-                        </a>
+                        </button>
                         <form action="{{ route('admin.programs.destroy', $program) }}" method="POST" onsubmit="return confirm('Anda yakin ingin menghapus program ini?');">
                             @csrf
                             @method('DELETE')
@@ -110,4 +110,81 @@
             </div>
         </div>
     </div>
+
+    <x-modal name="edit-program" focusable>
+        <form method="POST" action="{{ route('admin.programs.update', $program) }}" class="p-6" enctype="multipart/form-data">
+            @csrf
+            @method('PUT')
+
+            <h2 class="text-lg font-medium text-gray-900 mb-6">
+                {{ __('Edit Program') }}
+            </h2>
+
+            <div class="space-y-6">
+                <div>
+                    <x-input-label for="nama_program" :value="__('Nama Program')" />
+                    <x-text-input id="nama_program" name="nama_program" type="text" class="mt-1 block w-full" :value="old('nama_program', $program->nama_program)" required />
+                    <x-input-error :messages="$errors->get('nama_program')" class="mt-2" />
+                </div>
+
+                @php
+                    $wilayahOptions = \App\Models\Wilayah::orderBy('nama_wilayah')->pluck('nama_wilayah', 'id');
+                @endphp
+                <div>
+                    <x-input-label for="wilayah_id" :value="__('Wilayah')" />
+                    <select id="wilayah_id" name="wilayah_id" class="mt-1 block w-full border-gray-300 rounded-md shadow-sm focus:border-indigo-500 focus:ring-indigo-500">
+                        <option value="">Pilih Wilayah</option>
+                        @foreach ($wilayahOptions as $id => $nama)
+                            <option value="{{ $id }}" {{ old('wilayah_id', $program->wilayah_id) == $id ? 'selected' : '' }}>{{ $nama }}</option>
+                        @endforeach
+                    </select>
+                    <x-input-error :messages="$errors->get('wilayah_id')" class="mt-2" />
+                </div>
+
+                <div>
+                    <x-input-label for="status" :value="__('Status Program')" />
+                    <select id="status" name="status" class="mt-1 block w-full border-gray-300 rounded-md shadow-sm focus:border-indigo-500 focus:ring-indigo-500">
+                        <option value="direncanakan" {{ old('status', $program->status) == 'direncanakan' ? 'selected' : '' }}>Direncanakan</option>
+                        <option value="berjalan" {{ old('status', $program->status) == 'berjalan' ? 'selected' : '' }}>Berjalan</option>
+                        <option value="selesai" {{ old('status', $program->status) == 'selesai' ? 'selected' : '' }}>Selesai</option>
+                    </select>
+                    <x-input-error :messages="$errors->get('status')" class="mt-2" />
+                </div>
+
+                <div>
+                    <x-input-label for="tanggal_mulai" :value="__('Tanggal Mulai')" />
+                    <x-text-input id="tanggal_mulai" name="tanggal_mulai" type="date" class="mt-1 block w-full" :value="old('tanggal_mulai', $program->tanggal_mulai ? explode(' ', $program->tanggal_mulai)[0] : '')" />
+                    <x-input-error :messages="$errors->get('tanggal_mulai')" class="mt-2" />
+                </div>
+
+                <div>
+                    <x-input-label for="tanggal_selesai" :value="__('Tanggal Selesai')" />
+                    <x-text-input id="tanggal_selesai" name="tanggal_selesai" type="date" class="mt-1 block w-full" :value="old('tanggal_selesai', $program->tanggal_selesai ? explode(' ', $program->tanggal_selesai)[0] : '')" />
+                    <x-input-error :messages="$errors->get('tanggal_selesai')" class="mt-2" />
+                </div>
+
+                <div>
+                    <x-input-label for="deskripsi" :value="__('Deskripsi Program')" />
+                    <textarea id="deskripsi" name="deskripsi" class="mt-1 block w-full border-gray-300 focus:border-indigo-500 focus:ring-indigo-500 rounded-md shadow-sm" rows="4">{{ old('deskripsi', $program->deskripsi) }}</textarea>
+                    <x-input-error :messages="$errors->get('deskripsi')" class="mt-2" />
+                </div>
+
+                <div>
+                    <x-input-label for="file_path" :value="__('File Dukung (Opsional)')" />
+                    <input type="file" name="file_path" id="file_path" class="mt-1 block w-full text-sm" accept=".pdf,.docx,.jpg,.jpeg,.png,.webp">
+                    <span class="text-xs text-gray-500 mt-1 block">Format didukung: PDF, DOCX, JPG, JPEG, PNG, WEBP. Maks 5MB. Memilih file baru akan menimpa file lama.</span>
+                    <x-input-error :messages="$errors->get('file_path')" class="mt-2" />
+                </div>
+            </div>
+
+            <div class="mt-6 flex justify-end gap-3">
+                <button type="button" x-on:click="$dispatch('close')" class="inline-flex justify-center rounded-md border border-gray-300 shadow-sm px-4 py-2 bg-white text-base font-medium text-gray-700 hover:bg-gray-50">
+                    {{ __('Batal') }}
+                </button>
+                <button type="submit" class="inline-flex justify-center rounded-md border border-transparent shadow-sm px-4 py-2 bg-blue-600 text-base font-medium text-white hover:bg-blue-700">
+                    {{ __('Simpan Perubahan') }}
+                </button>
+            </div>
+        </form>
+    </x-modal>
 </x-app-layout>
