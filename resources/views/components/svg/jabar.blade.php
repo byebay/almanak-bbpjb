@@ -112,7 +112,7 @@
 </div>
 
 <style>
-    .peta-jabar-wrapper svg {
+    .peta-jabar-wrapper > svg {
         width: 100%;
         height: auto;
     }
@@ -263,10 +263,65 @@ window.renderProgramsPage = function(page) {
         html += `</ul>`;
         
         if (totalPages > 1) {
-            html += `<div class="mt-4 flex justify-between items-center">
-                <button type="button" onclick="renderProgramsPage(${page - 1})" class="px-3 py-1 bg-gray-200 text-gray-700 rounded-md hover:bg-gray-300 disabled:opacity-50" ${page === 1 ? 'disabled' : ''}>Sebelumnya</button>
-                <span class="text-sm text-gray-600 font-medium">Halaman ${page} dari ${totalPages}</span>
-                <button type="button" onclick="renderProgramsPage(${page + 1})" class="px-3 py-1 bg-gray-200 text-gray-700 rounded-md hover:bg-gray-300 disabled:opacity-50" ${page === totalPages ? 'disabled' : ''}>Selanjutnya</button>
+            html += `<div class="mt-4 flex items-center justify-between border-t border-gray-200 bg-white pt-4 rounded-md">
+                <div class="hidden sm:flex sm:flex-1 sm:items-center sm:justify-between">
+                    <div>
+                        <p class="text-sm text-gray-700 leading-5">
+                            Menampilkan <span class="font-medium">${start + 1}</span> sampai <span class="font-medium">${Math.min(end, data.length)}</span> dari <span class="font-medium">${data.length}</span> hasil
+                        </p>
+                    </div>
+                    <div>
+                        <nav class="relative z-0 inline-flex rounded-md shadow-sm -space-x-px" aria-label="Pagination">
+                            <button type="button" onclick="renderProgramsPage(${page - 1})" ${page === 1 ? 'disabled' : ''} class="relative inline-flex items-center px-2 py-2 rounded-l-md border border-gray-300 bg-white text-sm font-medium text-gray-500 hover:bg-gray-50 disabled:opacity-50">
+                                <span class="sr-only">Previous</span>
+                                <svg class="h-5 w-5" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor" aria-hidden="true">
+                                    <path fill-rule="evenodd" d="M12.707 5.293a1 1 0 010 1.414L9.414 10l3.293 3.293a1 1 0 01-1.414 1.414l-4-4a1 1 0 010-1.414l4-4a1 1 0 011.414 0z" clip-rule="evenodd" />
+                                </svg>
+                            </button>`;
+            
+            let maxVisiblePages = 5;
+            let startPage = Math.max(1, page - Math.floor(maxVisiblePages / 2));
+            let endPage = Math.min(totalPages, startPage + maxVisiblePages - 1);
+            
+            if (endPage - startPage + 1 < maxVisiblePages) {
+                startPage = Math.max(1, endPage - maxVisiblePages + 1);
+            }
+            
+            if (startPage > 1) {
+                html += `<button type="button" onclick="renderProgramsPage(1)" class="relative inline-flex items-center px-4 py-2 border border-gray-300 bg-white text-sm font-medium text-gray-700 hover:bg-gray-50">1</button>`;
+                if (startPage > 2) html += `<span class="relative inline-flex items-center px-4 py-2 border border-gray-300 bg-white text-sm font-medium text-gray-700">...</span>`;
+            }
+
+            for (let i = startPage; i <= endPage; i++) {
+                if (i === page) {
+                    html += `<span aria-current="page" class="relative z-10 inline-flex items-center px-4 py-2 border border-blue-500 bg-blue-50 text-sm font-medium text-blue-600">${i}</span>`;
+                } else {
+                    html += `<button type="button" onclick="renderProgramsPage(${i})" class="relative inline-flex items-center px-4 py-2 border border-gray-300 bg-white text-sm font-medium text-gray-700 hover:bg-gray-50">${i}</button>`;
+                }
+            }
+            
+            if (endPage < totalPages) {
+                if (endPage < totalPages - 1) html += `<span class="relative inline-flex items-center px-4 py-2 border border-gray-300 bg-white text-sm font-medium text-gray-700">...</span>`;
+                html += `<button type="button" onclick="renderProgramsPage(${totalPages})" class="relative inline-flex items-center px-4 py-2 border border-gray-300 bg-white text-sm font-medium text-gray-700 hover:bg-gray-50">${totalPages}</button>`;
+            }
+
+            html += `       <button type="button" onclick="renderProgramsPage(${page + 1})" ${page === totalPages ? 'disabled' : ''} class="relative inline-flex items-center px-2 py-2 rounded-r-md border border-gray-300 bg-white text-sm font-medium text-gray-500 hover:bg-gray-50 disabled:opacity-50">
+                                <span class="sr-only">Next</span>
+                                <svg class="h-5 w-5" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor" aria-hidden="true">
+                                    <path fill-rule="evenodd" d="M7.293 14.707a1 1 0 010-1.414L10.586 10 7.293 6.707a1 1 0 011.414-1.414l4 4a1 1 0 010 1.414l-4 4a1 1 0 01-1.414 0z" clip-rule="evenodd" />
+                                </svg>
+                            </button>
+                        </nav>
+                    </div>
+                </div>
+                <div class="flex items-center justify-between sm:hidden w-full">
+                    <button type="button" onclick="renderProgramsPage(${page - 1})" ${page === 1 ? 'disabled' : ''} class="relative inline-flex items-center px-4 py-2 border border-gray-300 text-sm font-medium rounded-md text-gray-700 bg-white hover:text-gray-500 disabled:opacity-50">
+                        Sebelumnya
+                    </button>
+                    <button type="button" onclick="renderProgramsPage(${page + 1})" ${page === totalPages ? 'disabled' : ''} class="ml-3 relative inline-flex items-center px-4 py-2 border border-gray-300 text-sm font-medium rounded-md text-gray-700 bg-white hover:text-gray-500 disabled:opacity-50">
+                        Selanjutnya
+                    </button>
+                </div>
             </div>`;
         }
     } else {
