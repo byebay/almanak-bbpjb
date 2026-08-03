@@ -29,8 +29,10 @@ class ProgramController extends Controller
             ->withQueryString()
             ->fragment('daftar-program');
 
+        $programCountByKode = Wilayah::withCount('programs')->pluck('programs_count', 'kode');
+
         $wilayahOptions = Wilayah::orderBy('nama_wilayah')->pluck('nama_wilayah', 'id');
-        return view('admin.programs.index', compact('programs', 'wilayahOptions', 'search'));
+        return view('admin.programs.index', compact('programs', 'wilayahOptions', 'search', 'programCountByKode'));
     }
 
     public function create()
