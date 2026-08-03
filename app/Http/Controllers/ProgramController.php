@@ -24,7 +24,7 @@ class ProgramController extends Controller
                         });
                 });
             })
-            ->orderBy('nama_program')
+            ->orderBy('created_at', 'desc')
             ->paginate(10)
             ->withQueryString()
             ->fragment('daftar-program');
@@ -46,8 +46,6 @@ class ProgramController extends Controller
             'wilayah_id' => 'nullable|exists:wilayah,id',
             'deskripsi' => 'nullable|string',
             'tanggal_mulai' => 'nullable|date',
-            'tanggal_selesai' => 'nullable|date|after_or_equal:tanggal_mulai',
-            'status' => 'required|in:direncanakan,berjalan,selesai',
             'file_path' => 'nullable|file|mimes:pdf,docx,jpg,jpeg,png,webp|max:5120',
         ]);
 
@@ -57,7 +55,6 @@ class ProgramController extends Controller
         }
 
         $validated['file_path'] = $filePath;
-        $validated['created_by'] = Auth::id();
 
         Program::create($validated);
 
@@ -83,8 +80,6 @@ class ProgramController extends Controller
             'wilayah_id' => 'nullable|exists:wilayah,id',
             'deskripsi' => 'nullable|string',
             'tanggal_mulai' => 'nullable|date',
-            'tanggal_selesai' => 'nullable|date|after_or_equal:tanggal_mulai',
-            'status' => 'required|in:direncanakan,berjalan,selesai',
             'file_path' => 'nullable|file|mimes:pdf,docx,jpg,jpeg,png,webp|max:5120',
         ]);
         
