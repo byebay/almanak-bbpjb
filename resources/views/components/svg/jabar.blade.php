@@ -263,18 +263,26 @@ window.renderProgramsPage = function(page) {
         html += `</ul>`;
         
         if (totalPages > 1) {
-            html += `<div class="mt-4 flex items-center justify-between border-t border-gray-200 bg-white pt-4 rounded-md">
-                <div class="hidden sm:flex sm:flex-1 sm:items-center sm:justify-between">
+            html += `<div class="mt-4 border-t border-gray-200 bg-white pt-4 rounded-md">
+                <div class="flex justify-between flex-1 sm:hidden">
+                    <button type="button" onclick="renderProgramsPage(${page - 1})" ${page === 1 ? 'disabled' : ''} class="relative inline-flex items-center px-4 py-2 text-sm font-medium ${page === 1 ? 'text-gray-500 bg-white border border-gray-300 cursor-default' : 'text-black bg-white border border-gray-300 hover:text-gray-500'} leading-5 rounded-md">
+                        Sebelumnya
+                    </button>
+                    <button type="button" onclick="renderProgramsPage(${page + 1})" ${page === totalPages ? 'disabled' : ''} class="relative inline-flex items-center px-4 py-2 ml-3 text-sm font-medium ${page === totalPages ? 'text-gray-500 bg-white border border-gray-300 cursor-default' : 'text-black bg-white border border-gray-300 hover:text-gray-500'} leading-5 rounded-md">
+                        Selanjutnya
+                    </button>
+                </div>
+                <div class="hidden sm:flex-1 sm:flex sm:items-center sm:justify-between">
                     <div>
-                        <p class="text-sm text-gray-700 leading-5">
+                        <p class="text-sm text-black leading-5">
                             Menampilkan <span class="font-medium">${start + 1}</span> sampai <span class="font-medium">${Math.min(end, data.length)}</span> dari <span class="font-medium">${data.length}</span> hasil
                         </p>
                     </div>
                     <div>
-                        <nav class="relative z-0 inline-flex rounded-md shadow-sm -space-x-px" aria-label="Pagination">
-                            <button type="button" onclick="renderProgramsPage(${page - 1})" ${page === 1 ? 'disabled' : ''} class="relative inline-flex items-center px-2 py-2 rounded-l-md border border-gray-300 bg-white text-sm font-medium text-gray-500 hover:bg-gray-50 disabled:opacity-50">
+                        <span class="relative z-0 inline-flex shadow-sm rounded-md">
+                            <button type="button" onclick="renderProgramsPage(${page - 1})" ${page === 1 ? 'disabled' : ''} class="relative inline-flex items-center px-2 py-2 text-sm font-medium ${page === 1 ? 'text-gray-500 bg-white border border-gray-300 cursor-default' : 'text-black bg-white border border-gray-300 hover:text-gray-400 focus:z-10 focus:outline-none focus:ring ring-gray-300 focus:border-blue-300 active:bg-gray-100 active:text-black transition ease-in-out duration-150'} rounded-l-md leading-5" ${page === 1 ? 'aria-disabled="true"' : ''}>
                                 <span class="sr-only">Previous</span>
-                                <svg class="h-5 w-5" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor" aria-hidden="true">
+                                <svg class="w-5 h-5" fill="currentColor" viewBox="0 0 20 20" aria-hidden="true">
                                     <path fill-rule="evenodd" d="M12.707 5.293a1 1 0 010 1.414L9.414 10l3.293 3.293a1 1 0 01-1.414 1.414l-4-4a1 1 0 010-1.414l4-4a1 1 0 011.414 0z" clip-rule="evenodd" />
                                 </svg>
                             </button>`;
@@ -288,39 +296,31 @@ window.renderProgramsPage = function(page) {
             }
             
             if (startPage > 1) {
-                html += `<button type="button" onclick="renderProgramsPage(1)" class="relative inline-flex items-center px-4 py-2 border border-gray-300 bg-white text-sm font-medium text-gray-700 hover:bg-gray-50">1</button>`;
-                if (startPage > 2) html += `<span class="relative inline-flex items-center px-4 py-2 border border-gray-300 bg-white text-sm font-medium text-gray-700">...</span>`;
+                html += `<button type="button" onclick="renderProgramsPage(1)" class="relative inline-flex items-center px-4 py-2 -ml-px text-sm font-medium text-black bg-white border border-gray-300 leading-5 hover:text-gray-500 focus:z-10 focus:outline-none focus:ring ring-gray-300 focus:border-blue-300 active:bg-gray-100 active:text-black transition ease-in-out duration-150">1</button>`;
+                if (startPage > 2) html += `<span class="relative inline-flex items-center px-4 py-2 -ml-px text-sm font-medium text-black bg-white border border-gray-300 cursor-default leading-5">...</span>`;
             }
 
             for (let i = startPage; i <= endPage; i++) {
                 if (i === page) {
-                    html += `<span aria-current="page" class="relative z-10 inline-flex items-center px-4 py-2 border border-blue-500 bg-blue-50 text-sm font-medium text-blue-600">${i}</span>`;
+                    html += `<span aria-current="page" class="relative inline-flex items-center px-4 py-2 -ml-px text-sm font-medium text-white bg-blue-600 border border-blue-600 cursor-default leading-5">${i}</span>`;
                 } else {
-                    html += `<button type="button" onclick="renderProgramsPage(${i})" class="relative inline-flex items-center px-4 py-2 border border-gray-300 bg-white text-sm font-medium text-gray-700 hover:bg-gray-50">${i}</button>`;
+                    html += `<button type="button" onclick="renderProgramsPage(${i})" class="relative inline-flex items-center px-4 py-2 -ml-px text-sm font-medium text-black bg-white border border-gray-300 leading-5 hover:text-gray-500 focus:z-10 focus:outline-none focus:ring ring-gray-300 focus:border-blue-300 active:bg-gray-100 active:text-black transition ease-in-out duration-150">${i}</button>`;
                 }
             }
             
             if (endPage < totalPages) {
-                if (endPage < totalPages - 1) html += `<span class="relative inline-flex items-center px-4 py-2 border border-gray-300 bg-white text-sm font-medium text-gray-700">...</span>`;
-                html += `<button type="button" onclick="renderProgramsPage(${totalPages})" class="relative inline-flex items-center px-4 py-2 border border-gray-300 bg-white text-sm font-medium text-gray-700 hover:bg-gray-50">${totalPages}</button>`;
+                if (endPage < totalPages - 1) html += `<span class="relative inline-flex items-center px-4 py-2 -ml-px text-sm font-medium text-black bg-white border border-gray-300 cursor-default leading-5">...</span>`;
+                html += `<button type="button" onclick="renderProgramsPage(${totalPages})" class="relative inline-flex items-center px-4 py-2 -ml-px text-sm font-medium text-black bg-white border border-gray-300 leading-5 hover:text-gray-500 focus:z-10 focus:outline-none focus:ring ring-gray-300 focus:border-blue-300 active:bg-gray-100 active:text-black transition ease-in-out duration-150">${totalPages}</button>`;
             }
 
-            html += `       <button type="button" onclick="renderProgramsPage(${page + 1})" ${page === totalPages ? 'disabled' : ''} class="relative inline-flex items-center px-2 py-2 rounded-r-md border border-gray-300 bg-white text-sm font-medium text-gray-500 hover:bg-gray-50 disabled:opacity-50">
+            html += `<button type="button" onclick="renderProgramsPage(${page + 1})" ${page === totalPages ? 'disabled' : ''} class="relative inline-flex items-center px-2 py-2 -ml-px text-sm font-medium ${page === totalPages ? 'text-gray-500 bg-white border border-gray-300 cursor-default' : 'text-black bg-white border border-gray-300 hover:text-gray-400 focus:z-10 focus:outline-none focus:ring ring-gray-300 focus:border-blue-300 active:bg-gray-100 active:text-black transition ease-in-out duration-150'} rounded-r-md leading-5" ${page === totalPages ? 'aria-disabled="true"' : ''}>
                                 <span class="sr-only">Next</span>
-                                <svg class="h-5 w-5" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor" aria-hidden="true">
+                                <svg class="w-5 h-5" fill="currentColor" viewBox="0 0 20 20" aria-hidden="true">
                                     <path fill-rule="evenodd" d="M7.293 14.707a1 1 0 010-1.414L10.586 10 7.293 6.707a1 1 0 011.414-1.414l4 4a1 1 0 010 1.414l-4 4a1 1 0 01-1.414 0z" clip-rule="evenodd" />
                                 </svg>
                             </button>
-                        </nav>
+                        </span>
                     </div>
-                </div>
-                <div class="flex items-center justify-between sm:hidden w-full">
-                    <button type="button" onclick="renderProgramsPage(${page - 1})" ${page === 1 ? 'disabled' : ''} class="relative inline-flex items-center px-4 py-2 border border-gray-300 text-sm font-medium rounded-md text-gray-700 bg-white hover:text-gray-500 disabled:opacity-50">
-                        Sebelumnya
-                    </button>
-                    <button type="button" onclick="renderProgramsPage(${page + 1})" ${page === totalPages ? 'disabled' : ''} class="ml-3 relative inline-flex items-center px-4 py-2 border border-gray-300 text-sm font-medium rounded-md text-gray-700 bg-white hover:text-gray-500 disabled:opacity-50">
-                        Selanjutnya
-                    </button>
                 </div>
             </div>`;
         }
