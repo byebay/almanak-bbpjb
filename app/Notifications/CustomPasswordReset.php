@@ -42,10 +42,9 @@ class CustomPasswordReset extends Notification
 
         return (new MailMessage)
             ->subject('Permintaan Atur Ulang Kata Sandi')
-            ->greeting('Halo!')
-            ->line('Anda menerima posel ini karena kami menerima permintaan ganti kata sandi untuk akun Anda.')
-            ->action('Ganti Kata Sandi', $url)
-            ->line('Tautan ganti kata sandi ini berlaku selama 60 menit.')
-            ->line('Jika Anda tidak merasa melakukan permintaan ini, abaikan posel ini.');
+            ->view('emails.password-reset', [
+                'url' => $url,
+                'appName' => config('app.name'),
+            ]);
     }
 }

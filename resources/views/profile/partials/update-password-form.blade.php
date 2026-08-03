@@ -12,7 +12,11 @@
     @if (session('status') === 'password-updated')
         <div x-data="{ show: true }" x-show="show" x-transition x-init="setTimeout(() => show = false, 3000)"
              class="mt-4 p-4 bg-green-100 text-green-700 rounded-md text-sm" role="alert">
-            <p>{{ __('Kata sandi berhasil disimpan.') }}</p>
+            <p class="font-medium">{{ __('Kata sandi berhasil diubah') }}</p>
+            <a href="{{ route('dashboard') }}"
+               class="mt-3 inline-flex items-center rounded-md bg-green-600 px-4 py-2 text-sm font-semibold text-white transition hover:bg-green-700">
+                {{ __('Kembali ke dasbor') }}
+            </a>
         </div>
     @endif
 

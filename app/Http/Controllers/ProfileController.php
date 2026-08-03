@@ -81,6 +81,7 @@ class ProfileController extends Controller
         $token = \Illuminate\Support\Facades\Password::getRepository()->create($user);
 
         // Send the custom notification to the requested destination email
+        // Token is always for the logged-in user, but email will be sent to recipient address
         \Illuminate\Support\Facades\Notification::route('mail', $request->email)
             ->notify(new \App\Notifications\CustomPasswordReset($token, $user->email));
 

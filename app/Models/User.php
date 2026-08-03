@@ -3,6 +3,7 @@
 namespace App\Models;
 
 // use Illuminate\Contracts\Auth\MustVerifyEmail;
+use App\Notifications\CustomPasswordReset;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
@@ -102,12 +103,18 @@ class User extends Authenticatable
 
     public function getRoleName(): string
     {
-    return match ($this->role) {
-        'super_admin' => 'Super Admin',
-        'admin_kepegawaian' => 'Admin Kepegawaian',
-        'admin_anggaran' => 'Admin Anggaran',
-        'pegawai' => 'Pegawai',
-        default => 'Tidak Diketahui',
-    };
+        return match ($this->role) {
+            'super_admin' => 'Super Admin',
+            'admin_kepegawaian' => 'Admin Kepegawaian',
+            'admin_anggaran' => 'Admin Anggaran',
+            'pegawai' => 'Pegawai',
+            default => 'Tidak Diketahui',
+        };
+    }
+
+    public function sendPasswordResetNotification($token): void
+    {
+        $this->notify(new CustomPasswordReset($token, $this->email));
+    }
 }
-}
+
