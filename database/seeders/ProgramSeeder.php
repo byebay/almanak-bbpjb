@@ -21,8 +21,6 @@ class ProgramSeeder extends Seeder
         $wilayahIds = Wilayah::pluck('id')->toArray();
         $adminId = User::where('role', 'super_admin')->first()?->id ?? User::first()?->id;
 
-        $statuses = ['direncanakan', 'berjalan', 'selesai'];
-
         $namaProgramTemplate = [
             'Program Peningkatan Kapasitas Guru',
             'Pembangunan Perpustakaan Digital Wilayah',
@@ -55,7 +53,6 @@ class ProgramSeeder extends Seeder
                 'nama_program' => $namaProgramTemplate[$i] ?? 'Program Unggulan Daerah ' . ($i + 1),
                 'deskripsi' => 'Deskripsi untuk ' . ($namaProgramTemplate[$i] ?? 'Program Unggulan Daerah ' . ($i + 1)) . '. Program ini bertujuan untuk memberikan dampak positif berkelanjutan di wilayah sasaran dengan melibatkan pemangku kepentingan setempat.',
                 'tahun' => $startDate->format('Y'),
-                'status' => $statuses[array_rand($statuses)],
                 'tanggal_mulai' => $startDate->format('Y-m-d'),
                 'tanggal_selesai' => $endDate->format('Y-m-d'),
                 'file_path' => null,

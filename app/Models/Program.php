@@ -15,7 +15,6 @@ class Program extends Model
         'nama_program',
         'deskripsi',
         'tahun',
-        'status',
         'tanggal_mulai',
         'tanggal_selesai',
         'file_path',

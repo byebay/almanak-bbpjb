@@ -154,7 +154,6 @@ class PublicController extends Controller
                     'id' => $program->id,
                     'nama_program' => $program->nama_program,
                     'deskripsi' => $program->deskripsi,
-                    'status' => $program->status,
                     'tanggal_mulai' => $program->tanggal_mulai,
                     'tanggal_selesai' => $program->tanggal_selesai,
                     'file_path' => $program->file_path,

@@ -25,21 +25,7 @@
                             <p class="mt-1 text-sm text-gray-900">{{ $program->wilayah?->nama_wilayah ?? 'Tidak ditentukan' }}</p>
                         </div>
 
-                        <div>
-                            <p class="text-sm font-medium text-gray-500">Status</p>
-                            <p class="mt-1">
-                                @php
-                                    $statusStyles = [
-                                        'direncanakan' => 'bg-yellow-100 text-yellow-800',
-                                        'berjalan' => 'bg-blue-100 text-blue-800',
-                                        'selesai' => 'bg-green-100 text-green-800',
-                                    ];
-                                @endphp
-                                <span class="inline-flex rounded-full px-2.5 py-1 text-xs font-medium {{ $statusStyles[$program->status] ?? 'bg-gray-100 text-gray-800' }}">
-                                    {{ ucfirst($program->status) }}
-                                </span>
-                            </p>
-                        </div>
+
 
                         <div>
                             <p class="text-sm font-medium text-gray-500">Tanggal Mulai</p>
@@ -141,15 +127,7 @@
                     <x-input-error :messages="$errors->get('wilayah_id')" class="mt-2" />
                 </div>
 
-                <div>
-                    <x-input-label for="status" :value="__('Status Program')" />
-                    <select id="status" name="status" class="mt-1 block w-full border-gray-300 rounded-md shadow-sm focus:border-indigo-500 focus:ring-indigo-500">
-                        <option value="direncanakan" {{ old('status', $program->status) == 'direncanakan' ? 'selected' : '' }}>Direncanakan</option>
-                        <option value="berjalan" {{ old('status', $program->status) == 'berjalan' ? 'selected' : '' }}>Berjalan</option>
-                        <option value="selesai" {{ old('status', $program->status) == 'selesai' ? 'selected' : '' }}>Selesai</option>
-                    </select>
-                    <x-input-error :messages="$errors->get('status')" class="mt-2" />
-                </div>
+
 
                 <div>
                     <x-input-label for="tanggal_mulai" :value="__('Tanggal Mulai')" />

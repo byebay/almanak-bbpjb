@@ -35,15 +35,7 @@
                             <x-input-error :messages="$errors->get('deskripsi')" class="mt-2" />
                         </div>
 
-                        <div>
-                            <x-input-label for="status" :value="__('Status Program')" />
-                            <select id="status" name="status" class="mt-1 block w-full border-gray-300 rounded-md shadow-sm focus:border-indigo-500 focus:ring-indigo-500">
-                                <option value="direncanakan" {{ old('status') == 'direncanakan' ? 'selected' : '' }}>Direncanakan</option>
-                                <option value="berjalan" {{ old('status') == 'berjalan' ? 'selected' : '' }}>Berjalan</option>
-                                <option value="selesai" {{ old('status') == 'selesai' ? 'selected' : '' }}>Selesai</option>
-                            </select>
-                            <x-input-error :messages="$errors->get('status')" class="mt-2" />
-                        </div>
+
 
                         <div class="grid grid-cols-1 gap-6 md:grid-cols-2">
                             <div>

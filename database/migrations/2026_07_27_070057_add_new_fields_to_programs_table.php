@@ -12,8 +12,7 @@ return new class extends Migration
     public function up(): void
     {
         Schema::table('programs', function (Blueprint $table) {
-            $table->enum('status', ['direncanakan', 'berjalan', 'selesai'])->default('direncanakan')->after('tahun');
-            $table->date('tanggal_mulai')->nullable()->after('status');
+            $table->date('tanggal_mulai')->nullable()->after('tahun');
             $table->date('tanggal_selesai')->nullable()->after('tanggal_mulai');
             $table->foreignId('created_by')->nullable()->constrained('users')->nullOnDelete()->after('tanggal_selesai');
             $table->softDeletes();
@@ -27,7 +26,7 @@ return new class extends Migration
     {
         Schema::table('programs', function (Blueprint $table) {
             $table->dropForeign(['created_by']);
-            $table->dropColumn(['status', 'tanggal_mulai', 'tanggal_selesai', 'created_by']);
+            $table->dropColumn(['tanggal_mulai', 'tanggal_selesai', 'created_by']);
             $table->dropSoftDeletes();
         });
     }

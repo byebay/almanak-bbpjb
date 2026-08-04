@@ -60,7 +60,7 @@
                                 <tr>
                                     <th class="w-64 px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">Nama Program</th>
                                     <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">Wilayah</th>
-                                    <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">Status</th>
+
                                     <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">Tanggal Mulai</th>
                                     <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">Tanggal Selesai</th>
                                     <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">Aksi</th>
@@ -71,18 +71,7 @@
                                     <tr>
                                         <td class="w-64 px-6 py-4 align-top text-sm text-gray-900 whitespace-normal break-words">{{ $program->nama_program }}</td>
                                         <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-900">{{ $program->wilayah?->nama_wilayah ?? 'Tidak ditentukan' }}</td>
-                                        <td class="px-6 py-4 whitespace-nowrap text-sm">
-                                            @php
-                                                $statusStyles = [
-                                                    'direncanakan' => 'bg-yellow-100 text-yellow-800',
-                                                    'berjalan' => 'bg-blue-100 text-blue-800',
-                                                    'selesai' => 'bg-green-100 text-green-800',
-                                                ];
-                                            @endphp
-                                            <span class="inline-flex rounded-full px-2.5 py-1 text-xs font-medium {{ $statusStyles[$program->status] ?? 'bg-gray-100 text-gray-800' }}">
-                                                {{ ucfirst($program->status) }}
-                                            </span>
-                                        </td>
+
                                         <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-900">
                                             {{ $program->tanggal_mulai ? \Carbon\Carbon::parse($program->tanggal_mulai)->format('d/m/Y') : '-' }}
                                         </td>
@@ -99,7 +88,7 @@
                                     </tr>
                                 @empty
                                     <tr>
-                                        <td colspan="6" class="px-6 py-4 text-center text-gray-500">
+                                        <td colspan="5" class="px-6 py-4 text-center text-gray-500">
                                             @if ($search)
                                                 Tidak ada program yang cocok dengan pencarian "{{ $search }}".
                                             @else
@@ -148,15 +137,7 @@
                     <x-input-error :messages="$errors->get('wilayah_id')" class="mt-2" />
                 </div>
 
-                <div>
-                    <x-input-label for="status" :value="__('Status Program')" />
-                    <select id="status" name="status" class="mt-1 block w-full border-gray-300 rounded-md shadow-sm focus:border-indigo-500 focus:ring-indigo-500">
-                        <option value="direncanakan" {{ old('status') == 'direncanakan' ? 'selected' : '' }}>Direncanakan</option>
-                        <option value="berjalan" {{ old('status') == 'berjalan' ? 'selected' : '' }}>Berjalan</option>
-                        <option value="selesai" {{ old('status') == 'selesai' ? 'selected' : '' }}>Selesai</option>
-                    </select>
-                    <x-input-error :messages="$errors->get('status')" class="mt-2" />
-                </div>
+
 
                 <div>
                     <x-input-label for="tanggal_mulai" :value="__('Tanggal Mulai')" />
@@ -220,14 +201,7 @@
                     </select>
                 </div>
 
-                <div>
-                    <x-input-label for="edit_status" :value="__('Status Program')" />
-                    <select id="edit_status" name="status" class="mt-1 block w-full border-gray-300 rounded-md shadow-sm focus:border-indigo-500 focus:ring-indigo-500">
-                        <option value="direncanakan">Direncanakan</option>
-                        <option value="berjalan">Berjalan</option>
-                        <option value="selesai">Selesai</option>
-                    </select>
-                </div>
+
 
                 <div>
                     <x-input-label for="edit_tanggal_mulai" :value="__('Tanggal Mulai')" />
@@ -267,7 +241,7 @@
             document.getElementById('editProgramForm').action = `/admin/programs/${program.id}`;
             document.getElementById('edit_nama_program').value = program.nama_program || '';
             document.getElementById('edit_wilayah_id').value = program.wilayah_id || '';
-            document.getElementById('edit_status').value = program.status || 'direncanakan';
+
             
             // Format dates from YYYY-MM-DD HH:MM:SS to YYYY-MM-DD if needed
             let start = program.tanggal_mulai ? program.tanggal_mulai.split(' ')[0] : '';

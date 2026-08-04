@@ -87,10 +87,7 @@
         <div class="p-6">
             <h2 class="text-2xl font-bold text-gray-900 mb-4" id="pd-title"></h2>
             <div class="space-y-4">
-                <div>
-                    <span class="font-medium text-gray-500 block text-sm">Status</span>
-                    <span id="pd-status" class="inline-flex rounded-full px-2.5 py-1 text-xs font-medium"></span>
-                </div>
+
                 <div>
                     <span class="font-medium text-gray-500 block text-sm">Tanggal Pelaksanaan</span>
                     <span id="pd-tanggal" class="text-gray-900"></span>
@@ -243,17 +240,15 @@ window.renderProgramsPage = function(page) {
                 }
             }
             
-            let status = p.status || 'direncanakan';
-            let statusColor = status === 'selesai' ? 'text-green-600' : (status === 'berjalan' ? 'text-blue-600' : 'text-yellow-600');
-            
+
             html += `<li class="p-3 border border-gray-200 bg-gray-50 rounded-md shadow-sm">
                 <div class="flex justify-between items-center gap-4">
                     <div>
                         <div class="font-semibold text-gray-800 text-base">${p.nama_program}</div>
-                        <div class="text-xs text-gray-500 mt-1">Status: <span class="capitalize font-medium ${statusColor}">${status}</span> | Tanggal: ${tanggal}</div>
+                        <div class="text-xs text-gray-500 mt-1">Tanggal: ${tanggal}</div>
                     </div>
                     <div class="flex-shrink-0">
-                        <button type="button" onclick="showProgramDetailModal(${p.id}, '${tanggal}', '${status}')" class="inline-flex items-center px-3 py-1.5 bg-blue-600 hover:bg-blue-700 text-white text-xs font-semibold rounded-md transition shadow-sm">
+                        <button type="button" onclick="showProgramDetailModal(${p.id}, '${tanggal}')" class="inline-flex items-center px-3 py-1.5 bg-blue-600 hover:bg-blue-700 text-white text-xs font-semibold rounded-md transition shadow-sm">
                             Detail
                         </button>
                     </div>
@@ -331,17 +326,12 @@ window.renderProgramsPage = function(page) {
     infoDetail.innerHTML = html;
 };
 
-window.showProgramDetailModal = function(id, tanggal, status) {
+window.showProgramDetailModal = function(id, tanggal) {
     const p = (window.regionProgramsData || []).find(prog => prog.id == id);
     if (!p) return;
 
     document.getElementById('pd-title').textContent = p.nama_program || '-';
     
-    const statusEl = document.getElementById('pd-status');
-    statusEl.textContent = status.charAt(0).toUpperCase() + status.slice(1);
-    statusEl.className = 'inline-flex rounded-full px-2.5 py-1 text-xs font-medium ' + 
-        (status === 'selesai' ? 'bg-green-100 text-green-800' : 
-        (status === 'berjalan' ? 'bg-blue-100 text-blue-800' : 'bg-yellow-100 text-yellow-800'));
     
     document.getElementById('pd-tanggal').textContent = tanggal || '-';
     document.getElementById('pd-deskripsi').textContent = p.deskripsi || '-';
