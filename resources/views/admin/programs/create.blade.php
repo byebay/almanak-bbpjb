@@ -9,7 +9,7 @@
         <div class="max-w-7xl mx-auto sm:px-6 lg:px-8">
             <div class="bg-white overflow-hidden shadow-sm sm:rounded-lg">
                 <div class="p-6 bg-white border-b border-gray-200">
-                    <form method="POST" action="{{ route('admin.programs.store') }}" class="space-y-6">
+                    <form id="form-program" method="POST" action="{{ route('admin.programs.store') }}" class="space-y-6">
                         @csrf
 
                         <div>
@@ -54,7 +54,7 @@
                             <a href="{{ route('admin.programs.index') }}" class="inline-flex justify-center rounded-md border border-gray-300 shadow-sm px-4 py-2 bg-white text-base font-medium text-gray-700 hover:bg-gray-50">
                                 {{ __('Batal') }}
                             </a>
-                            <button type="submit" class="inline-flex justify-center rounded-md border border-transparent shadow-sm px-4 py-2 bg-blue-600 text-base font-medium text-white hover:bg-blue-700">
+                            <button type="submit" id="btn-submit-program" class="inline-flex justify-center rounded-md border border-transparent shadow-sm px-4 py-2 bg-blue-600 text-base font-medium text-white hover:bg-blue-700 disabled:opacity-50 disabled:cursor-not-allowed">
                                 {{ __('Simpan') }}
                             </button>
                         </div>
@@ -63,4 +63,18 @@
             </div>
         </div>
     </div>
+
+    @push('scripts')
+    <script>
+        document.getElementById('form-program').addEventListener('submit', function (e) {
+            const btn = document.getElementById('btn-submit-program');
+            if (btn.disabled) {
+                e.preventDefault();
+                return;
+            }
+            btn.disabled = true;
+            btn.innerHTML = 'Menyimpan...';
+        });
+    </script>
+    @endpush
 </x-app-layout>

@@ -52,6 +52,18 @@ class ProgramController extends Controller
             'file_path' => 'nullable|file|mimes:pdf,docx,jpg,jpeg,png,webp|max:5120',
         ]);
 
+        // Cegah double submit: cek apakah program identik baru saja dibuat (dalam 10 detik terakhir)
+        $duplikat = Program::where('nama_program', $validated['nama_program'])
+            ->where('wilayah_id', $validated['wilayah_id'] ?? null)
+            ->where('created_at', '>=', now()->subSeconds(10))
+            ->exists();
+
+        if ($duplikat) {
+            return redirect()->route('admin.programs.index')
+                ->with('success', 'Program baru berhasil ditambahkan.');
+            // atau bisa juga pakai ->with('warning', 'Program sudah tersimpan, request duplikat diabaikan.');
+        }
+
         $filePath = null;
         if ($request->hasFile('file_path')) {
             $filePath = $request->file('file_path')->store('program_files', 'public');
