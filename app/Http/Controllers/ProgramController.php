@@ -24,13 +24,15 @@ class ProgramController extends Controller
                         });
                 });
             })
-            ->orderBy('nama_program')
+            ->orderBy('created_at', 'desc')
             ->paginate(10)
             ->withQueryString()
             ->fragment('daftar-program');
 
+        $programCountByKode = Wilayah::withCount('programs')->pluck('programs_count', 'kode');
+
         $wilayahOptions = Wilayah::orderBy('nama_wilayah')->pluck('nama_wilayah', 'id');
-        return view('admin.programs.index', compact('programs', 'wilayahOptions', 'search'));
+        return view('admin.programs.index', compact('programs', 'wilayahOptions', 'search', 'programCountByKode'));
     }
 
     public function create()
@@ -56,7 +58,6 @@ class ProgramController extends Controller
         }
 
         $validated['file_path'] = $filePath;
-        $validated['created_by'] = Auth::id();
 
         Program::create($validated);
 

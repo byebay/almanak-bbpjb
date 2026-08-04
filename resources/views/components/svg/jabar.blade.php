@@ -138,13 +138,15 @@
         font-weight: 600;
         line-height: 1.2;
         border-radius: 6px;
-        white-space: nowrap;
         box-shadow: 0 4px 6px -1px rgb(0 0 0 / 0.1);
         transform: translate(12px, 12px);
     }
 </style>
 
 <script>
+// Jumlah program per wilayah, di-preload dari server (key = kode wilayah)
+window.regionProgramCounts = @json($programCountByKode ?? []);
+
 document.addEventListener('DOMContentLoaded', function () {
     const wrapper = document.querySelector('.peta-jabar-wrapper');
     if (!wrapper) return;
@@ -152,6 +154,7 @@ document.addEventListener('DOMContentLoaded', function () {
     const infoNama = document.getElementById('info-nama');
     const infoDetail = document.getElementById('info-detail');
     const tooltip = document.getElementById('peta-wilayah-tooltip');
+    const programCounts = window.regionProgramCounts || {};
 
     wrapper.querySelectorAll('a.wilayah[data-kode]').forEach(function (el) {
         const kode = el.dataset.kode;
@@ -162,7 +165,8 @@ document.addEventListener('DOMContentLoaded', function () {
         el.removeAttribute('title');
 
         el.addEventListener('mouseenter', function () {
-            tooltip.textContent = namaWilayah;
+            const total = programCounts[kode] ?? 0;
+            tooltip.innerHTML = `<span class="font-semibold">${namaWilayah}</span><br><span class="text-xs text-gray-200">${total} program</span>`;
             tooltip.hidden = false;
         });
 
@@ -179,7 +183,7 @@ document.addEventListener('DOMContentLoaded', function () {
             e.preventDefault();
 
             const kode = this.dataset.kode;
-            if (kode === 'jabar') return; // skip elemen non-wilayah
+            if (kode === 'jabar') return;
 
             wrapper.querySelectorAll('a.wilayah').forEach(function (w) {
                 w.classList.remove('aktif');
@@ -202,8 +206,8 @@ document.addEventListener('DOMContentLoaded', function () {
                 window.dispatchEvent(new CustomEvent('open-modal', { detail: 'region-info' }));
             }
         });
-    });
-});
+    }); // <-- penutup forEach
+}); // <-- penutup DOMContentLoaded
 
 window.renderProgramsPage = function(page) {
     const data = window.regionProgramsData || [];

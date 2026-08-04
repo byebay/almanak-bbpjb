@@ -20,7 +20,7 @@
             </p>
             <p>Tautan untuk mengatur ulang kata sandi ini berlaku selama 60 menit.</p>
             <p>Jika Anda tidak merasa melakukan permintaan ini, Anda dapat mengabaikan pesan ini dengan aman.</p>
-            <p>Jika tombol di atas tidak berfungsi, salin dan tempel tautan berikut ke browser Anda:</p>
+            <p>Jika tombol di atas tidak berfungsi, salin dan tempel tautan berikut ke peramban Anda:</p>
             <p style="word-break: break-all; color: #4b5563;">{{ $url }}</p>
             <p style="margin-top: 24px;">Salam,<br>Tim {{ $appName }}</p>
         </div>

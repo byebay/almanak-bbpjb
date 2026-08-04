@@ -134,8 +134,12 @@ class PublicController extends Controller
                 'subtitle' => 'Periode: ' . Carbon::today()->subYears(4)->format('Y') . ' - ' . Carbon::today()->format('Y')
             ],
         ];
-        
-        return view('public-dashboard', compact('visitorCount', 'pegawaiPalingAwal', 'jumlahHadir', 'jumlahTerlambat', 'pegawaiCuti', 'pegawaiDinasLuar', 'chartDataGrouped'));
+
+        // --- JUMLAH PROGRAM PER WILAYAH (untuk tooltip peta) ---
+        $programCountByKode = Wilayah::withCount('programs')
+        ->pluck('programs_count', 'kode');
+
+        return view('public-dashboard', compact('visitorCount', 'pegawaiPalingAwal', 'jumlahHadir', 'jumlahTerlambat', 'pegawaiCuti', 'pegawaiDinasLuar', 'chartDataGrouped', 'programCountByKode'));
     }
 
     /**

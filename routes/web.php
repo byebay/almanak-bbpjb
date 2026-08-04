@@ -20,10 +20,6 @@ use App\Http\Controllers\AgendaImportController;
 use App\Http\Middleware\LogVisitor; // <-- Import Middleware
 use App\Http\Controllers\SharedLinkController;
 
-Route::get('/', function () {
-    return view('welcome');
-});
-
 // 1. Jadikan halaman utama (root) menunjuk ke PublicController
 Route::get('/', [PublicController::class, 'index'])->middleware(LogVisitor::class);
 
