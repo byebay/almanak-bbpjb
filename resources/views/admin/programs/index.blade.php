@@ -30,7 +30,7 @@
                         </button>
                     </div>
 
-                    <form action="{{ route('admin.programs.index') }}#daftar-program" method="GET" class="mb-6 flex flex-col sm:flex-row gap-3">
+                    <form action="{{ route('admin.programs.index') }}#daftar-program" method="GET" id="form-search-program" class="mb-6 flex flex-col sm:flex-row gap-3">
                         <div class="flex-1">
                             <label for="search" class="sr-only">Cari program</label>
                             <input
@@ -40,72 +40,23 @@
                                 value="{{ $search ?? '' }}"
                                 placeholder="Cari nama program atau wilayah..."
                                 class="block w-full border-gray-300 rounded-md shadow-sm focus:border-indigo-500 focus:ring-indigo-500 text-sm"
+                                autocomplete="off"
                             >
                         </div>
                         <div class="flex gap-2">
-                            <button type="submit" class="px-4 py-2 bg-blue-600 text-white rounded-md hover:bg-blue-700 text-sm font-medium">
-                                Cari
+                            <button
+                                type="button"
+                                id="btn-tampilkan-semua"
+                                onclick="document.getElementById('search').value=''; document.getElementById('search').dispatchEvent(new Event('input'));"
+                                class="inline-flex items-center px-4 py-2 bg-gray-100 text-gray-700 rounded-md hover:bg-gray-200 text-sm font-medium {{ $search ? '' : 'hidden' }}">
+                                Reset
                             </button>
-                            @if ($search)
-                                <a href="{{ route('admin.programs.index') }}#daftar-program" class="inline-flex items-center px-4 py-2 bg-gray-100 text-gray-700 rounded-md hover:bg-gray-200 text-sm font-medium">
-                                    Reset
-                                </a>
-                            @endif
                         </div>
                     </form>
 
-                    <div class="overflow-x-auto">
-                        <table class="min-w-full divide-y divide-gray-200">
-                            <thead class="bg-gray-50">
-                                <tr>
-                                    <th class="w-64 px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">Nama Program</th>
-                                    <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">Wilayah</th>
-
-                                    <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">Tanggal Mulai</th>
-                                    <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">Tanggal Selesai</th>
-                                    <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">Aksi</th>
-                                </tr>
-                            </thead>
-                            <tbody class="bg-white divide-y divide-gray-200 [&>tr>td]:align-top">
-                                @forelse ($programs as $program)
-                                    <tr>
-                                        <td class="w-64 px-6 py-4 align-top text-sm text-gray-900 whitespace-normal break-words">{{ $program->nama_program }}</td>
-                                        <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-900">{{ $program->wilayah?->nama_wilayah ?? 'Tidak ditentukan' }}</td>
-
-                                        <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-900">
-                                            {{ $program->tanggal_mulai ? \Carbon\Carbon::parse($program->tanggal_mulai)->format('d/m/Y') : '-' }}
-                                        </td>
-                                        <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-900">
-                                            {{ $program->tanggal_selesai ? \Carbon\Carbon::parse($program->tanggal_selesai)->format('d/m/Y') : '-' }}
-                                        </td>
-                                        <td class="px-6 py-4 whitespace-nowrap text-sm font-medium">
-                                            <div class="flex items-center">
-                                                <a href="{{ route('admin.programs.show', $program) }}" class="inline-flex items-center px-3 py-1 bg-gray-100 text-gray-700 rounded-md hover:bg-gray-200 text-sm border border-gray-200 shadow-sm">
-                                                    Detail
-                                                </a>
-                                            </div>
-                                        </td>
-                                    </tr>
-                                @empty
-                                    <tr>
-                                        <td colspan="5" class="px-6 py-4 text-center text-gray-500">
-                                            @if ($search)
-                                                Tidak ada program yang cocok dengan pencarian "{{ $search }}".
-                                            @else
-                                                Belum ada data program.
-                                            @endif
-                                        </td>
-                                    </tr>
-                                @endforelse
-                            </tbody>
-                        </table>
+                    <div id="tabel-program-wrapper">
+                        @include('admin.programs._table')
                     </div>
-
-                    @if ($programs->hasPages())
-                        <div class="mt-6">
-                            {{ $programs->links() }}
-                        </div>
-                    @endif
                 </div>
             </div>
         </div>
@@ -237,6 +188,26 @@
     </x-modal>
 
     <script>
+        (function () {
+            const searchInput = document.getElementById('search');
+            const searchForm = document.getElementById('form-search-program');
+            let debounceTimer;
+
+            searchInput.addEventListener('input', function () {
+                clearTimeout(debounceTimer);
+                const query = this.value;
+
+                const tampilkanSemuaBtn = document.getElementById('btn-tampilkan-semua');
+                if (query) {
+                    tampilkanSemuaBtn.classList.remove('hidden');
+                } else {
+                    tampilkanSemuaBtn.classList.add('hidden');
+                }
+
+                debounceTimer = setTimeout(() => doSearch(query), 200);
+            });
+        })();
+
         function openEditProgramModal(program) {
             document.getElementById('editProgramForm').action = `/admin/programs/${program.id}`;
             document.getElementById('edit_nama_program').value = program.nama_program || '';
@@ -253,5 +224,59 @@
             
             window.dispatchEvent(new CustomEvent('open-modal', { detail: 'edit-program' }));
         }
+
+        (function () {
+            const searchInput = document.getElementById('search');
+            const tableWrapper = document.getElementById('tabel-program-wrapper');
+            const baseUrl = "{{ route('admin.programs.index') }}";
+            let debounceTimer;
+            let currentController = null;
+
+            function doSearch(query) {
+                // Batalkan request sebelumnya kalau masih jalan, cegah race condition
+                if (currentController) currentController.abort();
+                currentController = new AbortController();
+
+                const url = query
+                    ? `${baseUrl}?search=${encodeURIComponent(query)}`
+                    : baseUrl;
+
+                fetch(url, {
+                    headers: { 'X-Requested-With': 'XMLHttpRequest' },
+                    signal: currentController.signal,
+                })
+                    .then(res => res.text())
+                    .then(html => {
+                        tableWrapper.innerHTML = html;
+                        // Update URL browser tanpa reload, biar bisa di-bookmark/refresh
+                        const newUrl = query
+                            ? `${baseUrl}?search=${encodeURIComponent(query)}#daftar-program`
+                            : `${baseUrl}#daftar-program`;
+                        window.history.replaceState({}, '', newUrl);
+                    })
+                    .catch(err => {
+                        if (err.name !== 'AbortError') console.error('Gagal memuat data:', err);
+                    });
+
+                const tampilkanSemuaBtn = document.getElementById('btn-tampilkan-semua');
+                    if (query) {
+                        tampilkanSemuaBtn.classList.remove('hidden');
+                    } else {
+                        tampilkanSemuaBtn.classList.add('hidden');
+                    }
+            }
+
+            searchInput.addEventListener('input', function () {
+                clearTimeout(debounceTimer);
+                const query = this.value;
+                debounceTimer = setTimeout(() => doSearch(query), 150);
+            });
+
+            // Cegah submit form biasa (klik tombol Cari / tekan Enter) supaya tetap konsisten pakai fetch juga
+            document.getElementById('form-search-program').addEventListener('submit', function (e) {
+                e.preventDefault();
+                doSearch(searchInput.value);
+            });
+        })();
     </script>
 </x-app-layout>

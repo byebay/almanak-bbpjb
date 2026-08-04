@@ -30,8 +30,13 @@ class ProgramController extends Controller
             ->fragment('daftar-program');
 
         $programCountByKode = Wilayah::withCount('programs')->pluck('programs_count', 'kode');
-
         $wilayahOptions = Wilayah::orderBy('nama_wilayah')->pluck('nama_wilayah', 'id');
+
+        // Kalau request datang dari fetch() JS, cukup balikin HTML tabelnya saja
+        if ($request->ajax() || $request->wantsJson()) {
+            return view('admin.programs._table', compact('programs', 'search'))->render();
+        }
+
         return view('admin.programs.index', compact('programs', 'wilayahOptions', 'search', 'programCountByKode'));
     }
 
