@@ -15,7 +15,7 @@
                     <div class="mt-4 w-64">
                         <div class="text-sm text-gray-900 mb-1 font-medium">Jumlah Program:</div>
                         <!-- Batang Gradasi -->
-                        <div class="h-3 w-full rounded-sm shadow-inner" style="background: linear-gradient(to right, #dbeafe, #2563eb);"></div>
+                        <div class="h-3 w-full rounded-sm shadow-inner" style="background: linear-gradient(to right, #f4f5f6ff, #0b43bf);"></div>
                         
                         <!-- Tempat Angka Rentang (Diisi oleh JavaScript) -->
                         <div id="legend-ticks" class="relative w-full h-8 mt-0 text-[15px] text-gray-600 font-mono">
