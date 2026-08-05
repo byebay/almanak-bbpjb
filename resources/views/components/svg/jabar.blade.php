@@ -115,13 +115,14 @@
     }
     .peta-jabar-wrapper a.wilayah path {
         cursor: pointer;
-        transition: fill 0.15s ease-in-out;
+        transition: filter 0.15s ease-in-out, stroke-width 0.15s ease-in-out;
     }
     .peta-jabar-wrapper a.wilayah:hover path {
-        fill: #3b82f6 !important;
+        filter: brightness(0.85);
     }
     .peta-jabar-wrapper a.wilayah.aktif path {
-        fill: #1d4ed8 !important;
+        stroke: #1e3a8a !important;
+        stroke-width: 2 !important;
     }
     /* Elemen "jabar" biasanya garis batas/pulau kecil di luar kab-kota, non-klik */
     .peta-jabar-wrapper a.wilayah[data-kode="jabar"] {
@@ -156,6 +157,27 @@ document.addEventListener('DOMContentLoaded', function () {
     const tooltip = document.getElementById('peta-wilayah-tooltip');
     const programCounts = window.regionProgramCounts || {};
 
+    // === HEATMAP: hitung skala warna berdasarkan jumlah program ===
+    const maxCount = Math.max(1, ...Object.values(programCounts));
+
+    const legendMaxElement = document.getElementById('legend-max');
+    if (legendMaxElement) {
+        legendMaxElement.textContent = maxCount + ' Program'; 
+        // Jika ingin ada teksnya, gunakan: maxCount + ' Program'
+    }
+
+    function getHeatColor(count) {
+        if (!count || count <= 0) return '#f3f4f6'; // abu-abu terang untuk 0 program
+        const ratio = Math.min(count / maxCount, 1);
+        // interpolasi dari biru muda ke biru utama
+        const start = { r: 219, g: 234, b: 254 }; // biru muda
+        const end = { r: 37, g: 99, b: 235 };     // biru utama (#2563eb)
+        const r = Math.round(start.r + (end.r - start.r) * ratio);
+        const g = Math.round(start.g + (end.g - start.g) * ratio);
+        const b = Math.round(start.b + (end.b - start.b) * ratio);
+        return `rgb(${r}, ${g}, ${b})`;
+    }
+
     wrapper.querySelectorAll('a.wilayah[data-kode]').forEach(function (el) {
         const kode = el.dataset.kode;
         if (kode === 'jabar') return;
@@ -163,6 +185,11 @@ document.addEventListener('DOMContentLoaded', function () {
         const namaWilayah = el.getAttribute('xlink:title') || el.getAttribute('title') || kode;
         el.removeAttribute('xlink:title');
         el.removeAttribute('title');
+
+        const total = programCounts[kode] ?? 0;
+        const warna = getHeatColor(total);
+        
+        el.style.fill = warna;
 
         el.addEventListener('mouseenter', function () {
             const total = programCounts[kode] ?? 0;

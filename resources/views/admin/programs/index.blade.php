@@ -12,6 +12,13 @@
                     <h3 class="text-2xl font-bold mb-2">Peta Sebaran Program Jawa Barat</h3>
                     <p class="text-sm text-gray-600 mb-4">Klik wilayah pada peta untuk melihat detail program dan informasi wilayah.</p>
                     @include('components.svg.jabar')
+                    <div class="flex items-center gap-2 mt-3 text-xs text-gray-600">
+                        <span>0 Program</span>
+                        <div class="flex h-3 w-32 rounded-full overflow-hidden">
+                            <div class="flex-1" style="background: linear-gradient(to right, #dbeafe, #2563eb);"></div>
+                        </div>
+                        <span id="legend-max">Banyak Program</span>
+                    </div>
                 </div>
             </div>
 
