@@ -160,10 +160,28 @@ document.addEventListener('DOMContentLoaded', function () {
     // === HEATMAP: hitung skala warna berdasarkan jumlah program ===
     const maxCount = Math.max(1, ...Object.values(programCounts));
 
-    const legendMaxElement = document.getElementById('legend-max');
-    if (legendMaxElement) {
-        legendMaxElement.textContent = maxCount + ' Program'; 
-        // Jika ingin ada teksnya, gunakan: maxCount + ' Program'
+    // === KODE UNTUK RENTANG LEGENDA DINAMIS ===
+    const legendTicksElement = document.getElementById('legend-ticks');
+    if (legendTicksElement) {
+        // Tentukan jumlah potongan/segmen (Default: 4 segmen untuk 5 titik angka)
+        // Jika maxCount sangat kecil (misal hanya 2 program), sesuaikan agar angka tidak berulang
+        const segments = maxCount < 4 ? maxCount : 4; 
+        let ticksHTML = '';
+
+        for (let i = 0; i <= segments; i++) {
+            // Hitung nilai di titik ini
+            const val = Math.round((maxCount / segments) * i);
+            // Hitung posisi persentase dari kiri
+            const percent = (i / segments) * 100;
+            
+            // Buat garis indikator kecil (tick) dan angkanya
+            ticksHTML += `
+            <div class="absolute flex flex-col items-center" style="left: ${percent}%; transform: translateX(-50%);">
+                <div class="h-1.5 w-px bg-gray-400 mb-0.5"></div>
+                <span>${val}</span>
+            </div>`;
+        }
+        legendTicksElement.innerHTML = ticksHTML;
     }
 
     function getHeatColor(count) {

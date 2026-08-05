@@ -12,12 +12,15 @@
                     <h3 class="text-2xl font-bold mb-2">Peta Sebaran Program Jawa Barat</h3>
                     <p class="text-sm text-gray-600 mb-4">Klik wilayah pada peta untuk melihat detail program dan informasi wilayah.</p>
                     @include('components.svg.jabar')
-                    <div class="flex items-center gap-2 mt-3 text-xs text-gray-600">
-                        <span>0 Program</span>
-                        <div class="flex h-3 w-32 rounded-full overflow-hidden">
-                            <div class="flex-1" style="background: linear-gradient(to right, #dbeafe, #2563eb);"></div>
+                    <div class="mt-4 w-64">
+                        <div class="text-sm text-gray-900 mb-1 font-medium">Jumlah Program:</div>
+                        <!-- Batang Gradasi -->
+                        <div class="h-3 w-full rounded-sm shadow-inner" style="background: linear-gradient(to right, #dbeafe, #2563eb);"></div>
+                        
+                        <!-- Tempat Angka Rentang (Diisi oleh JavaScript) -->
+                        <div id="legend-ticks" class="relative w-full h-8 mt-0 text-[15px] text-gray-600 font-mono">
+                            <!-- Elemen rentang akan di-generate di sini -->
                         </div>
-                        <span id="legend-max">Banyak Program</span>
                     </div>
                 </div>
             </div>
