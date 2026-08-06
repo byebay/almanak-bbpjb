@@ -89,8 +89,8 @@
 
                 <div>
                     <x-input-label for="wilayah_id" :value="__('Wilayah')" />
-                    <select id="wilayah_id" name="wilayah_id" class="mt-1 block w-full border-gray-300 rounded-md shadow-sm focus:border-indigo-500 focus:ring-indigo-500">
-                        <option value="">Pilih Wilayah</option>
+                    <select id="wilayah_id" name="wilayah_id" class="mt-1 block w-full border-gray-300 rounded-md shadow-sm focus:border-indigo-500 focus:ring-indigo-500" required>
+                        <option value="" disabled {{ old('wilayah_id') == '' ? 'selected' : '' }}>Pilih Wilayah</option>
                         @foreach ($wilayahOptions as $id => $nama)
                             <option value="{{ $id }}" {{ old('wilayah_id') == $id ? 'selected' : '' }}>{{ $nama }}</option>
                         @endforeach
@@ -99,31 +99,38 @@
                 </div>
                 <div>
                     <x-input-label for="tim_kerja" :value="__('Tim Kerja')" />
-                    <select id="tim_kerja" name="tim_kerja" class="mt-1 block w-full border-gray-300 rounded-md shadow-sm focus:border-indigo-500 focus:ring-indigo-500">
-                        <option value="">Pilih Tim Kerja (Opsional)</option>
+                    <select id="tim_kerja" name="tim_kerja" class="mt-1 block w-full border-gray-300 rounded-md shadow-sm focus:border-indigo-500 focus:ring-indigo-500" required>
+                        <option value="" disabled {{ old('tim_kerja') == '' ? 'selected' : '' }}>Pilih Tim Kerja</option>
                         <option value="Tim Kerja Pengembangan" {{ old('tim_kerja') == 'Tim Kerja Pengembangan' ? 'selected' : '' }}>Tim Kerja Pengembangan</option>
                         <option value="Tim Kerja Pembinaan" {{ old('tim_kerja') == 'Tim Kerja Pembinaan' ? 'selected' : '' }}>Tim Kerja Pembinaan</option>
                         <option value="Tim Kerja Pelindungan" {{ old('tim_kerja') == 'Tim Kerja Pelindungan' ? 'selected' : '' }}>Tim Kerja Pelindungan</option>
-                        <option value="Statistik" {{ old('tim_kerja') == 'Statistik' ? 'selected' : '' }}>Statistik</option>
                     </select>
                     <x-input-error :messages="$errors->get('tim_kerja')" class="mt-2" />
                 </div>
 
+                <div id="sub_tim_kerja_container">
+                    <x-input-label for="sub_tim_kerja" :value="__('Sub Tim Kerja')" />
+                    <select id="sub_tim_kerja" name="sub_tim_kerja" class="mt-1 block w-full border-gray-300 rounded-md shadow-sm focus:border-indigo-500 focus:ring-indigo-500" disabled required>
+                        <option value="" disabled selected>Pilih Sub Tim Kerja</option>
+                    </select>
+                    <x-input-error :messages="$errors->get('sub_tim_kerja')" class="mt-2" />
+                </div>
+
                 <div>
                     <x-input-label for="tanggal_mulai" :value="__('Tanggal Mulai')" />
-                    <x-text-input id="tanggal_mulai" name="tanggal_mulai" type="date" class="mt-1 block w-full" :value="old('tanggal_mulai')" />
+                    <x-text-input id="tanggal_mulai" name="tanggal_mulai" type="date" class="mt-1 block w-full" :value="old('tanggal_mulai')" required />
                     <x-input-error :messages="$errors->get('tanggal_mulai')" class="mt-2" />
                 </div>
 
                 <div>
                     <x-input-label for="tanggal_selesai" :value="__('Tanggal Selesai')" />
-                    <x-text-input id="tanggal_selesai" name="tanggal_selesai" type="date" class="mt-1 block w-full" :value="old('tanggal_selesai')" />
+                    <x-text-input id="tanggal_selesai" name="tanggal_selesai" type="date" class="mt-1 block w-full" :value="old('tanggal_selesai')" required />
                     <x-input-error :messages="$errors->get('tanggal_selesai')" class="mt-2" />
                 </div>
 
                 <div>
                     <x-input-label for="deskripsi" :value="__('Deskripsi Program')" />
-                    <textarea id="deskripsi" name="deskripsi" class="mt-1 block w-full border-gray-300 focus:border-indigo-500 focus:ring-indigo-500 rounded-md shadow-sm" rows="4">{{ old('deskripsi') }}</textarea>
+                    <textarea id="deskripsi" name="deskripsi" class="mt-1 block w-full border-gray-300 focus:border-indigo-500 focus:ring-indigo-500 rounded-md shadow-sm" rows="4" required>{{ old('deskripsi') }}</textarea>
                     <x-input-error :messages="$errors->get('deskripsi')" class="mt-2" />
                 </div>
 
@@ -163,8 +170,8 @@
 
                 <div>
                     <x-input-label for="edit_wilayah_id" :value="__('Wilayah')" />
-                    <select id="edit_wilayah_id" name="wilayah_id" class="mt-1 block w-full border-gray-300 rounded-md shadow-sm focus:border-indigo-500 focus:ring-indigo-500">
-                        <option value="">Pilih Wilayah</option>
+                    <select id="edit_wilayah_id" name="wilayah_id" class="mt-1 block w-full border-gray-300 rounded-md shadow-sm focus:border-indigo-500 focus:ring-indigo-500" required>
+                        <option value="" disabled selected>Pilih Wilayah</option>
                         @foreach ($wilayahOptions as $id => $nama)
                             <option value="{{ $id }}">{{ $nama }}</option>
                         @endforeach
@@ -173,26 +180,32 @@
 
                 <div>
                     <x-input-label for="edit_tim_kerja" :value="__('Tim Kerja')" />
-                    <select id="edit_tim_kerja" name="tim_kerja" class="mt-1 block w-full border-gray-300 rounded-md shadow-sm focus:border-indigo-500 focus:ring-indigo-500">
-                        <option value="">Pilih Tim Kerja (Opsional)</option>
+                    <select id="edit_tim_kerja" name="tim_kerja" class="mt-1 block w-full border-gray-300 rounded-md shadow-sm focus:border-indigo-500 focus:ring-indigo-500" required>
+                        <option value="" disabled selected>Pilih Tim Kerja</option>
                         <option value="Tim Kerja Pengembangan">Tim Kerja Pengembangan</option>
                         <option value="Tim Kerja Pembinaan">Tim Kerja Pembinaan</option>
                         <option value="Tim Kerja Pelindungan">Tim Kerja Pelindungan</option>
-                        <option value="Statistik">Statistik</option>
+                    </select>
+                </div>
+
+                <div id="edit_sub_tim_kerja_container">
+                    <x-input-label for="edit_sub_tim_kerja" :value="__('Sub Tim Kerja')" />
+                    <select id="edit_sub_tim_kerja" name="sub_tim_kerja" class="mt-1 block w-full border-gray-300 rounded-md shadow-sm focus:border-indigo-500 focus:ring-indigo-500" disabled required>
+                        <option value="" disabled selected>Pilih Sub Tim Kerja</option>
                     </select>
                 </div>
                     <x-input-label for="edit_tanggal_mulai" :value="__('Tanggal Mulai')" />
-                    <x-text-input id="edit_tanggal_mulai" name="tanggal_mulai" type="date" class="mt-1 block w-full" />
+                    <x-text-input id="edit_tanggal_mulai" name="tanggal_mulai" type="date" class="mt-1 block w-full" required />
                 </div>
 
                 <div>
                     <x-input-label for="edit_tanggal_selesai" :value="__('Tanggal Selesai')" />
-                    <x-text-input id="edit_tanggal_selesai" name="tanggal_selesai" type="date" class="mt-1 block w-full" />
+                    <x-text-input id="edit_tanggal_selesai" name="tanggal_selesai" type="date" class="mt-1 block w-full" required />
                 </div>
 
                 <div>
                     <x-input-label for="edit_deskripsi" :value="__('Deskripsi Program')" />
-                    <textarea id="edit_deskripsi" name="deskripsi" class="mt-1 block w-full border-gray-300 focus:border-indigo-500 focus:ring-indigo-500 rounded-md shadow-sm" rows="4"></textarea>
+                    <textarea id="edit_deskripsi" name="deskripsi" class="mt-1 block w-full border-gray-300 focus:border-indigo-500 focus:ring-indigo-500 rounded-md shadow-sm" rows="4" required></textarea>
                 </div>
 
                 <div>
@@ -234,11 +247,79 @@
             });
         })();
 
+        const subTimMap = {
+            'Tim Kerja Pengembangan': [
+                'Kamus dan Istilah',
+                'BIPA'
+            ],
+            'Tim Kerja Pembinaan': [
+                'Pembahu',
+                'Literasi',
+                'UKBI',
+                'Penerjemahan'
+            ],
+            'Tim Kerja Pelindungan': [
+                'Molinbastra'
+            ]
+        };
+
+        function updateSubTimOptions(timSelect, subContainer, subSelect, selectedSubVal = '') {
+            const selectedTim = timSelect.value;
+            subSelect.innerHTML = '<option value="" disabled selected>Pilih Sub Tim Kerja</option>';
+
+            if (selectedTim && subTimMap[selectedTim]) {
+                subSelect.disabled = false;
+                subTimMap[selectedTim].forEach(function (sub) {
+                    const option = document.createElement('option');
+                    option.value = sub;
+                    option.textContent = sub;
+                    if (sub === selectedSubVal) {
+                        option.selected = true;
+                    }
+                    subSelect.appendChild(option);
+                });
+            } else {
+                subSelect.disabled = true;
+            }
+        }
+
+        document.addEventListener('DOMContentLoaded', function () {
+            // Setup for Create Modal
+            const timKerjaCreate = document.getElementById('tim_kerja');
+            const subTimContainerCreate = document.getElementById('sub_tim_kerja_container');
+            const subTimSelectCreate = document.getElementById('sub_tim_kerja');
+            const oldSubTimKerja = "{{ old('sub_tim_kerja') }}";
+
+            timKerjaCreate.addEventListener('change', function () {
+                updateSubTimOptions(timKerjaCreate, subTimContainerCreate, subTimSelectCreate);
+            });
+
+            if (timKerjaCreate.value) {
+                updateSubTimOptions(timKerjaCreate, subTimContainerCreate, subTimSelectCreate, oldSubTimKerja);
+            }
+
+            // Setup for Edit Modal
+            const timKerjaEdit = document.getElementById('edit_tim_kerja');
+            const subTimContainerEdit = document.getElementById('edit_sub_tim_kerja_container');
+            const subTimSelectEdit = document.getElementById('edit_sub_tim_kerja');
+
+            timKerjaEdit.addEventListener('change', function () {
+                updateSubTimOptions(timKerjaEdit, subTimContainerEdit, subTimSelectEdit);
+            });
+        });
+
         function openEditProgramModal(program) {
             document.getElementById('editProgramForm').action = `/admin/programs/${program.id}`;
             document.getElementById('edit_nama_program').value = program.nama_program || '';
             document.getElementById('edit_wilayah_id').value = program.wilayah_id || '';
             document.getElementById('edit_tim_kerja').value = program.tim_kerja || '';
+            
+            // Trigger sub-team options update and pre-select the program's sub_tim_kerja
+            const timKerjaEdit = document.getElementById('edit_tim_kerja');
+            const subTimContainerEdit = document.getElementById('edit_sub_tim_kerja_container');
+            const subTimSelectEdit = document.getElementById('edit_sub_tim_kerja');
+            updateSubTimOptions(timKerjaEdit, subTimContainerEdit, subTimSelectEdit, program.sub_tim_kerja || '');
+
             // Format dates from YYYY-MM-DD HH:MM:SS to YYYY-MM-DD if needed
             let start = program.tanggal_mulai ? program.tanggal_mulai.split(' ')[0] : '';
             let end = program.tanggal_selesai ? program.tanggal_selesai.split(' ')[0] : '';

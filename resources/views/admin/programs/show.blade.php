@@ -27,7 +27,12 @@
 
                         <div>
                             <p class="text-sm font-medium text-gray-500">Tim Kerja</p>
-                            <p class="mt-1 text-sm text-gray-900">{{ $program->tim_kerja ?: '-' }}</p>
+                            <p class="mt-1 text-sm text-gray-900">
+                                {{ $program->tim_kerja ?: '-' }}
+                                @if($program->sub_tim_kerja)
+                                    <span class="text-xs text-gray-500 block">({{ $program->sub_tim_kerja }})</span>
+                                @endif
+                            </p>
                         </div>
 
                         <div>
@@ -121,8 +126,8 @@
                 @endphp
                 <div>
                     <x-input-label for="wilayah_id" :value="__('Wilayah')" />
-                    <select id="wilayah_id" name="wilayah_id" class="mt-1 block w-full border-gray-300 rounded-md shadow-sm focus:border-indigo-500 focus:ring-indigo-500">
-                        <option value="">Pilih Wilayah</option>
+                    <select id="wilayah_id" name="wilayah_id" class="mt-1 block w-full border-gray-300 rounded-md shadow-sm focus:border-indigo-500 focus:ring-indigo-500" required>
+                        <option value="" disabled {{ old('wilayah_id', $program->wilayah_id) == '' ? 'selected' : '' }}>Pilih Wilayah</option>
                         @foreach ($wilayahOptions as $id => $nama)
                             <option value="{{ $id }}" {{ old('wilayah_id', $program->wilayah_id) == $id ? 'selected' : '' }}>{{ $nama }}</option>
                         @endforeach
@@ -132,31 +137,38 @@
 
                 <div>
                     <x-input-label for="tim_kerja" :value="__('Tim Kerja')" />
-                    <select id="tim_kerja" name="tim_kerja" class="mt-1 block w-full border-gray-300 rounded-md shadow-sm focus:border-indigo-500 focus:ring-indigo-500">
-                        <option value="">Pilih Tim Kerja (Opsional)</option>
+                    <select id="tim_kerja" name="tim_kerja" class="mt-1 block w-full border-gray-300 rounded-md shadow-sm focus:border-indigo-500 focus:ring-indigo-500" required>
+                        <option value="" disabled {{ old('tim_kerja', $program->tim_kerja) == '' ? 'selected' : '' }}>Pilih Tim Kerja</option>
                         <option value="Tim Kerja Pengembangan" {{ old('tim_kerja', $program->tim_kerja) == 'Tim Kerja Pengembangan' ? 'selected' : '' }}>Tim Kerja Pengembangan</option>
                         <option value="Tim Kerja Pembinaan" {{ old('tim_kerja', $program->tim_kerja) == 'Tim Kerja Pembinaan' ? 'selected' : '' }}>Tim Kerja Pembinaan</option>
                         <option value="Tim Kerja Pelindungan" {{ old('tim_kerja', $program->tim_kerja) == 'Tim Kerja Pelindungan' ? 'selected' : '' }}>Tim Kerja Pelindungan</option>
-                        <option value="Statistik" {{ old('tim_kerja', $program->tim_kerja) == 'Statistik' ? 'selected' : '' }}>Statistik</option>
                     </select>
                     <x-input-error :messages="$errors->get('tim_kerja')" class="mt-2" />
                 </div>
 
+                <div id="sub_tim_kerja_container">
+                    <x-input-label for="sub_tim_kerja" :value="__('Sub Tim Kerja')" />
+                    <select id="sub_tim_kerja" name="sub_tim_kerja" class="mt-1 block w-full border-gray-300 rounded-md shadow-sm focus:border-indigo-500 focus:ring-indigo-500" disabled required>
+                        <option value="" disabled selected>Pilih Sub Tim Kerja</option>
+                    </select>
+                    <x-input-error :messages="$errors->get('sub_tim_kerja')" class="mt-2" />
+                </div>
+
                 <div>
                     <x-input-label for="tanggal_mulai" :value="__('Tanggal Mulai')" />
-                    <x-text-input id="tanggal_mulai" name="tanggal_mulai" type="date" class="mt-1 block w-full" :value="old('tanggal_mulai', $program->tanggal_mulai ? explode(' ', $program->tanggal_mulai)[0] : '')" />
+                    <x-text-input id="tanggal_mulai" name="tanggal_mulai" type="date" class="mt-1 block w-full" :value="old('tanggal_mulai', $program->tanggal_mulai ? explode(' ', $program->tanggal_mulai)[0] : '')" required />
                     <x-input-error :messages="$errors->get('tanggal_mulai')" class="mt-2" />
                 </div>
 
                 <div>
                     <x-input-label for="tanggal_selesai" :value="__('Tanggal Selesai')" />
-                    <x-text-input id="tanggal_selesai" name="tanggal_selesai" type="date" class="mt-1 block w-full" :value="old('tanggal_selesai', $program->tanggal_selesai ? explode(' ', $program->tanggal_selesai)[0] : '')" />
+                    <x-text-input id="tanggal_selesai" name="tanggal_selesai" type="date" class="mt-1 block w-full" :value="old('tanggal_selesai', $program->tanggal_selesai ? explode(' ', $program->tanggal_selesai)[0] : '')" required />
                     <x-input-error :messages="$errors->get('tanggal_selesai')" class="mt-2" />
                 </div>
 
                 <div>
                     <x-input-label for="deskripsi" :value="__('Deskripsi Program')" />
-                    <textarea id="deskripsi" name="deskripsi" class="mt-1 block w-full border-gray-300 focus:border-indigo-500 focus:ring-indigo-500 rounded-md shadow-sm" rows="4">{{ old('deskripsi', $program->deskripsi) }}</textarea>
+                    <textarea id="deskripsi" name="deskripsi" class="mt-1 block w-full border-gray-300 focus:border-indigo-500 focus:ring-indigo-500 rounded-md shadow-sm" rows="4" required>{{ old('deskripsi', $program->deskripsi) }}</textarea>
                     <x-input-error :messages="$errors->get('deskripsi')" class="mt-2" />
                 </div>
 
@@ -178,4 +190,58 @@
             </div>
         </form>
     </x-modal>
+
+    @push('scripts')
+    <script>
+        document.addEventListener('DOMContentLoaded', function () {
+            const timKerjaSelect = document.getElementById('tim_kerja');
+            const subTimKerjaContainer = document.getElementById('sub_tim_kerja_container');
+            const subTimKerjaSelect = document.getElementById('sub_tim_kerja');
+
+            const subTimMap = {
+                'Tim Kerja Pengembangan': [
+                    'Kamus dan Istilah',
+                    'BIPA'
+                ],
+                'Tim Kerja Pembinaan': [
+                    'Pembahu',
+                    'Literasi',
+                    'UKBI',
+                    'Penerjemahan'
+                ],
+                'Tim Kerja Pelindungan': [
+                    'Molinbastra'
+                ]
+            };
+
+            const oldSubTimKerja = "{{ old('sub_tim_kerja', $program->sub_tim_kerja) }}";
+
+            function updateSubTimKerja() {
+                const selectedTim = timKerjaSelect.value;
+                subTimKerjaSelect.innerHTML = '<option value="" disabled selected>Pilih Sub Tim Kerja</option>';
+ 
+                if (selectedTim && subTimMap[selectedTim]) {
+                    subTimKerjaSelect.disabled = false;
+                    subTimMap[selectedTim].forEach(function (sub) {
+                        const option = document.createElement('option');
+                        option.value = sub;
+                        option.textContent = sub;
+                        if (sub === oldSubTimKerja) {
+                            option.selected = true;
+                        }
+                        subTimKerjaSelect.appendChild(option);
+                    });
+                } else {
+                    subTimKerjaSelect.disabled = true;
+                }
+            }
+
+            timKerjaSelect.addEventListener('change', updateSubTimKerja);
+            
+            if (timKerjaSelect.value) {
+                updateSubTimKerja();
+            }
+        });
+    </script>
+    @endpush
 </x-app-layout>

@@ -50,11 +50,12 @@ class ProgramController extends Controller
     {
         $validated = $request->validate([
             'nama_program' => 'required|string|max:255',
-            'wilayah_id' => 'nullable|exists:wilayah,id',
-            'tim_kerja' => 'nullable|in:Tim Kerja Pengembangan,Tim Kerja Pembinaan,Tim Kerja Pelindungan,Statistik',
-            'deskripsi' => 'nullable|string',
-            'tanggal_mulai' => 'nullable|date',
-            'tanggal_selesai' => 'nullable|date|after_or_equal:tanggal_mulai',
+            'wilayah_id' => 'required|exists:wilayah,id',
+            'tim_kerja' => 'required|in:Tim Kerja Pengembangan,Tim Kerja Pembinaan,Tim Kerja Pelindungan',
+            'sub_tim_kerja' => 'required|string|max:255',
+            'deskripsi' => 'required|string',
+            'tanggal_mulai' => 'required|date',
+            'tanggal_selesai' => 'required|date|after_or_equal:tanggal_mulai',
             'file_path' => 'nullable|file|mimes:pdf,docx,jpg,jpeg,png,webp|max:5120',
         ]);
 
@@ -98,11 +99,12 @@ class ProgramController extends Controller
     {
         $validated = $request->validate([
             'nama_program' => 'required|string|max:255',
-            'wilayah_id' => 'nullable|exists:wilayah,id',
-            'tim_kerja' => 'nullable|in:Tim Kerja Pengembangan,Tim Kerja Pembinaan,Tim Kerja Pelindungan,Statistik',
-            'deskripsi' => 'nullable|string',
-            'tanggal_mulai' => 'nullable|date',
-            'tanggal_selesai' => 'nullable|date|after_or_equal:tanggal_mulai',
+            'wilayah_id' => 'required|exists:wilayah,id',
+            'tim_kerja' => 'required|in:Tim Kerja Pengembangan,Tim Kerja Pembinaan,Tim Kerja Pelindungan',
+            'sub_tim_kerja' => 'required|string|max:255',
+            'deskripsi' => 'required|string',
+            'tanggal_mulai' => 'required|date',
+            'tanggal_selesai' => 'required|date|after_or_equal:tanggal_mulai',
             'file_path' => 'nullable|file|mimes:pdf,docx,jpg,jpeg,png,webp|max:5120',
         ]);
         

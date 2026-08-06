@@ -383,7 +383,7 @@ window.showProgramDetailModal = function(id, tanggal) {
     if (!p) return;
 
     document.getElementById('pd-title').textContent = p.nama_program || '-';
-    document.getElementById('pd-tim-kerja').textContent = p.tim_kerja || '-';
+    document.getElementById('pd-tim-kerja').textContent = p.tim_kerja ? (p.tim_kerja + (p.sub_tim_kerja ? ' (' + p.sub_tim_kerja + ')' : '')) : '-';
     
     document.getElementById('pd-tanggal').textContent = tanggal || '-';
     document.getElementById('pd-deskripsi').textContent = p.deskripsi || '-';
