@@ -157,6 +157,7 @@ class PublicController extends Controller
                 return [
                     'id' => $program->id,
                     'nama_program' => $program->nama_program,
+                    'tim_kerja' => $program->tim_kerja,
                     'deskripsi' => $program->deskripsi,
                     'tanggal_mulai' => $program->tanggal_mulai,
                     'tanggal_selesai' => $program->tanggal_selesai,

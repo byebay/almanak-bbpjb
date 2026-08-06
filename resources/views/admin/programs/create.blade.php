@@ -30,6 +30,18 @@
                         </div>
 
                         <div>
+                            <x-input-label for="tim_kerja" :value="__('Tim Kerja')" />
+                            <select id="tim_kerja" name="tim_kerja" class="mt-1 block w-full border-gray-300 rounded-md shadow-sm focus:border-indigo-500 focus:ring-indigo-500">
+                                <option value="">Pilih Tim Kerja (Opsional)</option>
+                                <option value="Tim Kerja Pengembangan" {{ old('tim_kerja') == 'Tim Kerja Pengembangan' ? 'selected' : '' }}>Tim Kerja Pengembangan</option>
+                                <option value="Tim Kerja Pembinaan" {{ old('tim_kerja') == 'Tim Kerja Pembinaan' ? 'selected' : '' }}>Tim Kerja Pembinaan</option>
+                                <option value="Tim Kerja Pelindungan" {{ old('tim_kerja') == 'Tim Kerja Pelindungan' ? 'selected' : '' }}>Tim Kerja Pelindungan</option>
+                                <option value="Statistik" {{ old('tim_kerja') == 'Statistik' ? 'selected' : '' }}>Statistik</option>
+                            </select>
+                            <x-input-error :messages="$errors->get('tim_kerja')" class="mt-2" />
+                        </div>
+
+                        <div>
                             <x-input-label for="deskripsi" :value="__('Deskripsi Program')" />
                             <textarea id="deskripsi" name="deskripsi" class="mt-1 block w-full border-gray-300 focus:border-indigo-500 focus:ring-indigo-500 rounded-md shadow-sm" rows="4">{{ old('deskripsi') }}</textarea>
                             <x-input-error :messages="$errors->get('deskripsi')" class="mt-2" />

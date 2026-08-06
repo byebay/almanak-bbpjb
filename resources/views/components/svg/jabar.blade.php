@@ -87,7 +87,10 @@
         <div class="p-6">
             <h2 class="text-2xl font-bold text-gray-900 mb-4" id="pd-title"></h2>
             <div class="space-y-4">
-
+                <div>
+                    <span class="font-medium text-gray-500 block text-sm">Tim Kerja</span>
+                    <span id="pd-tim-kerja" class="text-gray-900 font-medium"></span>
+                </div>
                 <div>
                     <span class="font-medium text-gray-500 block text-sm">Tanggal Pelaksanaan</span>
                     <span id="pd-tanggal" class="text-gray-900"></span>
@@ -380,7 +383,7 @@ window.showProgramDetailModal = function(id, tanggal) {
     if (!p) return;
 
     document.getElementById('pd-title').textContent = p.nama_program || '-';
-    
+    document.getElementById('pd-tim-kerja').textContent = p.tim_kerja || '-';
     
     document.getElementById('pd-tanggal').textContent = tanggal || '-';
     document.getElementById('pd-deskripsi').textContent = p.deskripsi || '-';

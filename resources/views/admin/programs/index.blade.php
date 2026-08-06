@@ -97,8 +97,17 @@
                     </select>
                     <x-input-error :messages="$errors->get('wilayah_id')" class="mt-2" />
                 </div>
-
-
+                <div>
+                    <x-input-label for="tim_kerja" :value="__('Tim Kerja')" />
+                    <select id="tim_kerja" name="tim_kerja" class="mt-1 block w-full border-gray-300 rounded-md shadow-sm focus:border-indigo-500 focus:ring-indigo-500">
+                        <option value="">Pilih Tim Kerja (Opsional)</option>
+                        <option value="Tim Kerja Pengembangan" {{ old('tim_kerja') == 'Tim Kerja Pengembangan' ? 'selected' : '' }}>Tim Kerja Pengembangan</option>
+                        <option value="Tim Kerja Pembinaan" {{ old('tim_kerja') == 'Tim Kerja Pembinaan' ? 'selected' : '' }}>Tim Kerja Pembinaan</option>
+                        <option value="Tim Kerja Pelindungan" {{ old('tim_kerja') == 'Tim Kerja Pelindungan' ? 'selected' : '' }}>Tim Kerja Pelindungan</option>
+                        <option value="Statistik" {{ old('tim_kerja') == 'Statistik' ? 'selected' : '' }}>Statistik</option>
+                    </select>
+                    <x-input-error :messages="$errors->get('tim_kerja')" class="mt-2" />
+                </div>
 
                 <div>
                     <x-input-label for="tanggal_mulai" :value="__('Tanggal Mulai')" />
@@ -162,9 +171,16 @@
                     </select>
                 </div>
 
-
-
                 <div>
+                    <x-input-label for="edit_tim_kerja" :value="__('Tim Kerja')" />
+                    <select id="edit_tim_kerja" name="tim_kerja" class="mt-1 block w-full border-gray-300 rounded-md shadow-sm focus:border-indigo-500 focus:ring-indigo-500">
+                        <option value="">Pilih Tim Kerja (Opsional)</option>
+                        <option value="Tim Kerja Pengembangan">Tim Kerja Pengembangan</option>
+                        <option value="Tim Kerja Pembinaan">Tim Kerja Pembinaan</option>
+                        <option value="Tim Kerja Pelindungan">Tim Kerja Pelindungan</option>
+                        <option value="Statistik">Statistik</option>
+                    </select>
+                </div>
                     <x-input-label for="edit_tanggal_mulai" :value="__('Tanggal Mulai')" />
                     <x-text-input id="edit_tanggal_mulai" name="tanggal_mulai" type="date" class="mt-1 block w-full" />
                 </div>
@@ -222,8 +238,7 @@
             document.getElementById('editProgramForm').action = `/admin/programs/${program.id}`;
             document.getElementById('edit_nama_program').value = program.nama_program || '';
             document.getElementById('edit_wilayah_id').value = program.wilayah_id || '';
-
-            
+            document.getElementById('edit_tim_kerja').value = program.tim_kerja || '';
             // Format dates from YYYY-MM-DD HH:MM:SS to YYYY-MM-DD if needed
             let start = program.tanggal_mulai ? program.tanggal_mulai.split(' ')[0] : '';
             let end = program.tanggal_selesai ? program.tanggal_selesai.split(' ')[0] : '';

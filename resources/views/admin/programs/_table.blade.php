@@ -4,6 +4,7 @@
             <tr>
                 <th class="w-64 px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">Nama Program</th>
                 <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">Wilayah</th>
+                <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">Tim Kerja</th>
                 <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">Tanggal Mulai</th>
                 <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">Tanggal Selesai</th>
                 <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">Aksi</th>
@@ -14,6 +15,7 @@
                 <tr>
                     <td class="w-64 px-6 py-4 align-top text-sm text-gray-900 whitespace-normal break-words">{{ $program->nama_program }}</td>
                     <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-900">{{ $program->wilayah?->nama_wilayah ?? 'Tidak ditentukan' }}</td>
+                    <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-900">{{ $program->tim_kerja ?: '-' }}</td>
                     <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-900">
                         {{ $program->tanggal_mulai ? \Carbon\Carbon::parse($program->tanggal_mulai)->format('d/m/Y') : '-' }}
                     </td>
@@ -30,7 +32,7 @@
                 </tr>
             @empty
                 <tr>
-                    <td colspan="5" class="px-6 py-4 text-center text-gray-500">
+                    <td colspan="6" class="px-6 py-4 text-center text-gray-500">
                         @if ($search)
                             Tidak ada program yang cocok dengan pencarian "{{ $search }}".
                         @else

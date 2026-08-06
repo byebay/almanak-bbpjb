@@ -12,6 +12,7 @@ class Program extends Model
 
     protected $fillable = [
         'wilayah_id',
+        'tim_kerja',
         'nama_program',
         'deskripsi',
         'tahun',

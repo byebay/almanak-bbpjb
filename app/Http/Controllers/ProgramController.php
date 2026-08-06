@@ -51,6 +51,7 @@ class ProgramController extends Controller
         $validated = $request->validate([
             'nama_program' => 'required|string|max:255',
             'wilayah_id' => 'nullable|exists:wilayah,id',
+            'tim_kerja' => 'nullable|in:Tim Kerja Pengembangan,Tim Kerja Pembinaan,Tim Kerja Pelindungan,Statistik',
             'deskripsi' => 'nullable|string',
             'tanggal_mulai' => 'nullable|date',
             'tanggal_selesai' => 'nullable|date|after_or_equal:tanggal_mulai',
@@ -98,6 +99,7 @@ class ProgramController extends Controller
         $validated = $request->validate([
             'nama_program' => 'required|string|max:255',
             'wilayah_id' => 'nullable|exists:wilayah,id',
+            'tim_kerja' => 'nullable|in:Tim Kerja Pengembangan,Tim Kerja Pembinaan,Tim Kerja Pelindungan,Statistik',
             'deskripsi' => 'nullable|string',
             'tanggal_mulai' => 'nullable|date',
             'tanggal_selesai' => 'nullable|date|after_or_equal:tanggal_mulai',

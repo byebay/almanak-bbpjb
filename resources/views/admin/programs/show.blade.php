@@ -25,7 +25,10 @@
                             <p class="mt-1 text-sm text-gray-900">{{ $program->wilayah?->nama_wilayah ?? 'Tidak ditentukan' }}</p>
                         </div>
 
-
+                        <div>
+                            <p class="text-sm font-medium text-gray-500">Tim Kerja</p>
+                            <p class="mt-1 text-sm text-gray-900">{{ $program->tim_kerja ?: '-' }}</p>
+                        </div>
 
                         <div>
                             <p class="text-sm font-medium text-gray-500">Tanggal Mulai</p>
@@ -127,7 +130,17 @@
                     <x-input-error :messages="$errors->get('wilayah_id')" class="mt-2" />
                 </div>
 
-
+                <div>
+                    <x-input-label for="tim_kerja" :value="__('Tim Kerja')" />
+                    <select id="tim_kerja" name="tim_kerja" class="mt-1 block w-full border-gray-300 rounded-md shadow-sm focus:border-indigo-500 focus:ring-indigo-500">
+                        <option value="">Pilih Tim Kerja (Opsional)</option>
+                        <option value="Tim Kerja Pengembangan" {{ old('tim_kerja', $program->tim_kerja) == 'Tim Kerja Pengembangan' ? 'selected' : '' }}>Tim Kerja Pengembangan</option>
+                        <option value="Tim Kerja Pembinaan" {{ old('tim_kerja', $program->tim_kerja) == 'Tim Kerja Pembinaan' ? 'selected' : '' }}>Tim Kerja Pembinaan</option>
+                        <option value="Tim Kerja Pelindungan" {{ old('tim_kerja', $program->tim_kerja) == 'Tim Kerja Pelindungan' ? 'selected' : '' }}>Tim Kerja Pelindungan</option>
+                        <option value="Statistik" {{ old('tim_kerja', $program->tim_kerja) == 'Statistik' ? 'selected' : '' }}>Statistik</option>
+                    </select>
+                    <x-input-error :messages="$errors->get('tim_kerja')" class="mt-2" />
+                </div>
 
                 <div>
                     <x-input-label for="tanggal_mulai" :value="__('Tanggal Mulai')" />
