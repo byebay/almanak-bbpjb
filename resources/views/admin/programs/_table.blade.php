@@ -18,7 +18,7 @@
                     <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-900">
                         {{ $program->tim_kerja ?: '-' }}
                         @if($program->sub_tim_kerja)
-                            <span class="text-xs text-gray-500 block">({{ $program->sub_tim_kerja }})</span>
+                            <span class="text-sm text-gray-500 block mt-0.5">({{ $program->sub_tim_kerja }})</span>
                         @endif
                     </td>
                     <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-900">

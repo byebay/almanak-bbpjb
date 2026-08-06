@@ -44,12 +44,30 @@ class ProgramSeeder extends Seeder
             'Festival Kreativitas dan Inovasi Siswa'
         ];
 
+        $timKerjaOptions = [
+            [
+                'tim' => 'Tim Kerja Pengembangan',
+                'sub' => ['Kamus dan Istilah', 'BIPA']
+            ],
+            [
+                'tim' => 'Tim Kerja Pembinaan',
+                'sub' => ['Pembahu', 'Literasi', 'UKBI', 'Penerjemahan']
+            ],
+            [
+                'tim' => 'Tim Kerja Pelindungan',
+                'sub' => ['Molinbastra']
+            ]
+        ];
+
         for ($i = 0; $i < 20; $i++) {
             $startDate = Carbon::now()->subMonths(rand(1, 6))->addDays(rand(1, 30));
             $endDate = (clone $startDate)->addMonths(rand(1, 5));
+            $selectedOption = $timKerjaOptions[array_rand($timKerjaOptions)];
 
             Program::create([
                 'wilayah_id' => !empty($wilayahIds) ? $wilayahIds[array_rand($wilayahIds)] : null,
+                'tim_kerja' => $selectedOption['tim'],
+                'sub_tim_kerja' => $selectedOption['sub'][array_rand($selectedOption['sub'])],
                 'nama_program' => $namaProgramTemplate[$i] ?? 'Program Unggulan Daerah ' . ($i + 1),
                 'deskripsi' => 'Deskripsi untuk ' . ($namaProgramTemplate[$i] ?? 'Program Unggulan Daerah ' . ($i + 1)) . '. Program ini bertujuan untuk memberikan dampak positif berkelanjutan di wilayah sasaran dengan melibatkan pemangku kepentingan setempat.',
                 'tahun' => $startDate->format('Y'),
