@@ -165,6 +165,49 @@
 
                 <!-- Peta Sebaran Program Jawa Barat -->
                 <div class="bg-white overflow-hidden shadow-sm sm:rounded-lg mb-6">
+                    <div class="bg-white overflow-hidden shadow-sm sm:rounded-lg mb-6" x-data="{ activeTab: 'kabupaten' }">
+                        <nav class="bg-[#0b43bf]">
+                            <div class="max-w-7xl mx-auto px-4">
+                                <ul class="flex items-center justify-center flex-wrap gap-x-8 gap-y-2 py-3 text-base font-extrabold">
+                                    <li>
+                                        <button type="button" @click="activeTab = 'kabupaten'"
+                                            :class="activeTab === 'kabupaten' ? 'text-white underline underline-offset-4' : 'text-cyan-100 hover:text-white'"
+                                            class="transition">
+                                            Per Kabupaten
+                                        </button>
+                                    </li>
+                                    <li>
+                                        <button type="button" @click="activeTab = 'pengembangan'"
+                                            :class="activeTab === 'pengembangan' ? 'text-white underline underline-offset-4' : 'text-cyan-100 hover:text-white'"
+                                            class="transition">
+                                            Tim Kerja Pengembangan
+                                        </button>
+                                    </li>
+                                    <li>
+                                        <button type="button" @click="activeTab = 'pembinaan'"
+                                            :class="activeTab === 'pembinaan' ? 'text-white underline underline-offset-4' : 'text-cyan-100 hover:text-white'"
+                                            class="transition">
+                                            Tim Kerja Pembinaan
+                                        </button>
+                                    </li>
+                                    <li>
+                                        <button type="button" @click="activeTab = 'perlindungan'"
+                                            :class="activeTab === 'perlindungan' ? 'text-white underline underline-offset-4' : 'text-cyan-100 hover:text-white'"
+                                            class="transition">
+                                            Tim Kerja Perlindungan
+                                        </button>
+                                    </li>
+                                    <li>
+                                        <button type="button" @click="activeTab = 'statistik'"
+                                            :class="activeTab === 'statistik' ? 'text-white underline underline-offset-4' : 'text-cyan-100 hover:text-white'"
+                                            class="transition">
+                                            Statistik
+                                        </button>
+                                    </li>
+                                </ul>
+                            </div>
+                        </nav>
+
                     <div class="p-6 text-gray-900">
                         <h3 class="text-2xl font-bold mb-4">Peta Sebaran Program Jawa Barat</h3>
                         <p class="text-sm text-gray-600 mb-4">Klik wilayah pada peta untuk melihat detail program dan informasi wilayah.</p>

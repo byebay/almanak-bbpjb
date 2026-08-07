@@ -7,20 +7,57 @@
 
     <div class="py-12">
         <div class="max-w-7xl mx-auto sm:px-6 lg:px-8">
-            <div class="bg-white overflow-hidden shadow-sm sm:rounded-lg mb-6">
+            <div class="bg-white overflow-hidden shadow-sm sm:rounded-lg mb-6" x-data="{ activeTab: 'kabupaten' }">
+                <nav class="bg-[#0b43bf]">
+                    <div class="max-w-7xl mx-auto px-4">
+                        <ul class="flex items-center justify-center flex-wrap gap-x-8 gap-y-2 py-3 text-sm font-bold">
+                            <li>
+                                <button type="button" @click="activeTab = 'kabupaten'"
+                                    :class="activeTab === 'kabupaten' ? 'text-white underline underline-offset-4' : 'text-cyan-100 hover:text-white'"
+                                    class="transition">
+                                    Per Kabupaten
+                                </button>
+                            </li>
+                            <li>
+                                <button type="button" @click="activeTab = 'pengembangan'"
+                                    :class="activeTab === 'pengembangan' ? 'text-white underline underline-offset-4' : 'text-cyan-100 hover:text-white'"
+                                    class="transition">
+                                    Tim Kerja Pengembangan
+                                </button>
+                            </li>
+                            <li>
+                                <button type="button" @click="activeTab = 'pembinaan'"
+                                    :class="activeTab === 'pembinaan' ? 'text-white underline underline-offset-4' : 'text-cyan-100 hover:text-white'"
+                                    class="transition">
+                                    Tim Kerja Pembinaan
+                                </button>
+                            </li>
+                            <li>
+                                <button type="button" @click="activeTab = 'perlindungan'"
+                                    :class="activeTab === 'perlindungan' ? 'text-white underline underline-offset-4' : 'text-cyan-100 hover:text-white'"
+                                    class="transition">
+                                    Tim Kerja Perlindungan
+                                </button>
+                            </li>
+                            <li>
+                                <button type="button" @click="activeTab = 'statistik'"
+                                    :class="activeTab === 'statistik' ? 'text-white underline underline-offset-4' : 'text-cyan-100 hover:text-white'"
+                                    class="transition">
+                                    Statistik
+                                </button>
+                            </li>
+                        </ul>
+                    </div>
+                </nav>
+
                 <div class="p-6 text-gray-900">
                     <h3 class="text-2xl font-bold mb-2">Peta Sebaran Program Jawa Barat</h3>
                     <p class="text-sm text-gray-600 mb-4">Klik wilayah pada peta untuk melihat detail program dan informasi wilayah.</p>
                     @include('components.svg.jabar')
                     <div class="mt-4 w-64">
                         <div class="text-sm text-gray-900 mb-1 font-medium">Jumlah Program:</div>
-                        <!-- Batang Gradasi -->
                         <div class="h-3 w-full rounded-sm shadow-inner" style="background: linear-gradient(to right, #f4f5f6ff, #0b43bf);"></div>
-                        
-                        <!-- Tempat Angka Rentang (Diisi oleh JavaScript) -->
-                        <div id="legend-ticks" class="relative w-full h-8 mt-0 text-[15px] text-gray-600 font-mono">
-                            <!-- Elemen rentang akan di-generate di sini -->
-                        </div>
+                        <div id="legend-ticks" class="relative w-full h-8 mt-0 text-[15px] text-gray-600 font-mono"></div>
                     </div>
                 </div>
             </div>
