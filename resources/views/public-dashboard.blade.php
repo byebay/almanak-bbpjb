@@ -165,41 +165,58 @@
 
                 <!-- Peta Sebaran Program Jawa Barat -->
                 <div class="bg-white overflow-hidden shadow-sm sm:rounded-lg mb-6">
-                    <div class="bg-white overflow-hidden shadow-sm sm:rounded-lg mb-6" x-data="{ activeTab: 'kabupaten' }">
+                    <div x-data="{ activeTab: 'kabupaten' }">
+
+                        <!-- Navbar -->
                         <nav class="bg-[#0b43bf]">
                             <div class="max-w-7xl mx-auto px-4">
                                 <ul class="flex items-center justify-center flex-wrap gap-x-8 gap-y-2 py-3 text-base font-extrabold">
                                     <li>
-                                        <button type="button" @click="activeTab = 'kabupaten'"
-                                            :class="activeTab === 'kabupaten' ? 'text-white underline underline-offset-4' : 'text-cyan-100 hover:text-white'"
+                                        <button type="button"
+                                            @click="activeTab = 'kabupaten'"
+                                            :class="activeTab === 'kabupaten'
+                                                ? 'text-white underline underline-offset-4'
+                                                : 'text-cyan-100 hover:text-white'"
                                             class="transition">
                                             Per Kabupaten
                                         </button>
                                     </li>
                                     <li>
-                                        <button type="button" @click="activeTab = 'pengembangan'"
-                                            :class="activeTab === 'pengembangan' ? 'text-white underline underline-offset-4' : 'text-cyan-100 hover:text-white'"
+                                        <button type="button"
+                                            @click="activeTab = 'pengembangan'"
+                                            :class="activeTab === 'pengembangan'
+                                                ? 'text-white underline underline-offset-4'
+                                                : 'text-cyan-100 hover:text-white'"
                                             class="transition">
                                             Tim Kerja Pengembangan
                                         </button>
                                     </li>
                                     <li>
-                                        <button type="button" @click="activeTab = 'pembinaan'"
-                                            :class="activeTab === 'pembinaan' ? 'text-white underline underline-offset-4' : 'text-cyan-100 hover:text-white'"
+                                        <button type="button"
+                                            @click="activeTab = 'pembinaan'"
+                                            :class="activeTab === 'pembinaan'
+                                                ? 'text-white underline underline-offset-4'
+                                                : 'text-cyan-100 hover:text-white'"
                                             class="transition">
                                             Tim Kerja Pembinaan
                                         </button>
                                     </li>
                                     <li>
-                                        <button type="button" @click="activeTab = 'perlindungan'"
-                                            :class="activeTab === 'perlindungan' ? 'text-white underline underline-offset-4' : 'text-cyan-100 hover:text-white'"
+                                        <button type="button"
+                                            @click="activeTab = 'perlindungan'"
+                                            :class="activeTab === 'perlindungan'
+                                                ? 'text-white underline underline-offset-4'
+                                                : 'text-cyan-100 hover:text-white'"
                                             class="transition">
                                             Tim Kerja Perlindungan
                                         </button>
                                     </li>
                                     <li>
-                                        <button type="button" @click="activeTab = 'statistik'"
-                                            :class="activeTab === 'statistik' ? 'text-white underline underline-offset-4' : 'text-cyan-100 hover:text-white'"
+                                        <button type="button"
+                                            @click="activeTab = 'statistik'"
+                                            :class="activeTab === 'statistik'
+                                                ? 'text-white underline underline-offset-4'
+                                                : 'text-cyan-100 hover:text-white'"
                                             class="transition">
                                             Statistik
                                         </button>
@@ -208,18 +225,113 @@
                             </div>
                         </nav>
 
-                    <div class="p-6 text-gray-900">
-                        <h3 class="text-2xl font-bold mb-4">Peta Sebaran Program Jawa Barat</h3>
-                        <p class="text-sm text-gray-600 mb-4">Klik wilayah pada peta untuk melihat detail program dan informasi wilayah.</p>
-                        @include('components.svg.jabar')
-                        <div class="mt-4 w-64">
-                            <div class="text-sm text-gray-900 mb-1 font-medium">Jumlah Program:</div>
-                            <!-- Batang Gradasi -->
-                            <div class="h-3 w-full rounded-sm shadow-inner" style="background: linear-gradient(to right, #f4f5f6ff, #0b43bf);"></div>
-                            
-                            <!-- Tempat Angka Rentang (Diisi oleh JavaScript) -->
-                            <div id="legend-ticks" class="relative w-full h-8 mt-0 text-[15px] text-gray-600 font-mono">
-                                <!-- Elemen rentang akan di-generate di sini -->
+                        <!-- ============================= -->
+                        <!-- TAB: PER KABUPATEN             -->
+                        <!-- ============================= -->
+                        <div x-show="activeTab === 'kabupaten'" x-cloak>
+                            <div class="p-6 text-gray-900">
+
+                                <h3 class="text-2xl font-bold mb-4">
+                                    Peta Sebaran Program Jawa Barat
+                                </h3>
+
+                                <p class="text-sm text-gray-600 mb-4">
+                                    Klik wilayah pada peta untuk melihat detail program dan informasi wilayah.
+                                </p>
+
+                                @include('components.svg.jabar')
+
+                                <!-- Legend -->
+                                <div class="mt-4 w-64">
+                                    <div class="text-sm text-gray-900 mb-1 font-medium">
+                                        Jumlah Program:
+                                    </div>
+
+                                    <div
+                                        class="h-3 w-full rounded-sm shadow-inner"
+                                        style="background: linear-gradient(to right, #f4f5f6ff, #0b43bf);">
+                                    </div>
+
+                                    <div
+                                        id="legend-ticks"
+                                        class="relative w-full h-8 mt-0 text-[15px] text-gray-600 font-mono">
+                                    </div>
+                                </div>
+
+                            </div>
+                        </div>
+
+                        <!-- ============================= -->
+                        <!-- TAB: TIM KERJA PENGEMBANGAN   -->
+                        <!-- ============================= -->
+                        <div x-show="activeTab === 'pengembangan'" x-cloak>
+                            <div class="p-6 text-gray-900">
+
+                                <h3 class="text-2xl font-bold mb-4">
+                                    Tim Kerja Pengembangan
+                                </h3>
+
+                                <p class="text-sm text-gray-600 mb-4">
+                                    Peta sebaran program Tim Kerja Pengembangan.
+                                </p>
+
+                                @include('components.svg.jabar-tim-kerja')
+
+                            </div>
+                        </div>
+
+                        <!-- ============================= -->
+                        <!-- TAB: TIM KERJA PEMBINAAN      -->
+                        <!-- ============================= -->
+                        <div x-show="activeTab === 'pembinaan'" x-cloak>
+                            <div class="p-6 text-gray-900">
+
+                                <h3 class="text-2xl font-bold mb-4">
+                                    Tim Kerja Pembinaan
+                                </h3>
+
+                                <p class="text-sm text-gray-600 mb-4">
+                                    Peta sebaran program Tim Kerja Pembinaan.
+                                </p>
+
+                                @include('components.svg.jabar-tim-kerja')
+
+                            </div>
+                        </div>
+
+                        <!-- ============================= -->
+                        <!-- TAB: TIM KERJA PERLINDUNGAN   -->
+                        <!-- ============================= -->
+                        <div x-show="activeTab === 'perlindungan'" x-cloak>
+                            <div class="p-6 text-gray-900">
+
+                                <h3 class="text-2xl font-bold mb-4">
+                                    Tim Kerja Perlindungan
+                                </h3>
+
+                                <p class="text-sm text-gray-600 mb-4">
+                                    Peta sebaran program Tim Kerja Perlindungan.
+                                </p>
+
+                                @include('components.svg.jabar-tim-kerja')
+
+                            </div>
+                        </div>
+
+                        <!-- ============================= -->
+                        <!-- TAB: STATISTIK                 -->
+                        <!-- ============================= -->
+                        <div x-show="activeTab === 'statistik'" x-cloak>
+                            <div class="p-6 text-gray-900">
+
+                                <h3 class="text-2xl font-bold mb-4">
+                                    Statistik
+                                </h3>
+
+                                <p class="text-sm text-gray-600">
+                                    Statistik program akan ditampilkan di sini.
+                                </p>
+
                             </div>
                         </div>
                     </div>
