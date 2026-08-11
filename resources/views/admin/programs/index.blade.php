@@ -111,13 +111,22 @@
                     <div x-show="activeTab === 'pengembangan'" x-cloak>
                         <div class="p-6 text-gray-900">
 
-                            <h3 class="text-2xl font-bold mb-4">
-                                Tim Kerja Pengembangan
-                            </h3>
+                            <h3 class="text-2xl font-bold mb-4">Tim Kerja Pengembangan</h3>
+                            <p class="text-sm text-gray-600 mb-4">Peta sebaran program Tim Kerja Pengembangan.</p>
 
-                            <p class="text-sm text-gray-600 mb-4">
-                                Peta sebaran program Tim Kerja Pengembangan.
-                            </p>
+                            <!-- Legenda Khusus Pengembangan -->
+                            <div class="bg-gray-50 border border-gray-200 rounded-lg p-4 mb-6 inline-block">
+                                <div class="flex flex-wrap gap-4">
+                                    <div class="flex items-center">
+                                        <span class="w-4 h-4 rounded-full mr-2 shadow-sm" style="background-color: #FF1493; border: 1px solid #000000;"></span>
+                                        <span class="text-xs font-medium text-gray-700">Kamus dan Istilah</span>
+                                    </div>
+                                    <div class="flex items-center">
+                                        <span class="w-4 h-4 rounded-full mr-2 shadow-sm" style="background-color: #00E5FF; border: 1px solid #000000;"></span>
+                                        <span class="text-xs font-medium text-gray-700">BIPA</span>
+                                    </div>
+                                </div>
+                            </div>
 
                             @include('components.svg.jabar-tim-kerja')
 
@@ -130,13 +139,30 @@
                     <div x-show="activeTab === 'pembinaan'" x-cloak>
                         <div class="p-6 text-gray-900">
 
-                            <h3 class="text-2xl font-bold mb-4">
-                                Tim Kerja Pembinaan
-                            </h3>
+                            <h3 class="text-2xl font-bold mb-4">Tim Kerja Pembinaan</h3>
+                            <p class="text-sm text-gray-600 mb-4">Peta sebaran program Tim Kerja Pembinaan.</p>
 
-                            <p class="text-sm text-gray-600 mb-4">
-                                Peta sebaran program Tim Kerja Pembinaan.
-                            </p>
+                            <!-- Legenda Khusus Pembinaan -->
+                            <div class="bg-gray-50 border border-gray-200 rounded-lg p-4 mb-6 inline-block">
+                                <div class="flex flex-wrap gap-4">
+                                    <div class="flex items-center">
+                                        <span class="w-4 h-4 rounded-full mr-2 shadow-sm" style="background-color: #00E676; border: 1px solid #000000;"></span>
+                                        <span class="text-xs font-medium text-gray-700">Pembahu</span>
+                                    </div>
+                                    <div class="flex items-center">
+                                        <span class="w-4 h-4 rounded-full mr-2 shadow-sm" style="background-color: #2979FF; border: 1px solid #000000;"></span>
+                                        <span class="text-xs font-medium text-gray-700">Literasi</span>
+                                    </div>
+                                    <div class="flex items-center">
+                                        <span class="w-4 h-4 rounded-full mr-2 shadow-sm" style="background-color: #D500F9; border: 1px solid #000000;"></span>
+                                        <span class="text-xs font-medium text-gray-700">UKBI</span>
+                                    </div>
+                                    <div class="flex items-center">
+                                        <span class="w-4 h-4 rounded-full mr-2 shadow-sm" style="background-color: #FF3D00; border: 1px solid #000000;"></span>
+                                        <span class="text-xs font-medium text-gray-700">Penerjemahan</span>
+                                    </div>
+                                </div>
+                            </div>
 
                             @include('components.svg.jabar-tim-kerja')
 
@@ -149,13 +175,18 @@
                     <div x-show="activeTab === 'perlindungan'" x-cloak>
                         <div class="p-6 text-gray-900">
 
-                            <h3 class="text-2xl font-bold mb-4">
-                                Tim Kerja Perlindungan
-                            </h3>
+                            <h3 class="text-2xl font-bold mb-4">Tim Kerja Perlindungan</h3>
+                            <p class="text-sm text-gray-600 mb-4">Peta sebaran program Tim Kerja Perlindungan.</p>
 
-                            <p class="text-sm text-gray-600 mb-4">
-                                Peta sebaran program Tim Kerja Perlindungan.
-                            </p>
+                            <!-- Legenda Khusus Perlindungan -->
+                            <div class="bg-gray-50 border border-gray-200 rounded-lg p-4 mb-6 inline-block">
+                                <div class="flex flex-wrap gap-4">
+                                    <div class="flex items-center">
+                                        <span class="w-4 h-4 rounded-full mr-2 shadow-sm" style="background-color: #FFEA00; border: 1px solid #000000;"></span>
+                                        <span class="text-xs font-medium text-gray-700">Molinbastra</span>
+                                    </div>
+                                </div>
+                            </div>
 
                             @include('components.svg.jabar-tim-kerja')
 
@@ -588,22 +619,63 @@
 
                 const svgPt = svgElement.createSVGPoint();
                 let validPoint = false;
+                let foundAnyPoint = false; // Fallback jika wilayah terlalu sempit
                 let rx = 0, ry = 0;
+                let bestRx = 0, bestRy = 0;
                 let attempts = 0;
+                
+                // Tentukan ukuran margin (dalam satuan piksel SVG)
+                // Semakin besar angka ini, pin akan semakin ke tengah. 
+                // Sesuaikan angkanya jika pin dirasa masih terlalu dekat dengan garis.
+                const margin = 5; 
 
-                while (!validPoint && attempts < 100) {
+                // Naikkan batas attempts karena mencari titik tengah butuh lebih banyak percobaan
+                while (!validPoint && attempts < 300) {
                     rx = bbox.x + Math.random() * bbox.width;
                     ry = bbox.y + Math.random() * bbox.height;
+                    
                     svgPt.x = rx;
                     svgPt.y = ry;
                     
+                    // Cek apakah titik pusatnya ada di dalam
                     if (pathEl.isPointInFill(svgPt)) {
-                        validPoint = true;
+                        
+                        // Simpan sebagai fallback berjaga-jaga jika wilayahnya 
+                        // sangat kecil/sempit sehingga tidak ada titik yang memenuhi margin
+                        if (!foundAnyPoint) {
+                            bestRx = rx;
+                            bestRy = ry;
+                            foundAnyPoint = true;
+                        }
+
+                        // Cek 4 arah di sekitarnya sejauh 'margin'
+                        svgPt.x = rx - margin; svgPt.y = ry;
+                        const leftIn = pathEl.isPointInFill(svgPt);
+                        
+                        svgPt.x = rx + margin; svgPt.y = ry;
+                        const rightIn = pathEl.isPointInFill(svgPt);
+                        
+                        svgPt.x = rx; svgPt.y = ry - margin;
+                        const topIn = pathEl.isPointInFill(svgPt);
+                        
+                        svgPt.x = rx; svgPt.y = ry + margin;
+                        const bottomIn = pathEl.isPointInFill(svgPt);
+                        
+                        // Jika ke-4 sisinya juga ada di dalam map, berarti titik ini jauh dari garis pinggir
+                        if (leftIn && rightIn && topIn && bottomIn) {
+                            validPoint = true;
+                            bestRx = rx;
+                            bestRy = ry;
+                        }
                     }
                     attempts++;
                 }
 
-                if (validPoint) {
+                // Gunakan titik yang valid (atau fallback jika wilayahnya terlalu sempit)
+                if (validPoint || foundAnyPoint) {
+                    rx = bestRx;
+                    ry = bestRy;
+                    
                     const color = subTimColors[program.sub_tim_kerja] || '#111827';
                     const pinGroup = document.createElementNS("http://www.w3.org/2000/svg", "g");
                     
@@ -615,7 +687,7 @@
                     const path = document.createElementNS("http://www.w3.org/2000/svg", "path");
                     path.setAttribute('d', "M12 2C8.13 2 5 5.13 5 9c0 5.25 7 15 7 15s7-9.75 7-15c0-3.87-3.13-7-7-7zm0 9.5c-1.38 0-2.5-1.12-2.5-2.5s1.12-2.5 2.5-2.5 2.5 1.12 2.5 2.5-1.12 2.5-2.5 2.5z");
                     path.setAttribute('fill', color);
-                    path.setAttribute('stroke', '#ffffff');
+                    path.setAttribute('stroke', '#000000');
                     path.setAttribute('stroke-width', '1');
                     // Translate path so its tip (12, 24) is exactly at the group's (0,0)
                     path.setAttribute('transform', 'translate(-12, -24)');
@@ -629,7 +701,7 @@
 
                     setTimeout(() => {
                         // Final state: scaled to 1
-                        pinGroup.setAttribute('transform', `translate(${rx}, ${ry}) scale(1)`);
+                        pinGroup.setAttribute('transform', `translate(${rx}, ${ry}) scale(1.5)`);
                     }, delay);
                     delay += 75; 
                 }

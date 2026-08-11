@@ -238,9 +238,6 @@
                                 <p class="text-sm text-gray-600 mb-4">
                                     Klik wilayah pada peta untuk melihat detail program dan informasi wilayah.
                                 </p>
-
-                                @include('components.svg.jabar')
-
                                 <!-- Legend -->
                                 <div class="mt-4 w-64">
                                     <div class="text-sm text-gray-900 mb-1 font-medium">
@@ -255,8 +252,9 @@
                                     <div
                                         id="legend-ticks"
                                         class="relative w-full h-8 mt-0 text-[15px] text-gray-600 font-mono">
-                                    </div>
                                 </div>
+                            </div>
+                                @include('components.svg.jabar')
 
                             </div>
                         </div>
@@ -267,13 +265,22 @@
                         <div x-show="activeTab === 'pengembangan'" x-cloak>
                             <div class="p-6 text-gray-900">
 
-                                <h3 class="text-2xl font-bold mb-4">
-                                    Tim Kerja Pengembangan
-                                </h3>
+                                <h3 class="text-2xl font-bold mb-4">Tim Kerja Pengembangan</h3>
+                                <p class="text-sm text-gray-600 mb-4">Peta sebaran program Tim Kerja Pengembangan.</p>
 
-                                <p class="text-sm text-gray-600 mb-4">
-                                    Peta sebaran program Tim Kerja Pengembangan.
-                                </p>
+                                <!-- Legenda Khusus Pengembangan -->
+                                <div class="bg-gray-50 border border-gray-200 rounded-lg p-4 mb-6 inline-block">
+                                    <div class="flex flex-wrap gap-4">
+                                        <div class="flex items-center">
+                                            <span class="w-4 h-4 rounded-full mr-2 shadow-sm" style="background-color: #FF1493;"></span>
+                                            <span class="text-xs font-medium text-gray-700">Kamus dan Istilah</span>
+                                        </div>
+                                        <div class="flex items-center">
+                                            <span class="w-4 h-4 rounded-full mr-2 shadow-sm" style="background-color: #00E5FF;"></span>
+                                            <span class="text-xs font-medium text-gray-700">BIPA</span>
+                                        </div>
+                                    </div>
+                                </div>
 
                                 @include('components.svg.jabar-tim-kerja')
 
@@ -286,13 +293,30 @@
                         <div x-show="activeTab === 'pembinaan'" x-cloak>
                             <div class="p-6 text-gray-900">
 
-                                <h3 class="text-2xl font-bold mb-4">
-                                    Tim Kerja Pembinaan
-                                </h3>
+                                <h3 class="text-2xl font-bold mb-4">Tim Kerja Pembinaan</h3>
+                                <p class="text-sm text-gray-600 mb-4">Peta sebaran program Tim Kerja Pembinaan.</p>
 
-                                <p class="text-sm text-gray-600 mb-4">
-                                    Peta sebaran program Tim Kerja Pembinaan.
-                                </p>
+                                <!-- Legenda Khusus Pembinaan -->
+                                <div class="bg-gray-50 border border-gray-200 rounded-lg p-4 mb-6 inline-block">
+                                    <div class="flex flex-wrap gap-4">
+                                        <div class="flex items-center">
+                                            <span class="w-4 h-4 rounded-full mr-2 shadow-sm" style="background-color: #00E676;"></span>
+                                            <span class="text-xs font-medium text-gray-700">Pembahu</span>
+                                        </div>
+                                        <div class="flex items-center">
+                                            <span class="w-4 h-4 rounded-full mr-2 shadow-sm" style="background-color: #2979FF;"></span>
+                                            <span class="text-xs font-medium text-gray-700">Literasi</span>
+                                        </div>
+                                        <div class="flex items-center">
+                                            <span class="w-4 h-4 rounded-full mr-2 shadow-sm" style="background-color: #D500F9;"></span>
+                                            <span class="text-xs font-medium text-gray-700">UKBI</span>
+                                        </div>
+                                        <div class="flex items-center">
+                                            <span class="w-4 h-4 rounded-full mr-2 shadow-sm" style="background-color: #FF3D00;"></span>
+                                            <span class="text-xs font-medium text-gray-700">Penerjemahan</span>
+                                        </div>
+                                    </div>
+                                </div>
 
                                 @include('components.svg.jabar-tim-kerja')
 
@@ -305,13 +329,18 @@
                         <div x-show="activeTab === 'perlindungan'" x-cloak>
                             <div class="p-6 text-gray-900">
 
-                                <h3 class="text-2xl font-bold mb-4">
-                                    Tim Kerja Perlindungan
-                                </h3>
+                                <h3 class="text-2xl font-bold mb-4">Tim Kerja Perlindungan</h3>
+                                <p class="text-sm text-gray-600 mb-4">Peta sebaran program Tim Kerja Perlindungan.</p>
 
-                                <p class="text-sm text-gray-600 mb-4">
-                                    Peta sebaran program Tim Kerja Perlindungan.
-                                </p>
+                                <!-- Legenda Khusus Perlindungan -->
+                                <div class="bg-gray-50 border border-gray-200 rounded-lg p-4 mb-6 inline-block">
+                                    <div class="flex flex-wrap gap-4">
+                                        <div class="flex items-center">
+                                            <span class="w-4 h-4 rounded-full mr-2 shadow-sm" style="background-color: #FFEA00;"></span>
+                                            <span class="text-xs font-medium text-gray-700">Molinbastra</span>
+                                        </div>
+                                    </div>
+                                </div>
 
                                 @include('components.svg.jabar-tim-kerja')
 
@@ -675,7 +704,7 @@
                     const path = document.createElementNS("http://www.w3.org/2000/svg", "path");
                     path.setAttribute('d', "M12 2C8.13 2 5 5.13 5 9c0 5.25 7 15 7 15s7-9.75 7-15c0-3.87-3.13-7-7-7zm0 9.5c-1.38 0-2.5-1.12-2.5-2.5s1.12-2.5 2.5-2.5 2.5 1.12 2.5 2.5-1.12 2.5-2.5 2.5z");
                     path.setAttribute('fill', color);
-                    path.setAttribute('stroke', '#ffffff');
+                    path.style.stroke = '#000000';
                     path.setAttribute('stroke-width', '1');
                     // Translate path so its tip (12, 24) is exactly at the group's (0,0)
                     path.setAttribute('transform', 'translate(-12, -24)');
@@ -689,7 +718,7 @@
 
                     setTimeout(() => {
                         // Final state: scaled to 1
-                        pinGroup.setAttribute('transform', `translate(${rx}, ${ry}) scale(1)`);
+                        pinGroup.setAttribute('transform', `translate(${rx}, ${ry}) scale(1.5)`);
                     }, delay);
                     delay += 75; 
                 }
