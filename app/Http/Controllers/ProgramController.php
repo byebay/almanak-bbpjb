@@ -31,13 +31,15 @@ class ProgramController extends Controller
 
         $programCountByKode = Wilayah::withCount('programs')->pluck('programs_count', 'kode');
         $wilayahOptions = Wilayah::orderBy('nama_wilayah')->pluck('nama_wilayah', 'id');
+        
+        $allProgramsData = Program::with('wilayah:id,kode')->get(['id', 'nama_program', 'tim_kerja', 'sub_tim_kerja', 'wilayah_id']);
 
         // Kalau request datang dari fetch() JS, cukup balikin HTML tabelnya saja
         if ($request->ajax() || $request->wantsJson()) {
             return view('admin.programs._table', compact('programs', 'search'))->render();
         }
 
-        return view('admin.programs.index', compact('programs', 'wilayahOptions', 'search', 'programCountByKode'));
+        return view('admin.programs.index', compact('programs', 'wilayahOptions', 'search', 'programCountByKode', 'allProgramsData'));
     }
 
     public function create()

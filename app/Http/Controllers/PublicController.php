@@ -6,6 +6,7 @@ use App\Models\Agenda;
 use App\Models\DailyAttendance;
 use App\Models\LeaveRecord;
 use App\Models\Visitor;
+use App\Models\Program;
 use App\Models\Wilayah;
 use Illuminate\Http\Request;
 use Illuminate\Support\Carbon;
@@ -138,8 +139,10 @@ class PublicController extends Controller
         // --- JUMLAH PROGRAM PER WILAYAH (untuk tooltip peta) ---
         $programCountByKode = Wilayah::withCount('programs')
         ->pluck('programs_count', 'kode');
+        
+        $allProgramsData = Program::with('wilayah:id,kode')->get(['id', 'nama_program', 'tim_kerja', 'sub_tim_kerja', 'wilayah_id']);
 
-        return view('public-dashboard', compact('visitorCount', 'pegawaiPalingAwal', 'jumlahHadir', 'jumlahTerlambat', 'pegawaiCuti', 'pegawaiDinasLuar', 'chartDataGrouped', 'programCountByKode'));
+        return view('public-dashboard', compact('visitorCount', 'pegawaiPalingAwal', 'jumlahHadir', 'jumlahTerlambat', 'pegawaiCuti', 'pegawaiDinasLuar', 'chartDataGrouped', 'programCountByKode', 'allProgramsData'));
     }
 
     /**

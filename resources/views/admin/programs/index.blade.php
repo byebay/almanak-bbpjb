@@ -9,7 +9,7 @@
         <div class="max-w-7xl mx-auto sm:px-6 lg:px-8">
             <!-- Peta Sebaran Program Jawa Barat -->
             <div class="bg-white overflow-hidden shadow-sm sm:rounded-lg mb-6">
-                <div x-data="{ activeTab: 'kabupaten' }">
+                <div x-data="{ activeTab: 'kabupaten', init() { this.$watch('activeTab', value => this.$nextTick(() => { if(typeof drawPins === 'function') drawPins(value); })); this.$nextTick(() => { if(typeof drawPins === 'function') drawPins(this.activeTab); }); } }">
 
                     <!-- Navbar -->
                     <nav class="bg-[#0b43bf]">
@@ -540,5 +540,100 @@
                 doSearch(searchInput.value);
             });
         })();
+
+        // --- MAP PINS LOGIC ---
+        const allProgramsData = @json($allProgramsData);
+
+        const subTimColors = {
+            'Kamus dan Istilah': '#FF1493', // Deep Pink
+            'BIPA': '#00E5FF', // Cyan
+            'Pembahu': '#00E676', // Green
+            'Literasi': '#2979FF', // Blue
+            'UKBI': '#D500F9', // Purple
+            'Penerjemahan': '#FF3D00', // Orange-Red
+            'Molinbastra': '#FFEA00' // Yellow
+        };
+
+        function drawPins(activeTab) {
+            // First clear all pins in all SVGs
+            document.querySelectorAll('.pins-container').forEach(container => {
+                container.innerHTML = '';
+            });
+
+            if (activeTab === 'kabupaten' || activeTab === 'statistik') return;
+
+            let timKerjaTarget = '';
+            if (activeTab === 'pengembangan') timKerjaTarget = 'Tim Kerja Pengembangan';
+            if (activeTab === 'pembinaan') timKerjaTarget = 'Tim Kerja Pembinaan';
+            if (activeTab === 'perlindungan') timKerjaTarget = 'Tim Kerja Pelindungan';
+
+            const filteredPrograms = allProgramsData.filter(p => p.tim_kerja === timKerjaTarget);
+            
+            // Find the active tab's SVG container
+            const activeDiv = document.querySelector(`[x-show="activeTab === '${activeTab}'"]`);
+            if (!activeDiv) return;
+            const pinsContainer = activeDiv.querySelector('.pins-container');
+            const svgElement = activeDiv.querySelector('svg');
+            if (!pinsContainer || !svgElement) return;
+
+            let delay = 0;
+            filteredPrograms.forEach((program) => {
+                if (!program.wilayah || !program.wilayah.kode) return;
+                
+                const pathEl = svgElement.querySelector(`a[data-kode="${program.wilayah.kode}"] path`);
+                if (!pathEl) return;
+
+                const bbox = pathEl.getBBox();
+                if (bbox.width === 0 && bbox.height === 0) return; // Hidden SVG
+
+                const svgPt = svgElement.createSVGPoint();
+                let validPoint = false;
+                let rx = 0, ry = 0;
+                let attempts = 0;
+
+                while (!validPoint && attempts < 100) {
+                    rx = bbox.x + Math.random() * bbox.width;
+                    ry = bbox.y + Math.random() * bbox.height;
+                    svgPt.x = rx;
+                    svgPt.y = ry;
+                    
+                    if (pathEl.isPointInFill(svgPt)) {
+                        validPoint = true;
+                    }
+                    attempts++;
+                }
+
+                if (validPoint) {
+                    const color = subTimColors[program.sub_tim_kerja] || '#111827';
+                    const pinGroup = document.createElementNS("http://www.w3.org/2000/svg", "g");
+                    
+                    // Initial state: scaled to 0
+                    pinGroup.setAttribute('transform', `translate(${rx}, ${ry}) scale(0)`);
+                    pinGroup.style.transition = 'transform 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275)';
+                    pinGroup.style.cursor = 'pointer';
+                    
+                    const path = document.createElementNS("http://www.w3.org/2000/svg", "path");
+                    path.setAttribute('d', "M12 2C8.13 2 5 5.13 5 9c0 5.25 7 15 7 15s7-9.75 7-15c0-3.87-3.13-7-7-7zm0 9.5c-1.38 0-2.5-1.12-2.5-2.5s1.12-2.5 2.5-2.5 2.5 1.12 2.5 2.5-1.12 2.5-2.5 2.5z");
+                    path.setAttribute('fill', color);
+                    path.setAttribute('stroke', '#ffffff');
+                    path.setAttribute('stroke-width', '1');
+                    // Translate path so its tip (12, 24) is exactly at the group's (0,0)
+                    path.setAttribute('transform', 'translate(-12, -24)');
+                    
+                    const title = document.createElementNS("http://www.w3.org/2000/svg", "title");
+                    title.textContent = `${program.nama_program} (${program.sub_tim_kerja})`;
+                    
+                    pinGroup.appendChild(path);
+                    pinGroup.appendChild(title);
+                    pinsContainer.appendChild(pinGroup);
+
+                    setTimeout(() => {
+                        // Final state: scaled to 1
+                        pinGroup.setAttribute('transform', `translate(${rx}, ${ry}) scale(1)`);
+                    }, delay);
+                    delay += 75; 
+                }
+            });
+        }
     </script>
 </x-app-layout>
