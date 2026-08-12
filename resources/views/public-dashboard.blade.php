@@ -165,59 +165,141 @@
 
                 <!-- Peta Sebaran Program Jawa Barat -->
                 <div class="bg-white overflow-hidden shadow-sm sm:rounded-lg mb-6">
-                    <div x-data="{ activeTab: 'kabupaten', init() { this.$watch('activeTab', value => this.$nextTick(() => { if(typeof drawPins === 'function') drawPins(value); })); this.$nextTick(() => { if(typeof drawPins === 'function') drawPins(this.activeTab); }); } }">
+                    <div x-data="{ 
+        activeTab: 'kabupaten', 
+        activeSubTims: [],
+        toggleSubTim(tabTarget, subTim) {
+            if (this.activeTab !== tabTarget) {
+                // Pindah tab otomatis
+                this.activeTab = tabTarget;
+                this.activeSubTims = [subTim];
+            } else {
+                if (this.activeSubTims.includes(subTim)) {
+                    this.activeSubTims = this.activeSubTims.filter(s => s !== subTim);
+                } else {
+                    this.activeSubTims.push(subTim);
+                }
+            }
+            setTimeout(() => { if(typeof drawPins === 'function') drawPins(this.activeTab, this.activeSubTims); }, 50);
+        },
+        init() { 
+            setTimeout(() => { if(typeof drawPins === 'function') drawPins(this.activeTab, this.activeSubTims); }, 100); 
+        },
+        switchTab(tab) {
+            this.activeTab = tab;
+            this.activeSubTims = [];
+            setTimeout(() => { if(typeof drawPins === 'function') drawPins(this.activeTab, this.activeSubTims); }, 100);
+        }
+    }">
 
                         <!-- Navbar -->
                         <nav class="bg-[#0b43bf]">
                             <div class="max-w-7xl mx-auto px-4">
-                                <ul class="flex items-center justify-center flex-wrap gap-x-8 gap-y-2 py-3 text-base font-extrabold">
+                                <ul class="flex items-center justify-center flex-wrap gap-x-8 gap-y-2 py-3 text-base font-extrabold relative">
                                     <li>
                                         <button type="button"
-                                            @click="activeTab = 'kabupaten'"
-                                            :class="activeTab === 'kabupaten'
-                                                ? 'text-white underline underline-offset-4'
-                                                : 'text-cyan-100 hover:text-white'"
-                                            class="transition">
+                                            @click="switchTab('kabupaten')"
+                                            :class="activeTab === 'kabupaten' ? 'text-white underline underline-offset-4' : 'text-cyan-100 hover:text-white'"
+                                            class="transition py-2">
                                             Per Kabupaten
                                         </button>
                                     </li>
-                                    <li>
+                                    <!-- Dropdown Pengembangan -->
+                                    <li class="relative group" x-data="{ open: false }" @mouseenter="open = true" @mouseleave="open = false">
                                         <button type="button"
-                                            @click="activeTab = 'pengembangan'"
-                                            :class="activeTab === 'pengembangan'
-                                                ? 'text-white underline underline-offset-4'
-                                                : 'text-cyan-100 hover:text-white'"
-                                            class="transition">
+                                            @click="switchTab('pengembangan')"
+                                            :class="activeTab === 'pengembangan' ? 'text-white underline underline-offset-4' : 'text-cyan-100 hover:text-white'"
+                                            class="transition py-2">
                                             Tim Kerja Pengembangan
                                         </button>
+                                        <div x-show="open" x-transition.opacity style="display: none;"
+                                             class="absolute left-0 mt-0 w-56 bg-white rounded-md shadow-xl border border-gray-100 z-50 overflow-hidden font-normal text-sm">
+                                            <div class="p-2 space-y-1">
+                                                <label class="flex items-center px-3 py-2 rounded hover:bg-gray-100 cursor-pointer transition">
+                                                    <input type="checkbox" class="rounded text-blue-600 form-checkbox border-gray-300" 
+                                                           :checked="activeTab === 'pengembangan' && activeSubTims.includes('Kamus dan Istilah')"
+                                                           @change="toggleSubTim('pengembangan', 'Kamus dan Istilah')">
+                                                    <span class="w-3 h-3 rounded-full ml-3 mr-2 border border-gray-500" style="background-color: #FF1493;"></span>
+                                                    <span class="text-gray-700">Kamus dan Istilah</span>
+                                                </label>
+                                                <label class="flex items-center px-3 py-2 rounded hover:bg-gray-100 cursor-pointer transition">
+                                                    <input type="checkbox" class="rounded text-blue-600 form-checkbox border-gray-300" 
+                                                           :checked="activeTab === 'pengembangan' && activeSubTims.includes('BIPA')"
+                                                           @change="toggleSubTim('pengembangan', 'BIPA')">
+                                                    <span class="w-3 h-3 rounded-full ml-3 mr-2 border border-gray-500" style="background-color: #00E5FF;"></span>
+                                                    <span class="text-gray-700">BIPA</span>
+                                                </label>
+                                            </div>
+                                        </div>
                                     </li>
-                                    <li>
+                                    <!-- Dropdown Pembinaan -->
+                                    <li class="relative group" x-data="{ open: false }" @mouseenter="open = true" @mouseleave="open = false">
                                         <button type="button"
-                                            @click="activeTab = 'pembinaan'"
-                                            :class="activeTab === 'pembinaan'
-                                                ? 'text-white underline underline-offset-4'
-                                                : 'text-cyan-100 hover:text-white'"
-                                            class="transition">
+                                            @click="switchTab('pembinaan')"
+                                            :class="activeTab === 'pembinaan' ? 'text-white underline underline-offset-4' : 'text-cyan-100 hover:text-white'"
+                                            class="transition py-2">
                                             Tim Kerja Pembinaan
                                         </button>
+                                        <div x-show="open" x-transition.opacity style="display: none;"
+                                             class="absolute left-0 mt-0 w-56 bg-white rounded-md shadow-xl border border-gray-100 z-50 overflow-hidden font-normal text-sm">
+                                            <div class="p-2 space-y-1">
+                                                <label class="flex items-center px-3 py-2 rounded hover:bg-gray-100 cursor-pointer transition">
+                                                    <input type="checkbox" class="rounded text-blue-600 form-checkbox border-gray-300" 
+                                                           :checked="activeTab === 'pembinaan' && activeSubTims.includes('Pembahu')"
+                                                           @change="toggleSubTim('pembinaan', 'Pembahu')">
+                                                    <span class="w-3 h-3 rounded-full ml-3 mr-2 border border-gray-500" style="background-color: #00E676;"></span>
+                                                    <span class="text-gray-700">Pembahu</span>
+                                                </label>
+                                                <label class="flex items-center px-3 py-2 rounded hover:bg-gray-100 cursor-pointer transition">
+                                                    <input type="checkbox" class="rounded text-blue-600 form-checkbox border-gray-300" 
+                                                           :checked="activeTab === 'pembinaan' && activeSubTims.includes('Literasi')"
+                                                           @change="toggleSubTim('pembinaan', 'Literasi')">
+                                                    <span class="w-3 h-3 rounded-full ml-3 mr-2 border border-gray-500" style="background-color: #2979FF;"></span>
+                                                    <span class="text-gray-700">Literasi</span>
+                                                </label>
+                                                <label class="flex items-center px-3 py-2 rounded hover:bg-gray-100 cursor-pointer transition">
+                                                    <input type="checkbox" class="rounded text-blue-600 form-checkbox border-gray-300" 
+                                                           :checked="activeTab === 'pembinaan' && activeSubTims.includes('UKBI')"
+                                                           @change="toggleSubTim('pembinaan', 'UKBI')">
+                                                    <span class="w-3 h-3 rounded-full ml-3 mr-2 border border-gray-500" style="background-color: #D500F9;"></span>
+                                                    <span class="text-gray-700">UKBI</span>
+                                                </label>
+                                                <label class="flex items-center px-3 py-2 rounded hover:bg-gray-100 cursor-pointer transition">
+                                                    <input type="checkbox" class="rounded text-blue-600 form-checkbox border-gray-300" 
+                                                           :checked="activeTab === 'pembinaan' && activeSubTims.includes('Penerjemahan')"
+                                                           @change="toggleSubTim('pembinaan', 'Penerjemahan')">
+                                                    <span class="w-3 h-3 rounded-full ml-3 mr-2 border border-gray-500" style="background-color: #FF3D00;"></span>
+                                                    <span class="text-gray-700">Penerjemahan</span>
+                                                </label>
+                                            </div>
+                                        </div>
                                     </li>
-                                    <li>
+                                    <!-- Dropdown Perlindungan -->
+                                    <li class="relative group" x-data="{ open: false }" @mouseenter="open = true" @mouseleave="open = false">
                                         <button type="button"
-                                            @click="activeTab = 'perlindungan'"
-                                            :class="activeTab === 'perlindungan'
-                                                ? 'text-white underline underline-offset-4'
-                                                : 'text-cyan-100 hover:text-white'"
-                                            class="transition">
+                                            @click="switchTab('perlindungan')"
+                                            :class="activeTab === 'perlindungan' ? 'text-white underline underline-offset-4' : 'text-cyan-100 hover:text-white'"
+                                            class="transition py-2">
                                             Tim Kerja Perlindungan
                                         </button>
+                                        <div x-show="open" x-transition.opacity style="display: none;"
+                                             class="absolute left-0 mt-0 w-56 bg-white rounded-md shadow-xl border border-gray-100 z-50 overflow-hidden font-normal text-sm">
+                                            <div class="p-2 space-y-1">
+                                                <label class="flex items-center px-3 py-2 rounded hover:bg-gray-100 cursor-pointer transition">
+                                                    <input type="checkbox" class="rounded text-blue-600 form-checkbox border-gray-300" 
+                                                           :checked="activeTab === 'perlindungan' && activeSubTims.includes('Molinbastra')"
+                                                           @change="toggleSubTim('perlindungan', 'Molinbastra')">
+                                                    <span class="w-3 h-3 rounded-full ml-3 mr-2 border border-gray-500" style="background-color: #FFEA00;"></span>
+                                                    <span class="text-gray-700">Molinbastra</span>
+                                                </label>
+                                            </div>
+                                        </div>
                                     </li>
                                     <li>
                                         <button type="button"
-                                            @click="activeTab = 'statistik'"
-                                            :class="activeTab === 'statistik'
-                                                ? 'text-white underline underline-offset-4'
-                                                : 'text-cyan-100 hover:text-white'"
-                                            class="transition">
+                                            @click="switchTab('statistik')"
+                                            :class="activeTab === 'statistik' ? 'text-white underline underline-offset-4' : 'text-cyan-100 hover:text-white'"
+                                            class="transition py-2">
                                             Statistik
                                         </button>
                                     </li>
@@ -268,19 +350,6 @@
                                 <h3 class="text-2xl font-bold mb-4">Tim Kerja Pengembangan</h3>
                                 <p class="text-sm text-gray-600 mb-4">Peta sebaran program Tim Kerja Pengembangan.</p>
 
-                                <!-- Legenda Khusus Pengembangan -->
-                                <div class="bg-gray-50 border border-gray-200 rounded-lg p-4 mb-6 inline-block">
-                                    <div class="flex flex-wrap gap-4">
-                                        <div class="flex items-center">
-                                            <span class="w-4 h-4 rounded-full mr-2 shadow-sm" style="background-color: #FF1493;"></span>
-                                            <span class="text-xs font-medium text-gray-700">Kamus dan Istilah</span>
-                                        </div>
-                                        <div class="flex items-center">
-                                            <span class="w-4 h-4 rounded-full mr-2 shadow-sm" style="background-color: #00E5FF;"></span>
-                                            <span class="text-xs font-medium text-gray-700">BIPA</span>
-                                        </div>
-                                    </div>
-                                </div>
 
                                 @include('components.svg.jabar-tim-kerja')
 
@@ -296,27 +365,6 @@
                                 <h3 class="text-2xl font-bold mb-4">Tim Kerja Pembinaan</h3>
                                 <p class="text-sm text-gray-600 mb-4">Peta sebaran program Tim Kerja Pembinaan.</p>
 
-                                <!-- Legenda Khusus Pembinaan -->
-                                <div class="bg-gray-50 border border-gray-200 rounded-lg p-4 mb-6 inline-block">
-                                    <div class="flex flex-wrap gap-4">
-                                        <div class="flex items-center">
-                                            <span class="w-4 h-4 rounded-full mr-2 shadow-sm" style="background-color: #00E676;"></span>
-                                            <span class="text-xs font-medium text-gray-700">Pembahu</span>
-                                        </div>
-                                        <div class="flex items-center">
-                                            <span class="w-4 h-4 rounded-full mr-2 shadow-sm" style="background-color: #2979FF;"></span>
-                                            <span class="text-xs font-medium text-gray-700">Literasi</span>
-                                        </div>
-                                        <div class="flex items-center">
-                                            <span class="w-4 h-4 rounded-full mr-2 shadow-sm" style="background-color: #D500F9;"></span>
-                                            <span class="text-xs font-medium text-gray-700">UKBI</span>
-                                        </div>
-                                        <div class="flex items-center">
-                                            <span class="w-4 h-4 rounded-full mr-2 shadow-sm" style="background-color: #FF3D00;"></span>
-                                            <span class="text-xs font-medium text-gray-700">Penerjemahan</span>
-                                        </div>
-                                    </div>
-                                </div>
 
                                 @include('components.svg.jabar-tim-kerja')
 
@@ -332,15 +380,6 @@
                                 <h3 class="text-2xl font-bold mb-4">Tim Kerja Perlindungan</h3>
                                 <p class="text-sm text-gray-600 mb-4">Peta sebaran program Tim Kerja Perlindungan.</p>
 
-                                <!-- Legenda Khusus Perlindungan -->
-                                <div class="bg-gray-50 border border-gray-200 rounded-lg p-4 mb-6 inline-block">
-                                    <div class="flex flex-wrap gap-4">
-                                        <div class="flex items-center">
-                                            <span class="w-4 h-4 rounded-full mr-2 shadow-sm" style="background-color: #FFEA00;"></span>
-                                            <span class="text-xs font-medium text-gray-700">Molinbastra</span>
-                                        </div>
-                                    </div>
-                                </div>
 
                                 @include('components.svg.jabar-tim-kerja')
 
@@ -643,7 +682,7 @@
             'Molinbastra': '#FFEA00' // Yellow
         };
 
-        function drawPins(activeTab) {
+        function drawPins(activeTab, activeSubTims = []) {
             // First clear all pins in all SVGs
             document.querySelectorAll('.pins-container').forEach(container => {
                 container.innerHTML = '';
@@ -656,7 +695,12 @@
             if (activeTab === 'pembinaan') timKerjaTarget = 'Tim Kerja Pembinaan';
             if (activeTab === 'perlindungan') timKerjaTarget = 'Tim Kerja Pelindungan';
 
-            const filteredPrograms = allProgramsData.filter(p => p.tim_kerja === timKerjaTarget);
+            let filteredPrograms = allProgramsData.filter(p => p.tim_kerja === timKerjaTarget);
+            
+            // Terapkan filter Sub Tim Kerja jika ada
+            if (activeSubTims && activeSubTims.length > 0) {
+                filteredPrograms = filteredPrograms.filter(p => activeSubTims.includes(p.sub_tim_kerja));
+            }
             
             // Find the active tab's SVG container
             const activeDiv = document.querySelector(`[x-show="activeTab === '${activeTab}'"]`);
@@ -666,6 +710,9 @@
             if (!pinsContainer || !svgElement) return;
 
             let delay = 0;
+            const placedPins = [];
+            const MIN_DIST = 12; // Minimum pixel distance between pins
+
             filteredPrograms.forEach((program) => {
                 if (!program.wilayah || !program.wilayah.kode) return;
                 
@@ -680,17 +727,58 @@
                 let rx = 0, ry = 0;
                 let attempts = 0;
 
-                while (!validPoint && attempts < 100) {
+                // Phase 1: Try to find a spot inside the region without overlap
+                while (!validPoint && attempts < 150) {
                     rx = bbox.x + Math.random() * bbox.width;
                     ry = bbox.y + Math.random() * bbox.height;
                     svgPt.x = rx;
                     svgPt.y = ry;
                     
                     if (pathEl.isPointInFill(svgPt)) {
-                        validPoint = true;
+                        let collision = false;
+                        for (const p of placedPins) {
+                            const dx = p.x - rx;
+                            const dy = p.y - ry;
+                            if (Math.sqrt(dx*dx + dy*dy) < MIN_DIST) {
+                                collision = true;
+                                break;
+                            }
+                        }
+                        if (!collision) validPoint = true;
                     }
                     attempts++;
                 }
+
+                // Phase 2: If area is too small (e.g. Cimahi), spiral outward from center
+                if (!validPoint) {
+                    const cx = bbox.x + bbox.width / 2;
+                    const cy = bbox.y + bbox.height / 2;
+                    let radius = 0;
+                    let angle = 0;
+                    
+                    for (let i = 0; i < 300; i++) {
+                        rx = cx + Math.cos(angle) * radius;
+                        ry = cy + Math.sin(angle) * radius;
+                        
+                        let collision = false;
+                        for (const p of placedPins) {
+                            const dx = p.x - rx;
+                            const dy = p.y - ry;
+                            if (Math.sqrt(dx*dx + dy*dy) < MIN_DIST) {
+                                collision = true;
+                                break;
+                            }
+                        }
+                        if (!collision) {
+                            validPoint = true;
+                            break;
+                        }
+                        radius += 0.5; // expand spiral slowly
+                        angle += 0.5; // rotate
+                    }
+                }
+
+                placedPins.push({x: rx, y: ry});
 
                 if (validPoint) {
                     const color = subTimColors[program.sub_tim_kerja] || '#111827';
