@@ -71,44 +71,48 @@
 
     <div id="peta-wilayah-tooltip" class="peta-wilayah-tooltip" hidden></div>
 
-    <x-modal name="region-info" :show="false" maxWidth="4xl">
-        <div class="p-6">
-            <div class="mb-4 border-b pb-2">
-                <h3 id="info-nama" class="text-xl font-bold text-gray-800 uppercase"></h3>
+    <template x-teleport="body">
+        <x-modal name="region-info" :show="false" maxWidth="4xl">
+            <div class="p-6">
+                <div class="mb-4 border-b pb-2">
+                    <h3 id="info-nama" class="text-xl font-bold text-gray-800 uppercase"></h3>
+                </div>
+                <div id="info-detail" class="text-sm text-gray-700"></div>
+                <div class="mt-6 flex justify-end">
+                    <button type="button" x-on:click="$dispatch('close-modal', 'region-info')" class="px-4 py-2 bg-gray-200 text-gray-800 rounded-md hover:bg-gray-300 font-medium">Tutup</button>
+                </div>
             </div>
-            <div id="info-detail" class="text-sm text-gray-700"></div>
-            <div class="mt-6 flex justify-end">
-                <button type="button" x-on:click="$dispatch('close-modal', 'region-info')" class="px-4 py-2 bg-gray-200 text-gray-800 rounded-md hover:bg-gray-300 font-medium">Tutup</button>
-            </div>
-        </div>
-    </x-modal>
+        </x-modal>
+    </template>
 
-    <x-modal name="program-detail" :show="false" maxWidth="2xl">
-        <div class="p-6">
-            <h2 class="text-2xl font-bold text-gray-900 mb-4" id="pd-title"></h2>
-            <div class="space-y-4">
-                <div>
-                    <span class="font-medium text-gray-500 block text-sm">Tim Kerja</span>
-                    <span id="pd-tim-kerja" class="text-gray-900 font-medium"></span>
+    <template x-teleport="body">
+        <x-modal name="program-detail" :show="false" maxWidth="2xl">
+            <div class="p-6">
+                <h2 class="text-2xl font-bold text-gray-900 mb-4" id="pd-title"></h2>
+                <div class="space-y-4">
+                    <div>
+                        <span class="font-medium text-gray-500 block text-sm">Tim Kerja</span>
+                        <span id="pd-tim-kerja" class="text-gray-900 font-medium"></span>
+                    </div>
+                    <div>
+                        <span class="font-medium text-gray-500 block text-sm">Tanggal Pelaksanaan</span>
+                        <span id="pd-tanggal" class="text-gray-900"></span>
+                    </div>
+                    <div>
+                        <span class="font-medium text-gray-500 block text-sm">Deskripsi</span>
+                        <div id="pd-deskripsi" class="text-gray-900 whitespace-pre-line mt-1"></div>
+                    </div>
+                    <div id="pd-file-container" class="hidden mt-4 pt-4 border-t border-gray-200">
+                        <span class="font-medium text-gray-500 block text-sm mb-2">File Dukung</span>
+                        <div id="pd-file-content"></div>
+                    </div>
                 </div>
-                <div>
-                    <span class="font-medium text-gray-500 block text-sm">Tanggal Pelaksanaan</span>
-                    <span id="pd-tanggal" class="text-gray-900"></span>
-                </div>
-                <div>
-                    <span class="font-medium text-gray-500 block text-sm">Deskripsi</span>
-                    <div id="pd-deskripsi" class="text-gray-900 whitespace-pre-line mt-1"></div>
-                </div>
-                <div id="pd-file-container" class="hidden mt-4 pt-4 border-t border-gray-200">
-                    <span class="font-medium text-gray-500 block text-sm mb-2">File Dukung</span>
-                    <div id="pd-file-content"></div>
+                <div class="mt-6 flex justify-end">
+                    <button type="button" x-on:click="$dispatch('close-modal', 'program-detail')" class="px-4 py-2 bg-gray-200 text-gray-800 rounded-md hover:bg-gray-300 font-medium">Tutup</button>
                 </div>
             </div>
-            <div class="mt-6 flex justify-end">
-                <button type="button" x-on:click="$dispatch('close-modal', 'program-detail')" class="px-4 py-2 bg-gray-200 text-gray-800 rounded-md hover:bg-gray-300 font-medium">Tutup</button>
-            </div>
-        </div>
-    </x-modal>
+        </x-modal>
+    </template>
 </div>
 
 <style>

@@ -140,7 +140,17 @@ class PublicController extends Controller
         $programCountByKode = Wilayah::withCount('programs')
         ->pluck('programs_count', 'kode');
         
-        $allProgramsData = Program::with('wilayah:id,kode')->get(['id', 'nama_program', 'tim_kerja', 'sub_tim_kerja', 'wilayah_id']);
+        $allProgramsData = Program::with('wilayah:id,kode')->get([
+            'id',
+            'nama_program',
+            'tim_kerja',
+            'sub_tim_kerja',
+            'wilayah_id',
+            'tanggal_mulai',
+            'tanggal_selesai',
+            'deskripsi',
+            'file_path',
+        ]);
 
         return view('public-dashboard', compact('visitorCount', 'pegawaiPalingAwal', 'jumlahHadir', 'jumlahTerlambat', 'pegawaiCuti', 'pegawaiDinasLuar', 'chartDataGrouped', 'programCountByKode', 'allProgramsData'));
     }

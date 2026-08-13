@@ -165,8 +165,6 @@
                                 Klik wilayah pada peta untuk melihat detail program dan informasi wilayah.
                             </p>
 
-                            @include('components.svg.jabar')
-
                             <!-- Legend -->
                             <div class="mt-4 w-64">
                                 <div class="text-sm text-gray-900 mb-1 font-medium">
@@ -183,6 +181,8 @@
                                     class="relative w-full h-8 mt-0 text-[15px] text-gray-600 font-mono">
                                 </div>
                             </div>
+                            
+                            @include('components.svg.jabar')
 
                         </div>
                     </div>
@@ -256,7 +256,7 @@
                     {{ session('success') }}
                 </div>
             @endif
-
+            <br>
             <div id="daftar-program" class="bg-white overflow-hidden shadow-sm sm:rounded-lg scroll-mt-6">
                 <div class="p-6 bg-white border-b border-gray-200">
                     <div class="flex justify-between items-center mb-6">
@@ -612,7 +612,7 @@
         })();
 
         // --- MAP PINS LOGIC ---
-        const allProgramsData = @json($allProgramsData);
+        window.allProgramsData = @json($allProgramsData);
 
         const subTimColors = {
             'Kamus dan Istilah': '#FF1493', // Deep Pink
@@ -637,7 +637,10 @@
             if (activeTab === 'pembinaan') timKerjaTarget = 'Tim Kerja Pembinaan';
             if (activeTab === 'perlindungan') timKerjaTarget = 'Tim Kerja Pelindungan';
 
-            let filteredPrograms = allProgramsData.filter(p => p.tim_kerja === timKerjaTarget);
+            window.currentTimKerjaTarget = timKerjaTarget;
+            window.currentActiveSubTims = activeSubTims;
+
+            let filteredPrograms = window.allProgramsData.filter(p => p.tim_kerja === timKerjaTarget);
             
             // Terapkan filter Sub Tim Kerja jika ada
             if (activeSubTims && activeSubTims.length > 0) {
@@ -669,15 +672,40 @@
                 let rx = 0, ry = 0;
                 let attempts = 0;
 
+                // Ukuran visual pin (setelah scale 1.5x): lebar ±11, tinggi 33 ke atas dari tip
+                const PIN_HALF_WIDTH = 5;
+                const PIN_HEIGHT = 10;
+
+                // Cek apakah seluruh area visual pin (bukan cuma titik tip) berada di dalam wilayah
+                function isPinFullyInside(pathEl, svgPt, tipX, tipY, scaleFactor = 1) {
+                    const halfW = PIN_HALF_WIDTH * scaleFactor;
+                    const h = PIN_HEIGHT * scaleFactor;
+                    const stepsX = 5; // jumlah titik sampel horizontal
+                    const stepsY = 6; // jumlah titik sampel vertikal
+
+                    for (let iy = 0; iy <= stepsY; iy++) {
+                        const dy = -(h * iy / stepsY); // dari tip (0) ke atas (-h)
+                        for (let ix = 0; ix <= stepsX; ix++) {
+                            const dx = -halfW + (2 * halfW * ix / stepsX);
+                            svgPt.x = tipX + dx;
+                            svgPt.y = tipY + dy;
+                            if (!pathEl.isPointInFill(svgPt)) {
+                                return false;
+                            }
+                        }
+                    }
+                    return true;
+                }
+
                 // Phase 1: Try to find a spot inside the region without overlap
-                while (!validPoint && attempts < 150) {
+                while (!validPoint && attempts < 250) { // naikkan dari 150 -> 250, pengecekan lebih ketat butuh lebih banyak percobaan
                     rx = bbox.x + Math.random() * bbox.width;
                     ry = bbox.y + Math.random() * bbox.height;
                     
                     svgPt.x = rx;
                     svgPt.y = ry;
                     
-                    if (pathEl.isPointInFill(svgPt)) {
+                    if (pathEl.isPointInFill(svgPt) && isPinFullyInside(pathEl, svgPt, rx, ry, 1)) {
                         let collision = false;
                         for (const p of placedPins) {
                             const dx = p.x - rx;
@@ -692,32 +720,44 @@
                     attempts++;
                 }
 
-                // Phase 2: If area is too small (e.g. Cimahi), spiral outward from center
+                // Phase 2: spiral outward, dengan ukuran pin yang menyusut kalau gagal
                 if (!validPoint) {
                     const cx = bbox.x + bbox.width / 2;
                     const cy = bbox.y + bbox.height / 2;
-                    let radius = 0;
-                    let angle = 0;
-                    
-                    for (let i = 0; i < 300; i++) {
-                        rx = cx + Math.cos(angle) * radius;
-                        ry = cy + Math.sin(angle) * radius;
-                        
-                        let collision = false;
-                        for (const p of placedPins) {
-                            const dx = p.x - rx;
-                            const dy = p.y - ry;
-                            if (Math.sqrt(dx*dx + dy*dy) < MIN_DIST) {
-                                collision = true;
+
+                    // Coba beberapa level ukuran pin: penuh -> setengah -> tanpa cek sama sekali (last resort)
+                    const scaleLevels = [1, 0.5, 0];
+
+                    for (const scaleFactor of scaleLevels) {
+                        if (validPoint) break;
+                        let radius = 0;
+                        let angle = 0;
+
+                        for (let i = 0; i < 300; i++) {
+                            rx = cx + Math.cos(angle) * radius;
+                            ry = cy + Math.sin(angle) * radius;
+
+                            svgPt.x = rx;
+                            svgPt.y = ry;
+
+                            const inside = scaleFactor > 0
+                                ? (pathEl.isPointInFill(svgPt) && isPinFullyInside(pathEl, svgPt, rx, ry, scaleFactor))
+                                : pathEl.isPointInFill(svgPt);
+
+                            let collision = false;
+                            for (const p of placedPins) {
+                                const dx = p.x - rx;
+                                const dy = p.y - ry;
+                                if (Math.sqrt(dx*dx + dy*dy) < MIN_DIST) { collision = true; break; }
+                            }
+
+                            if (inside && !collision) {
+                                validPoint = true;
                                 break;
                             }
+                            radius += 0.5;
+                            angle += 0.5;
                         }
-                        if (!collision) {
-                            validPoint = true;
-                            break;
-                        }
-                        radius += 0.5; // expand spiral slowly
-                        angle += 0.5; // rotate
                     }
                 }
 

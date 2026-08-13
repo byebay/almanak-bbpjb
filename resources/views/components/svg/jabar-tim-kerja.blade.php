@@ -145,6 +145,39 @@ document.addEventListener('DOMContentLoaded', function () {
                     tooltip.hidden = true;
                 }
             });
+
+            // TAMBAHAN: klik wilayah -> buka modal daftar program (terfilter sesuai tab/sub tim kerja aktif)
+            el.addEventListener('click', function (e) {
+                e.preventDefault();
+
+                document.querySelectorAll('a.wilayah-kosong, a.wilayah').forEach(function (w) {
+                    w.classList.remove('aktif');
+                });
+                el.classList.add('aktif');
+
+                const infoNama = document.getElementById('info-nama');
+                const infoDetail = document.getElementById('info-detail');
+                if (!infoNama || !infoDetail) return;
+
+                const timKerjaTarget = window.currentTimKerjaTarget || '';
+                const activeSubTims = window.currentActiveSubTims || [];
+
+                let programs = (window.allProgramsData || []).filter(function (p) {
+                    return p.wilayah && p.wilayah.kode === kode && p.tim_kerja === timKerjaTarget;
+                });
+
+                if (activeSubTims.length > 0) {
+                    programs = programs.filter(function (p) {
+                        return activeSubTims.includes(p.sub_tim_kerja);
+                    });
+                }
+
+                infoNama.textContent = namaWilayah;
+                window.regionProgramsData = programs;
+                window.regionInfoText = '';
+                window.renderProgramsPage(1);
+                window.dispatchEvent(new CustomEvent('open-modal', { detail: 'region-info' }));
+            });
         });
     });
 });

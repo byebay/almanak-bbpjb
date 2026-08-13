@@ -32,7 +32,17 @@ class ProgramController extends Controller
         $programCountByKode = Wilayah::withCount('programs')->pluck('programs_count', 'kode');
         $wilayahOptions = Wilayah::orderBy('nama_wilayah')->pluck('nama_wilayah', 'id');
         
-        $allProgramsData = Program::with('wilayah:id,kode')->get(['id', 'nama_program', 'tim_kerja', 'sub_tim_kerja', 'wilayah_id']);
+        $allProgramsData = Program::with('wilayah:id,kode')->get([
+            'id',
+            'nama_program',
+            'tim_kerja',
+            'sub_tim_kerja',
+            'wilayah_id',
+            'tanggal_mulai',
+            'tanggal_selesai',
+            'deskripsi',
+            'file_path',
+        ]);
 
         // Kalau request datang dari fetch() JS, cukup balikin HTML tabelnya saja
         if ($request->ajax() || $request->wantsJson()) {
