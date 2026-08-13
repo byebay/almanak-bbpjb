@@ -256,8 +256,7 @@
                     {{ session('success') }}
                 </div>
             @endif
-            <br>
-            <div id="daftar-program" class="bg-white overflow-hidden shadow-sm sm:rounded-lg scroll-mt-6">
+            <div id="daftar-program" class="bg-white overflow-hidden shadow-sm sm:rounded-lg scroll-mt-6 mt-8 mr-8 ml-8">
                 <div class="p-6 bg-white border-b border-gray-200">
                     <div class="flex justify-between items-center mb-6">
                         <h3 class="text-2xl font-bold">Daftar Program</h3>
