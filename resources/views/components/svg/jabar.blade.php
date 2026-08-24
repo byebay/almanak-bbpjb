@@ -192,7 +192,7 @@ document.addEventListener('DOMContentLoaded', function () {
     }
 
     function getHeatColor(count) {
-        if (!count || count <= 0) return '#f3f4f6'; // abu-abu terang untuk 0 program
+        if (!count || count <= 0) return '#fff'; 
         const ratio = Math.min(count / maxCount, 1);
         // interpolasi dari biru muda ke biru utama
         const start = { r: 219, g: 234, b: 254 }; // biru muda

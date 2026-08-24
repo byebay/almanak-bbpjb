@@ -397,7 +397,7 @@
                                 <div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
                                     <!-- Chart 1: Total Keseluruhan Program -->
                                     <div class="bg-slate-50 p-4 rounded-xl border border-gray-200 shadow-sm">
-                                        <h4 class="font-bold text-gray-800 text-base mb-1">1. Total Keseluruhan Program</h4>
+                                        <h4 class="font-bold text-gray-800 text-base mb-1">Total Keseluruhan Program</h4>
                                         <p class="text-xs text-gray-500 mb-3">Jumlah seluruh program di tiap wilayah</p>
                                         <div class="relative h-64 overflow-x-auto">
                                             <div class="h-full" style="min-width: 600px;">
@@ -408,7 +408,7 @@
 
                                     <!-- Chart 2: Tim Kerja Pengembangan -->
                                     <div class="bg-slate-50 p-4 rounded-xl border border-gray-200 shadow-sm">
-                                        <h4 class="font-bold text-gray-800 text-base mb-1">2. Tim Kerja Pengembangan</h4>
+                                        <h4 class="font-bold text-gray-800 text-base mb-1">Tim Kerja Pengembangan</h4>
                                         <p class="text-xs text-gray-500 mb-3">Sub Tim: Kamus & Istilah, BIPA</p>
                                         <div class="relative h-64 overflow-x-auto">
                                             <div class="h-full" style="min-width: 600px;">
@@ -419,7 +419,7 @@
 
                                     <!-- Chart 3: Tim Kerja Pembinaan -->
                                     <div class="bg-slate-50 p-4 rounded-xl border border-gray-200 shadow-sm">
-                                        <h4 class="font-bold text-gray-800 text-base mb-1">3. Tim Kerja Pembinaan</h4>
+                                        <h4 class="font-bold text-gray-800 text-base mb-1">Tim Kerja Pembinaan</h4>
                                         <p class="text-xs text-gray-500 mb-3">Sub Tim: Pembahu, Literasi, UKBI, Penerjemahan</p>
                                         <div class="relative h-64 overflow-x-auto">
                                             <div class="h-full" style="min-width: 600px;">
@@ -430,7 +430,7 @@
 
                                     <!-- Chart 4: Tim Kerja Perlindungan -->
                                     <div class="bg-slate-50 p-4 rounded-xl border border-gray-200 shadow-sm">
-                                        <h4 class="font-bold text-gray-800 text-base mb-1">4. Tim Kerja Pelindungan</h4>
+                                        <h4 class="font-bold text-gray-800 text-base mb-1">Tim Kerja Pelindungan</h4>
                                         <p class="text-xs text-gray-500 mb-3">Sub Tim: Molinbastra</p>
                                         <div class="relative h-64 overflow-x-auto">
                                             <div class="h-full" style="min-width: 600px;">
