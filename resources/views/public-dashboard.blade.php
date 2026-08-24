@@ -391,15 +391,54 @@
                         <!-- ============================= -->
                         <div x-show="activeTab === 'statistik'" x-cloak>
                             <div class="p-6 text-gray-900">
+                                <h3 class="text-2xl font-bold mb-2">Statistik Sebaran Program per Wilayah</h3>
+                                <p class="text-sm text-gray-600 mb-6">Grafik berikut menampilkan jumlah program berdasarkan wilayah di Jawa Barat.</p>
 
-                                <h3 class="text-2xl font-bold mb-4">
-                                    Statistik
-                                </h3>
+                                <div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
+                                    <!-- Chart 1: Total Keseluruhan Program -->
+                                    <div class="bg-slate-50 p-4 rounded-xl border border-gray-200 shadow-sm">
+                                        <h4 class="font-bold text-gray-800 text-base mb-1">1. Total Keseluruhan Program</h4>
+                                        <p class="text-xs text-gray-500 mb-3">Jumlah seluruh program di tiap wilayah</p>
+                                        <div class="relative h-64 overflow-x-auto">
+                                            <div class="h-full" style="min-width: 600px;">
+                                                <canvas id="chartTotalProgramPublic"></canvas>
+                                            </div>
+                                        </div>
+                                    </div>
 
-                                <p class="text-sm text-gray-600">
-                                    Statistik program akan ditampilkan di sini.
-                                </p>
+                                    <!-- Chart 2: Tim Kerja Pengembangan -->
+                                    <div class="bg-slate-50 p-4 rounded-xl border border-gray-200 shadow-sm">
+                                        <h4 class="font-bold text-gray-800 text-base mb-1">2. Tim Kerja Pengembangan</h4>
+                                        <p class="text-xs text-gray-500 mb-3">Sub Tim: Kamus & Istilah, BIPA</p>
+                                        <div class="relative h-64 overflow-x-auto">
+                                            <div class="h-full" style="min-width: 600px;">
+                                                <canvas id="chartPengembanganPublic"></canvas>
+                                            </div>
+                                        </div>
+                                    </div>
 
+                                    <!-- Chart 3: Tim Kerja Pembinaan -->
+                                    <div class="bg-slate-50 p-4 rounded-xl border border-gray-200 shadow-sm">
+                                        <h4 class="font-bold text-gray-800 text-base mb-1">3. Tim Kerja Pembinaan</h4>
+                                        <p class="text-xs text-gray-500 mb-3">Sub Tim: Pembahu, Literasi, UKBI, Penerjemahan</p>
+                                        <div class="relative h-64 overflow-x-auto">
+                                            <div class="h-full" style="min-width: 600px;">
+                                                <canvas id="chartPembinaanPublic"></canvas>
+                                            </div>
+                                        </div>
+                                    </div>
+
+                                    <!-- Chart 4: Tim Kerja Perlindungan -->
+                                    <div class="bg-slate-50 p-4 rounded-xl border border-gray-200 shadow-sm">
+                                        <h4 class="font-bold text-gray-800 text-base mb-1">4. Tim Kerja Pelindungan</h4>
+                                        <p class="text-xs text-gray-500 mb-3">Sub Tim: Molinbastra</p>
+                                        <div class="relative h-64 overflow-x-auto">
+                                            <div class="h-full" style="min-width: 600px;">
+                                                <canvas id="chartPerlindunganPublic"></canvas>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
                             </div>
                         </div>
                     </div>
@@ -667,6 +706,82 @@
                 // Update subtitle
                 document.getElementById('chartSubtitleText').textContent = newData.subtitle;
             });
+
+            // === Inisialisasi 4 Bar Chart Statistik Program per Wilayah ===
+            const programs = window.allProgramsData || [];
+            // Format nama wilayah: Kapital setiap kata dan tanpa garis (-)
+            function formatWilayahName(kode, namaWilayah) {
+                let name = namaWilayah || kode || '';
+                // Ganti strip (-) dengan spasi
+                name = name.replace(/-/g, ' ');
+                // Kapital setiap kata
+                name = name.replace(/\b\w/g, c => c.toUpperCase());
+                // Pastikan Kab dan Kota ditulis rapi (misal: Kab. Bandung, Kota Bogor)
+                name = name.replace(/^Kab\b/i, 'Kab.').replace(/^Kota\b/i, 'Kota');
+                return name;
+            }
+
+            const kodeWilayahList = Array.from(new Set(programs.map(p => p.wilayah?.kode).filter(Boolean))).sort();
+            const labels = kodeWilayahList.map(kode => {
+                const program = programs.find(p => p.wilayah?.kode === kode);
+                return formatWilayahName(kode, program?.wilayah?.nama_wilayah);
+            });
+
+            const totalData = kodeWilayahList.map(kode => programs.filter(p => p.wilayah?.kode === kode).length);
+            const pengData = kodeWilayahList.map(kode => programs.filter(p => p.wilayah?.kode === kode && p.tim_kerja === 'Tim Kerja Pengembangan').length);
+            const pembData = kodeWilayahList.map(kode => programs.filter(p => p.wilayah?.kode === kode && p.tim_kerja === 'Tim Kerja Pembinaan').length);
+            const perlData = kodeWilayahList.map(kode => programs.filter(p => p.wilayah?.kode === kode && (p.tim_kerja === 'Tim Kerja Pelindungan' || p.tim_kerja === 'Tim Kerja Perlindungan')).length);
+
+            const programChartOptions = {
+                responsive: true,
+                maintainAspectRatio: false,
+                scales: {
+                    x: {
+                        ticks: { font: { size: 10 }, autoSkip: false, maxRotation: 45, minRotation: 45 },
+                        grid: { display: false }
+                    },
+                    y: {
+                        beginAtZero: true,
+                        ticks: { precision: 0, stepSize: 1 },
+                        grid: { color: 'rgba(0, 0, 0, 0.05)' }
+                    }
+                },
+                plugins: {
+                    legend: { display: false },
+                    tooltip: {
+                        callbacks: {
+                            label: function(context) {
+                                return context.parsed.y + ' Program';
+                            }
+                        }
+                    }
+                }
+            };
+
+            function renderProgramBarChart(canvasId, chartLabels, chartData, barColor, borderColor) {
+                const el = document.getElementById(canvasId);
+                if (!el) return;
+                new Chart(el.getContext('2d'), {
+                    type: 'bar',
+                    data: {
+                        labels: chartLabels,
+                        datasets: [{
+                            label: 'Jumlah Program',
+                            data: chartData,
+                            backgroundColor: barColor,
+                            borderColor: borderColor,
+                            borderWidth: 1,
+                            borderRadius: 4
+                        }]
+                    },
+                    options: programChartOptions
+                });
+            }
+
+            renderProgramBarChart('chartTotalProgramPublic', labels, totalData, 'rgba(59, 130, 246, 0.85)', 'rgb(29, 78, 216)');
+            renderProgramBarChart('chartPengembanganPublic', labels, pengData, 'rgba(236, 72, 153, 0.85)', 'rgb(190, 24, 93)');
+            renderProgramBarChart('chartPembinaanPublic', labels, pembData, 'rgba(16, 185, 129, 0.85)', 'rgb(4, 120, 87)');
+            renderProgramBarChart('chartPerlindunganPublic', labels, perlData, 'rgba(245, 158, 11, 0.85)', 'rgb(180, 83, 9)');
         });
 
         // --- MAP PINS LOGIC ---
