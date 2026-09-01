@@ -70,19 +70,35 @@ class DashboardController extends Controller
         // --- AKHIR LOGIKA BARU ---
 
         // --- LOGIKA GRAFIK PENGUNJUNG ---
+        $selectedMonth = request()->query('month', Carbon::today()->format('Y-m'));
+        $selectedYear = request()->query('year', Carbon::today()->format('Y'));
 
-        // 1. Data Harian (Bulan Ini)
+        try {
+            $carbonMonth = Carbon::createFromFormat('Y-m', $selectedMonth)->startOfMonth();
+        } catch (\Exception $e) {
+            $carbonMonth = Carbon::today()->startOfMonth();
+            $selectedMonth = $carbonMonth->format('Y-m');
+        }
+
+        try {
+            $carbonYear = Carbon::createFromFormat('Y', $selectedYear)->startOfYear();
+        } catch (\Exception $e) {
+            $carbonYear = Carbon::today()->startOfYear();
+            $selectedYear = $carbonYear->format('Y');
+        }
+
+        // 1. Data Harian (Bulan Pilihan)
         $dailyLabels = [];
         $dailyData = [];
-        $daysInMonth = Carbon::today()->daysInMonth;
+        $daysInMonth = $carbonMonth->daysInMonth;
         for ($i = 1; $i <= $daysInMonth; $i++) {
-            $date = Carbon::today()->startOfMonth()->addDays($i - 1);
+            $date = $carbonMonth->copy()->addDays($i - 1);
             $dailyLabels[] = $i; // Hanya angka tanggal
             $dailyData[$date->format('Y-m-d')] = 0;
         }
         $visitorDaily = Visitor::whereNotNull('visit_date')
-            ->where('visit_date', '>=', Carbon::today()->startOfMonth()->format('Y-m-d'))
-            ->where('visit_date', '<=', Carbon::today()->endOfMonth()->format('Y-m-d'))
+            ->where('visit_date', '>=', $carbonMonth->copy()->startOfMonth()->format('Y-m-d'))
+            ->where('visit_date', '<=', $carbonMonth->copy()->endOfMonth()->format('Y-m-d'))
             ->select(DB::raw('visit_date as date'), DB::raw('count(*) as total'))
             ->groupBy('visit_date')
             ->get();
@@ -93,17 +109,13 @@ class DashboardController extends Controller
         $driver = \Illuminate\Support\Facades\DB::connection()->getDriverName();
         $monthSelect = $driver === 'sqlite' ? "strftime('%Y-%m', visit_date)" : ($driver === 'pgsql' ? "TO_CHAR(visit_date, 'YYYY-MM')" : "DATE_FORMAT(visit_date, '%Y-%m')");
 
-        // 2. Data Bulanan (Tahun Ini)
-        $monthlyLabels = [];
-        $monthlyData = [];
-        for ($i = 1; $i <= 12; $i++) {
-            $monthlyLabels[] = Carbon::create()->month($i)->translatedFormat('M'); // Jan, Feb, Mar...
-            $monthlyData[] = 0;
-        }
+        // 2. Data Bulanan (Tahun Pilihan)
+        $monthlyLabels = ['Jan', 'Feb', 'Mar', 'Apr', 'Mei', 'Jun', 'Jul', 'Agu', 'Sep', 'Okt', 'Nov', 'Des'];
+        $monthlyData = array_fill(0, 12, 0);
 
         $monthlyStats = Visitor::whereNotNull('visit_date')
-            ->where('visit_date', '>=', Carbon::today()->startOfYear()->format('Y-m-d'))
-            ->where('visit_date', '<=', Carbon::today()->endOfYear()->format('Y-m-d'))
+            ->where('visit_date', '>=', $carbonYear->copy()->startOfYear()->format('Y-m-d'))
+            ->where('visit_date', '<=', $carbonYear->copy()->endOfYear()->format('Y-m-d'))
             ->select(DB::raw("{$monthSelect} as month"), DB::raw('count(*) as total'))
             ->groupBy('month')
             ->get();
@@ -116,24 +128,30 @@ class DashboardController extends Controller
 
         $yearSelect = $driver === 'sqlite' ? "strftime('%Y', visit_date)" : ($driver === 'pgsql' ? "EXTRACT(YEAR FROM visit_date)" : "YEAR(visit_date)");
 
-        // 3. Data Tahunan (5 Tahun Terakhir)
+        // 3. Data Tahunan (Kelipatan 5 Tahun)
+        $currentYear = (int)Carbon::today()->year;
+        $defaultStartYear = (int)(floor($currentYear / 5) * 5);
+        $selectedYearRangeStart = (int)request()->query('year_range', $defaultStartYear);
+        $selectedYearRangeEnd = $selectedYearRangeStart + 4;
+
         $yearlyLabels = [];
         $yearlyData = [];
-        $currentYear = Carbon::today()->year;
-        for ($i = 4; $i >= 0; $i--) {
-            $yearlyLabels[] = (string)($currentYear - $i);
-            $yearlyData[] = 0;
+        for ($y = $selectedYearRangeStart; $y <= $selectedYearRangeEnd; $y++) {
+            $yearlyLabels[] = (string)$y;
+            $yearlyData[(string)$y] = 0;
         }
 
         $yearlyStats = Visitor::whereNotNull('visit_date')
-            ->where('visit_date', '>=', Carbon::today()->subYears(4)->startOfYear()->format('Y-m-d'))
+            ->where('visit_date', '>=', Carbon::create($selectedYearRangeStart, 1, 1)->startOfYear()->format('Y-m-d'))
+            ->where('visit_date', '<=', Carbon::create($selectedYearRangeEnd, 12, 31)->endOfYear()->format('Y-m-d'))
             ->select(DB::raw("{$yearSelect} as year"), DB::raw('count(*) as total'))
             ->groupBy('year')
             ->get();
+
         foreach ($yearlyStats as $stat) {
-            $yearIndex = array_search($stat->year, $yearlyLabels);
-            if ($yearIndex !== false) {
-                $yearlyData[$yearIndex] = $stat->total;
+            $yStr = (string)$stat->year;
+            if (isset($yearlyData[$yStr])) {
+                $yearlyData[$yStr] = $stat->total;
             }
         }
 
@@ -141,17 +159,20 @@ class DashboardController extends Controller
             'daily' => [
                 'labels' => $dailyLabels,
                 'data' => array_values($dailyData),
-                'subtitle' => 'Periode: ' . Carbon::today()->translatedFormat('F Y') // Contoh: Periode: Juli 2026
+                'subtitle' => 'Periode: ' . $carbonMonth->locale('id')->translatedFormat('F Y'),
+                'selectedMonth' => $selectedMonth,
             ],
             'monthly' => [
                 'labels' => $monthlyLabels,
                 'data' => array_values($monthlyData),
-                'subtitle' => 'Periode: Tahun ' . Carbon::today()->translatedFormat('Y') // Contoh: Periode: Tahun 2026
+                'subtitle' => 'Periode: Tahun ' . $carbonYear->translatedFormat('Y'),
+                'selectedYear' => $selectedYear,
             ],
             'yearly' => [
                 'labels' => $yearlyLabels,
                 'data' => array_values($yearlyData),
-                'subtitle' => 'Periode: ' . Carbon::today()->subYears(4)->format('Y') . ' - ' . Carbon::today()->format('Y')
+                'subtitle' => 'Periode: ' . $selectedYearRangeStart . ' - ' . $selectedYearRangeEnd,
+                'selectedYearRange' => $selectedYearRangeStart,
             ],
         ];
 
@@ -218,6 +239,9 @@ class DashboardController extends Controller
     public function exportVisitorStats(Request $request)
     {
         $period = $request->query('period', 'daily'); // Default 'daily' jika tidak ada
+        $month = $request->query('month');
+        $year = $request->query('year');
+        $year_range = $request->query('year_range');
         
         $periodName = 'Harian';
         if ($period === 'monthly') {
@@ -227,7 +251,7 @@ class DashboardController extends Controller
         }
 
         $fileName = "Statistik_Pengunjung_{$periodName}_BBPJB_" . date('Ymd') . ".xlsx";
-        return Excel::download(new VisitorStatsExport($period), $fileName);
+        return Excel::download(new VisitorStatsExport($period, $month, $year, $year_range), $fileName);
     }
 
     public function sebaranPegawai()

@@ -11,7 +11,12 @@ use Carbon\Carbon;
 
 class VisitorStatsExport implements FromView, ShouldAutoSize
 {
-    public function __construct(public string $period) {}
+    public function __construct(
+        public string $period,
+        public ?string $month = null,
+        public ?string $year = null,
+        public ?string $year_range = null
+    ) {}
 
     public function view(): View
     {
@@ -23,27 +28,42 @@ class VisitorStatsExport implements FromView, ShouldAutoSize
         $yearSelect = $driver === 'sqlite' ? "strftime('%Y', visit_date)" : ($driver === 'pgsql' ? "EXTRACT(YEAR FROM visit_date)" : "YEAR(visit_date)");
 
         if ($this->period === 'daily') {
-            $title = 'Laporan Pengunjung Harian (Bulan Ini)';
+            try {
+                $carbonMonth = $this->month ? Carbon::createFromFormat('Y-m', $this->month)->startOfMonth() : Carbon::today()->startOfMonth();
+            } catch (\Exception $e) {
+                $carbonMonth = Carbon::today()->startOfMonth();
+            }
+            $title = 'Laporan Pengunjung Harian (' . $carbonMonth->locale('id')->translatedFormat('F Y') . ')';
             $stats = Visitor::whereNotNull('visit_date')
-                ->where('visit_date', '>=', Carbon::today()->startOfMonth()->format('Y-m-d'))
-                ->where('visit_date', '<=', Carbon::today()->endOfMonth()->format('Y-m-d'))
+                ->where('visit_date', '>=', $carbonMonth->copy()->startOfMonth()->format('Y-m-d'))
+                ->where('visit_date', '<=', $carbonMonth->copy()->endOfMonth()->format('Y-m-d'))
                 ->select(DB::raw('visit_date as date'), DB::raw('count(*) as total'))
                 ->groupBy('visit_date')
                 ->orderBy('visit_date', 'asc')
                 ->get();
         } elseif ($this->period === 'monthly') {
-            $title = 'Laporan Pengunjung Bulanan (Tahun Ini)';
+            try {
+                $carbonYear = $this->year ? Carbon::createFromFormat('Y', $this->year)->startOfYear() : Carbon::today()->startOfYear();
+            } catch (\Exception $e) {
+                $carbonYear = Carbon::today()->startOfYear();
+            }
+            $title = 'Laporan Pengunjung Bulanan (Tahun ' . $carbonYear->format('Y') . ')';
             $stats = Visitor::whereNotNull('visit_date')
-                ->where('visit_date', '>=', Carbon::today()->startOfYear()->format('Y-m-d'))
-                ->where('visit_date', '<=', Carbon::today()->endOfYear()->format('Y-m-d'))
+                ->where('visit_date', '>=', $carbonYear->copy()->startOfYear()->format('Y-m-d'))
+                ->where('visit_date', '<=', $carbonYear->copy()->endOfYear()->format('Y-m-d'))
                 ->select(DB::raw("{$monthSelect} as month"), DB::raw('count(*) as total'))
                 ->groupBy('month')
                 ->orderBy('month', 'asc')
                 ->get();
         } elseif ($this->period === 'yearly') {
-            $title = 'Laporan Pengunjung Tahunan (5 Tahun Terakhir)';
+            $currentYear = (int)Carbon::today()->year;
+            $defaultStartYear = (int)(floor($currentYear / 5) * 5);
+            $startYear = (int)($this->year_range ?? $defaultStartYear);
+            $endYear = $startYear + 4;
+            $title = "Laporan Pengunjung Tahunan ({$startYear} - {$endYear})";
             $stats = Visitor::whereNotNull('visit_date')
-                ->where('visit_date', '>=', Carbon::today()->subYears(4)->startOfYear()->format('Y-m-d'))
+                ->where('visit_date', '>=', Carbon::create($startYear, 1, 1)->startOfYear()->format('Y-m-d'))
+                ->where('visit_date', '<=', Carbon::create($endYear, 12, 31)->endOfYear()->format('Y-m-d'))
                 ->select(DB::raw("{$yearSelect} as year"), DB::raw('count(*) as total'))
                 ->groupBy('year')
                 ->orderBy('year', 'asc')

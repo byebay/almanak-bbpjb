@@ -462,9 +462,42 @@
                             </div>
                             <div class="flex flex-col sm:flex-row items-start sm:items-center gap-3 w-full sm:w-auto">
                                 <select id="chartPeriodFilter" class="border-gray-300 focus:border-blue-500 focus:ring-blue-500 rounded-md shadow-sm text-sm w-full sm:w-auto">
-                                    <option value="daily">Harian (Bulan Ini)</option>
-                                    <option value="monthly">Bulanan (Tahun Ini)</option>
-                                    <option value="yearly">Tahunan (5 Tahun Terakhir)</option>
+                                    <option value="daily">Harian</option>
+                                    <option value="monthly">Bulanan</option>
+                                    <option value="yearly">Tahunan</option>
+                                </select>
+                                <div id="chartMonthNavContainer" class="inline-flex items-center gap-1 bg-white border border-gray-300 rounded-md shadow-sm px-2 py-1 text-sm">
+                                    <button type="button" id="prevMonthBtn" class="p-1 hover:bg-gray-100 rounded text-gray-600 focus:outline-none" title="Bulan Sebelumnya">
+                                        <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7"></path></svg>
+                                    </button>
+                                    <span id="currentMonthText" class="font-medium text-gray-700 min-w-[110px] text-center px-1"></span>
+                                    <button type="button" id="nextMonthBtn" class="p-1 hover:bg-gray-100 rounded text-gray-600 focus:outline-none disabled:opacity-30 disabled:cursor-not-allowed" title="Bulan Selanjutnya">
+                                        <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"></path></svg>
+                                    </button>
+                                </div>
+                                <input type="hidden" id="chartMonthFilter" value="{{ $chartDataGrouped['daily']['selectedMonth'] ?? date('Y-m') }}">
+                                <select id="chartYearFilter" class="border-gray-300 focus:border-blue-500 focus:ring-blue-500 rounded-md shadow-sm text-sm w-full sm:w-auto hidden">
+                                    @php
+                                        $currentY = (int)date('Y');
+                                        $selectedY = (int)($chartDataGrouped['monthly']['selectedYear'] ?? date('Y'));
+                                    @endphp
+                                    @for ($y = $currentY; $y >= 2025; $y--)
+                                        <option value="{{ $y }}" {{ $y === $selectedY ? 'selected' : '' }}>Tahun {{ $y }}</option>
+                                    @endfor
+                                </select>
+                                <select id="chartYearRangeFilter" class="border-gray-300 focus:border-blue-500 focus:ring-blue-500 rounded-md shadow-sm text-sm w-full sm:w-auto hidden">
+                                    @php
+                                        $currentY = (int)date('Y');
+                                        $currBlock = (int)(floor($currentY / 5) * 5);
+                                        if ($currBlock < 2025) { $currBlock = 2025; }
+                                        $selectedBlock = (int)($chartDataGrouped['yearly']['selectedYearRange'] ?? $currBlock);
+                                        $maxBlock = $currBlock;
+                                    @endphp
+                                    @for ($startBlock = $maxBlock; $startBlock >= 2025; $startBlock -= 5)
+                                        <option value="{{ $startBlock }}" {{ $startBlock === $selectedBlock ? 'selected' : '' }}>
+                                            {{ $startBlock }} - {{ $startBlock + 4 }}
+                                        </option>
+                                    @endfor
                                 </select>
                             </div>
                         </div>
@@ -693,19 +726,139 @@
             // Set subtitle awal
             document.getElementById('chartSubtitleText').textContent = chartDataGrouped.daily.subtitle;
 
-            // Logika ganti data saat Dropdown dipilih
-            document.getElementById('chartPeriodFilter').addEventListener('change', function(e) {
-                const period = e.target.value; 
+            const periodFilterEl = document.getElementById('chartPeriodFilter');
+            const monthNavContainer = document.getElementById('chartMonthNavContainer');
+            const monthFilterEl = document.getElementById('chartMonthFilter');
+            const currentMonthText = document.getElementById('currentMonthText');
+            const prevMonthBtn = document.getElementById('prevMonthBtn');
+            const nextMonthBtn = document.getElementById('nextMonthBtn');
+            const yearFilterEl = document.getElementById('chartYearFilter');
+            const yearRangeFilterEl = document.getElementById('chartYearRangeFilter');
+
+            const monthNamesIndo = ['Januari', 'Februari', 'Maret', 'April', 'Mei', 'Juni', 'Juli', 'Agustus', 'September', 'Oktober', 'November', 'Desember'];
+
+            function updateMonthNavDisplay() {
+                const [y, m] = monthFilterEl.value.split('-').map(Number);
+                currentMonthText.textContent = `${monthNamesIndo[m - 1]} ${y}`;
+
+                // Disable prev if reaches 2025-01
+                if (y <= 2025 && m <= 1) {
+                    prevMonthBtn.disabled = true;
+                    prevMonthBtn.classList.add('opacity-30', 'cursor-not-allowed');
+                } else {
+                    prevMonthBtn.disabled = false;
+                    prevMonthBtn.classList.remove('opacity-30', 'cursor-not-allowed');
+                }
+
+                // Disable next if reaches current month
+                const now = new Date();
+                const curY = now.getFullYear();
+                const curM = now.getMonth() + 1;
+                if (y > curY || (y === curY && m >= curM)) {
+                    nextMonthBtn.disabled = true;
+                    nextMonthBtn.classList.add('opacity-30', 'cursor-not-allowed');
+                } else {
+                    nextMonthBtn.disabled = false;
+                    nextMonthBtn.classList.remove('opacity-30', 'cursor-not-allowed');
+                }
+            }
+
+            prevMonthBtn.addEventListener('click', function() {
+                let [y, m] = monthFilterEl.value.split('-').map(Number);
+                m--;
+                if (m < 1) { m = 12; y--; }
+                if (y < 2025) return;
+                monthFilterEl.value = `${y}-${String(m).padStart(2, '0')}`;
+                updateMonthNavDisplay();
+                reloadChartData();
+            });
+
+            nextMonthBtn.addEventListener('click', function() {
+                let [y, m] = monthFilterEl.value.split('-').map(Number);
+                const now = new Date();
+                const curY = now.getFullYear();
+                const curM = now.getMonth() + 1;
+                if (y > curY || (y === curY && m >= curM)) return;
+
+                m++;
+                if (m > 12) { m = 1; y++; }
+                monthFilterEl.value = `${y}-${String(m).padStart(2, '0')}`;
+                updateMonthNavDisplay();
+                reloadChartData();
+            });
+
+            function toggleFilterInputs(period) {
+                if (period === 'daily') {
+                    monthNavContainer.classList.remove('hidden');
+                    monthNavContainer.classList.add('inline-flex');
+                    yearFilterEl.classList.add('hidden');
+                    yearRangeFilterEl.classList.add('hidden');
+                } else if (period === 'monthly') {
+                    monthNavContainer.classList.add('hidden');
+                    monthNavContainer.classList.remove('inline-flex');
+                    yearFilterEl.classList.remove('hidden');
+                    yearRangeFilterEl.classList.add('hidden');
+                } else {
+                    monthNavContainer.classList.add('hidden');
+                    monthNavContainer.classList.remove('inline-flex');
+                    yearFilterEl.classList.add('hidden');
+                    yearRangeFilterEl.classList.remove('hidden');
+                }
+            }
+
+            function reloadChartData() {
+                const period = periodFilterEl.value;
+                const month = monthFilterEl.value;
+                const year = yearFilterEl.value;
+                const yearRange = yearRangeFilterEl.value;
+
+                const params = new URLSearchParams(window.location.search);
+                params.set('month', month);
+                params.set('year', year);
+                params.set('year_range', yearRange);
+
+                fetch(`${window.location.pathname}?${params.toString()}`, {
+                    headers: { 'X-Requested-With': 'XMLHttpRequest' }
+                })
+                .then(res => res.text())
+                .then(html => {
+                    const parser = new DOMParser();
+                    const doc = parser.parseFromString(html, 'text/html');
+                    const scriptTag = Array.from(doc.querySelectorAll('script')).find(s => s.textContent.includes('chartDataGrouped'));
+                    if (scriptTag) {
+                        const match = scriptTag.textContent.match(/const chartDataGrouped = (\{.*?\});/s);
+                        if (match && match[1]) {
+                            const newGroupedData = JSON.parse(match[1]);
+                            const newData = newGroupedData[period];
+                            visitorChart.data.labels = newData.labels;
+                            visitorChart.data.datasets[0].data = newData.data;
+                            visitorChart.update();
+                            document.getElementById('chartSubtitleText').textContent = newData.subtitle;
+                            history.replaceState(null, '', `${window.location.pathname}?${params.toString()}`);
+                            return;
+                        }
+                    }
+                    window.location.search = params.toString();
+                })
+                .catch(() => {
+                    window.location.search = params.toString();
+                });
+            }
+
+            periodFilterEl.addEventListener('change', function(e) {
+                const period = e.target.value;
+                toggleFilterInputs(period);
                 const newData = chartDataGrouped[period];
-                
-                // Animasi pertukaran data yang mulus
                 visitorChart.data.labels = newData.labels;
                 visitorChart.data.datasets[0].data = newData.data;
                 visitorChart.update();
-
-                // Update subtitle
                 document.getElementById('chartSubtitleText').textContent = newData.subtitle;
             });
+
+            yearFilterEl.addEventListener('change', reloadChartData);
+            yearRangeFilterEl.addEventListener('change', reloadChartData);
+            updateMonthNavDisplay();
+            toggleFilterInputs(periodFilterEl.value);
 
             // === Inisialisasi 4 Bar Chart Statistik Program per Wilayah ===
             const programs = window.allProgramsData || [];
