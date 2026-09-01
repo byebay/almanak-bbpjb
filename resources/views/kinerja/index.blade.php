@@ -5,26 +5,26 @@
         </h2>
     </x-slot>
 
-    <div class="flex justify-between items-center bg-white p-4 rounded-lg shadow-sm mb-6">
-            {{-- Tombol Bulan Sebelumnya --}}
-            <a href="{{ route('kinerja.index', ['bulan' => $currentDate->copy()->startOfMonth()->subMonth()->format('Y-m')]) }}" class="px-4 py-2 bg-[#1A7EFB] text-white rounded-md hover:bg-blue-700">
-                &lt;
-            </a>
-
-            {{-- Judul Bulan dan Tombol Unduh --}}
-            <div class="text-center">
-                <h3 class="text-xl font-bold">{{ $currentDate->translatedFormat('F Y') }}</h3>
-                <a href="{{ route('kinerja.export', ['year' => $currentDate->year, 'month' => $currentDate->month]) }}" 
-                class="mt-2 inline-flex items-center px-3 py-1 bg-green-100 text-green-800 text-xs font-semibold rounded-full hover:bg-green-200">
-                    <svg class="w-4 h-4 mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4"></path></svg>
-                    Unduh Laporan Bulan Ini
+            <div class="flex justify-between items-center bg-white p-4 rounded-lg shadow-sm mb-6">
+                {{-- Tombol Bulan Sebelumnya --}}
+                <a href="{{ route('kinerja.index', ['bulan' => $currentDate->copy()->startOfMonth()->subMonth()->format('Y-m')]) }}" class="px-4 py-2 bg-[#1A7EFB] text-white rounded-md hover:bg-blue-700">
+                    &lt;
                 </a>
-            </div>
 
-            {{-- Tombol Bulan Berikutnya --}}
-            <a href="{{ route('kinerja.index', ['bulan' => $currentDate->copy()->startOfMonth()->addMonth()->format('Y-m')]) }}" class="px-4 py-2 bg-[#1A7EFB] text-white rounded-md hover:bg-blue-700">
-                &gt;
-            </a>
+                {{-- Judul Bulan dan Tombol Unduh --}}
+                <div class="text-center">
+                    <h3 class="text-xl font-bold">{{ $currentDate->translatedFormat('F Y') }}</h3>
+                    <a href="{{ route('kinerja.export', ['year' => $currentDate->year, 'month' => $currentDate->month]) }}" 
+                    class="mt-2 inline-flex items-center px-3 py-1 bg-green-100 text-green-800 text-xs font-semibold rounded-full hover:bg-green-200">
+                        <svg class="w-4 h-4 mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4"></path></svg>
+                        Unduh Laporan Bulan Ini
+                    </a>
+                </div>
+
+                {{-- Tombol Bulan Berikutnya --}}
+                <a href="{{ route('kinerja.index', ['bulan' => $currentDate->copy()->startOfMonth()->addMonth()->format('Y-m')]) }}" class="px-4 py-2 bg-[#1A7EFB] text-white rounded-md hover:bg-blue-700">
+                    &gt;
+                </a>
             </div>
             {{-- --------------------------------------------- --}}
             
