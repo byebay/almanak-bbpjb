@@ -118,13 +118,13 @@
                                         </div>
                                     </div>
                                 </li>
-                                <!-- Dropdown Perlindungan -->
+                                <!-- Dropdown Pelindungan -->
                                 <li class="relative group" x-data="{ open: false }" @mouseenter="open = true" @mouseleave="open = false">
                                     <button type="button"
                                         @click="switchTab('perlindungan')"
                                         :class="activeTab === 'perlindungan' ? 'text-white underline underline-offset-4' : 'text-cyan-100 hover:text-white'"
                                         class="transition py-2">
-                                        Tim Kerja Perlindungan
+                                        Tim Kerja Pelindungan
                                     </button>
                                     <div x-show="open" x-transition.opacity style="display: none;"
                                          class="absolute left-0 mt-0 w-56 bg-white rounded-md shadow-xl border border-gray-100 z-50 overflow-hidden font-normal text-sm">
@@ -223,8 +223,8 @@
                     <div x-show="activeTab === 'perlindungan'" x-cloak>
                         <div class="p-6 text-gray-900">
 
-                            <h3 class="text-2xl font-bold mb-4">Tim Kerja Perlindungan</h3>
-                            <p class="text-sm text-gray-600 mb-4">Peta sebaran program Tim Kerja Perlindungan.</p>
+                            <h3 class="text-2xl font-bold mb-4">Tim Kerja Pelindungan</h3>
+                            <p class="text-sm text-gray-600 mb-4">Peta sebaran program Tim Kerja Pelindungan.</p>
 
 
                             @include('components.svg.jabar-tim-kerja')
@@ -274,13 +274,13 @@
                                     </div>
                                 </div>
 
-                                <!-- Chart 4: Tim Kerja Perlindungan -->
+                                <!-- Chart 4: Tim Kerja Pelindungan -->
                                 <div class="bg-slate-50 p-4 rounded-xl border border-gray-200 shadow-sm">
                                     <h4 class="font-bold text-gray-800 text-base mb-1">Tim Kerja Pelindungan</h4>
                                     <p class="text-xs text-gray-500 mb-3">Sub Tim: Molinbastra</p>
                                     <div class="relative h-64 overflow-x-auto">
                                         <div class="h-full" style="min-width: 600px;">
-                                            <canvas id="chartPerlindunganAdmin"></canvas>
+                                            <canvas id="chartPelindunganAdmin"></canvas>
                                         </div>
                                     </div>
                                 </div>
@@ -861,7 +861,7 @@
             const totalData = kodeWilayahList.map(kode => programs.filter(p => p.wilayah?.kode === kode).length);
             const pengData = kodeWilayahList.map(kode => programs.filter(p => p.wilayah?.kode === kode && p.tim_kerja === 'Tim Kerja Pengembangan').length);
             const pembData = kodeWilayahList.map(kode => programs.filter(p => p.wilayah?.kode === kode && p.tim_kerja === 'Tim Kerja Pembinaan').length);
-            const perlData = kodeWilayahList.map(kode => programs.filter(p => p.wilayah?.kode === kode && (p.tim_kerja === 'Tim Kerja Pelindungan' || p.tim_kerja === 'Tim Kerja Perlindungan')).length);
+            const perlData = kodeWilayahList.map(kode => programs.filter(p => p.wilayah?.kode === kode && (p.tim_kerja === 'Tim Kerja Pelindungan' || p.tim_kerja === 'Tim Kerja Pelindungan')).length);
 
             const commonOptions = {
                 responsive: true,
@@ -914,7 +914,7 @@
             renderBarChart('chartTotalProgramAdmin', labels, totalData, 'rgba(59, 130, 246, 0.85)', 'rgb(29, 78, 216)');
             renderBarChart('chartPengembanganAdmin', labels, pengData, 'rgba(236, 72, 153, 0.85)', 'rgb(190, 24, 93)');
             renderBarChart('chartPembinaanAdmin', labels, pembData, 'rgba(16, 185, 129, 0.85)', 'rgb(4, 120, 87)');
-            renderBarChart('chartPerlindunganAdmin', labels, perlData, 'rgba(245, 158, 11, 0.85)', 'rgb(180, 83, 9)');
+            renderBarChart('chartPelindunganAdmin', labels, perlData, 'rgba(245, 158, 11, 0.85)', 'rgb(180, 83, 9)');
         });
     </script>
 </x-app-layout>
