@@ -36,6 +36,7 @@
                                     <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">Tanggal</th>
                                     <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">Waktu</th>
                                     <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">Judul Agenda</th>
+                                    <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">Deskripsi</th>
                                     <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">Ruangan</th>
                                     <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">Dibuat Oleh</th>
                                     <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">Aksi</th>
@@ -70,7 +71,8 @@
                                             </div>
                                         </td>
                                         <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">{{ $agenda->start_time->format('H:i') }} - {{ $agenda->end_time->format('H:i') }}</td>
-                                        <td class="px-6 py-4">{{ $agenda->title }}</td>
+                                        <td class="px-6 py-4 text-sm text-gray-900 max-w-xs break-words whitespace-normal">{{ $agenda->title }}</td>
+                                        <td class="px-6 py-4 text-sm text-gray-500 max-w-sm break-words whitespace-normal">{{ $agenda->description ?? '-' }}</td>
                                         <td class="px-6 py-4 text-sm text-gray-500">{{ $agenda->room->name ?? '-' }}</td>
                                         <td class="px-6 py-4 text-sm text-gray-500">{{ $agenda->user->name }}</td>
                                         <td class="px-6 py-4 whitespace-nowrap text-sm font-medium">
@@ -91,7 +93,7 @@
                                         </td>
                                     </tr>
                                 @empty
-                                    <tr><td colspan="6" class="text-center py-4 text-gray-500">Tidak ada agenda yang ditemukan.</td></tr>
+                                    <tr><td colspan="7" class="text-center py-4 text-gray-500">Tidak ada agenda yang ditemukan.</td></tr>
                                 @endforelse
                             </tbody>
                         </table>

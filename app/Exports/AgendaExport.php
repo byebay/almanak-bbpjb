@@ -73,8 +73,21 @@ class AgendaExport implements FromCollection, WithHeadings, WithMapping, ShouldA
 
     public function styles(Worksheet $sheet)
     {
+        // Wrap text dan vertical align TOP untuk seluruh kolom atau khususnya Judul (F) & Deskripsi (G)
+        $sheet->getStyle('F:G')->getAlignment()->setWrapText(true);
+        $sheet->getStyle('A:J')->getAlignment()->setVertical(\PhpOffice\PhpSpreadsheet\Style\Alignment::VERTICAL_TOP);
+
+        // Atur lebar kolom agar wrap text terlihat rapi
+        $sheet->getColumnDimension('F')->setAutoSize(false)->setWidth(35);
+        $sheet->getColumnDimension('G')->setAutoSize(false)->setWidth(45);
+
         return [
-            1 => ['font' => ['bold' => true]],
+            1 => [
+                'font' => ['bold' => true],
+                'alignment' => [
+                    'vertical' => \PhpOffice\PhpSpreadsheet\Style\Alignment::VERTICAL_CENTER,
+                ],
+            ],
         ];
     }
 }
