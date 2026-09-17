@@ -9,6 +9,9 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Storage;
 
+use App\Exports\AgendaExport;
+use Maatwebsite\Excel\Facades\Excel;
+
 class AgendaController extends Controller
 {
     /**
@@ -16,14 +19,19 @@ class AgendaController extends Controller
      */
     public function index()
     {
-        
-
         // Dengan SoftDeletes di Model, Laravel secara otomatis hanya mengambil data yang "aktif"
-        
         $agendas = Agenda::with(['user', 'room'])->latest()->get();
         $rooms = Room::orderBy('name')->get();
         return view('agenda.index', compact('agendas', 'rooms')); // Kirim data ruangan ke view
-// Sesuaikan nama view jika perlu
+    }
+
+    /**
+     * Export data agenda ke Excel.
+     */
+    public function export()
+    {
+        $fileName = 'Agenda_Harian_' . date('Ymd_His') . '.xlsx';
+        return Excel::download(new AgendaExport, $fileName);
     }
 
     public function store(Request $request)
