@@ -93,10 +93,48 @@
                     <span class="font-semibold text-xl text-gray-800 ml-3">Almanak</span>
                 </div>
 
-                <!-- Tombol Login -->
-                <a href="{{ route('login') }}" class="inline-flex items-center px-4 py-2 bg-blue-600 border border-transparent rounded-md font-semibold text-xs text-white uppercase tracking-widest hover:bg-blue-700">
-                    Login Pegawai
-                </a>
+                <!-- Tombol Login & Menu Opsi Login -->
+                <div x-data="{ open: false }" @keydown.escape.window="open = false" class="relative flex flex-wrap items-center justify-end gap-2">
+                    <!-- 3 Tombol Opsi Login di sebelah kiri tombol "Login" -->
+                    <div x-show="open"
+                         x-transition:enter="transition ease-out duration-200"
+                         x-transition:enter-start="opacity-0 translate-x-3 scale-95"
+                         x-transition:enter-end="opacity-100 translate-x-0 scale-100"
+                         x-transition:leave="transition ease-in duration-150"
+                         x-transition:leave-start="opacity-100 translate-x-0 scale-100"
+                         x-transition:leave-end="opacity-0 translate-x-3 scale-95"
+                         @click.outside="open = false"
+                         class="flex flex-wrap items-center gap-2"
+                         style="display: none;">
+                        
+                        <!-- Login Simahub (Warna Emerald) -->
+                        <a href="https://almanakbbpjb.kemendikdasmen.go.id/simahub" class="inline-flex items-center px-3.5 py-2 bg-emerald-600 border border-transparent rounded-md font-semibold text-xs text-white uppercase tracking-widest hover:bg-emerald-700 active:bg-emerald-800 focus:outline-none focus:ring-2 focus:ring-emerald-500 focus:ring-offset-2 transition ease-in-out duration-150 shadow-sm">
+                            Login Simahub
+                        </a>
+
+                        <!-- Login Simola (Warna Amber) -->
+                        <a href="https://almanakbbpjb.kemendikdasmen.go.id/simola" class="inline-flex items-center px-3.5 py-2 bg-amber-600 border border-transparent rounded-md font-semibold text-xs text-white uppercase tracking-widest hover:bg-amber-700 active:bg-amber-800 focus:outline-none focus:ring-2 focus:ring-amber-500 focus:ring-offset-2 transition ease-in-out duration-150 shadow-sm">
+                            Login Simola
+                        </a>
+
+                        <!-- Login Pegawai (Warna Biru Utama) -->
+                        <a href="{{ route('login') }}" class="inline-flex items-center px-3.5 py-2 bg-blue-600 border border-transparent rounded-md font-semibold text-xs text-white uppercase tracking-widest hover:bg-blue-700 active:bg-blue-800 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 transition ease-in-out duration-150 shadow-sm">
+                            Login Pegawai
+                        </a>
+                    </div>
+
+                    <!-- Tombol Utama "Login" (Pemicu) -->
+                    <button @click="open = !open"
+                            type="button"
+                            :class="open ? 'bg-slate-800 hover:bg-slate-900 ring-2 ring-slate-400' : 'bg-blue-600 hover:bg-blue-700'"
+                            class="inline-flex items-center px-4 py-2 border border-transparent rounded-md font-semibold text-xs text-white uppercase tracking-widest focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 transition ease-in-out duration-150 shadow-sm cursor-pointer"
+                            :aria-expanded="open.toString()">
+                        <svg class="mr-1.5 w-3.5 h-3.5 transition-transform duration-200" :class="{ 'rotate-180': open }" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M15 19l-7-7 7-7"></path>
+                        </svg>
+                        <span>Login</span>
+                    </button>
+                </div>
             </div>
 
         </header>
