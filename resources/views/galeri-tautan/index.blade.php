@@ -22,20 +22,55 @@
                 </form>
             </div>
 
+            @if (session('success'))
+                <div class="bg-green-100 border border-green-200 text-green-700 px-4 py-3 rounded-lg mb-6 shadow-sm">
+                    {{ session('success') }}
+                </div>
+            @endif
+
+            @if ($errors->any())
+                <div class="bg-red-100 border border-red-200 text-red-700 px-4 py-3 rounded-lg mb-6 shadow-sm">
+                    <ul class="list-disc list-inside text-sm">
+                        @foreach ($errors->all() as $error)
+                            <li>{{ $error }}</li>
+                        @endforeach
+                    </ul>
+                </div>
+            @endif
+
             @if(Auth::user()->isSuperAdmin())
             <div class="bg-white p-6 rounded-lg shadow-sm mb-6">
                 <h3 class="font-bold text-lg mb-4">Tambah Tautan Baru</h3>
                 <form action="{{ route('galeri-tautan.store') }}" method="POST">
                     @csrf
                     <input type="hidden" name="year" value="{{ $selectedYear }}">
-                    <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
-                        <div class="md:col-span-1">
-                            <label for="title" class="block font-medium text-sm text-gray-700">Judul Tautan</label>
-                            <input type="text" name="title" id="title" class="mt-1 block w-full border-gray-300 rounded-md shadow-sm" required>
+                    <div class="space-y-4">
+                        <div>
+                            <label for="title" class="block font-medium text-sm text-gray-700">Judul Tautan <span class="text-red-500">*</span></label>
+                            <input type="text" name="title" id="title" value="{{ old('title') }}" class="mt-1 block w-full border-gray-300 rounded-md shadow-sm" required placeholder="Masukkan judul tautan">
+                            @error('title')
+                                <p class="text-xs text-red-600 mt-1">{{ $message }}</p>
+                            @enderror
                         </div>
-                        <div class="md:col-span-2">
-                            <label for="url" class="block font-medium text-sm text-gray-700">URL (Link Google Drive)</label>
-                            <input type="url" name="url" id="url" class="mt-1 block w-full border-gray-300 rounded-md shadow-sm" required placeholder="https://">
+                        <div class="grid grid-cols-1 md:grid-cols-12 gap-4">
+                            <div class="md:col-span-4">
+                                <label for="kategori" class="block font-medium text-sm text-gray-700">Kategori <span class="text-red-500">*</span></label>
+                                <select name="kategori" id="kategori" class="mt-1 block w-full border-gray-300 rounded-md shadow-sm" required>
+                                    <option value="" disabled {{ old('kategori') ? '' : 'selected' }}>Pilih Kategori</option>
+                                    <option value="Hasil Kerja" {{ old('kategori') == 'Hasil Kerja' ? 'selected' : '' }}>Hasil Kerja</option>
+                                    <option value="Lainnya" {{ old('kategori') == 'Lainnya' ? 'selected' : '' }}>Lainnya</option>
+                                </select>
+                                @error('kategori')
+                                    <p class="text-xs text-red-600 mt-1">{{ $message }}</p>
+                                @enderror
+                            </div>
+                            <div class="md:col-span-8">
+                                <label for="url" class="block font-medium text-sm text-gray-700">URL (Link Google Drive) <span class="text-red-500">*</span></label>
+                                <input type="url" name="url" id="url" value="{{ old('url') }}" class="mt-1 block w-full border-gray-300 rounded-md shadow-sm" required placeholder="https://">
+                                @error('url')
+                                    <p class="text-xs text-red-600 mt-1">{{ $message }}</p>
+                                @enderror
+                            </div>
                         </div>
                     </div>
                     <button type="submit" class="mt-4 px-4 py-2 bg-green-600 text-white rounded-md hover:bg-green-700">Simpan Tautan</button>
@@ -48,9 +83,14 @@
                 <div class="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-6 gap-4">
                     @forelse ($links as $link)
                         <div class="relative group">
-                            <a href="{{ $link->url }}" target="_blank" class="flex flex-col items-center justify-center p-4 border rounded-lg hover:bg-gray-100 hover:shadow-md transition aspect-square">
-                                <svg class="w-16 h-16 text-yellow-500" fill="currentColor" viewBox="0 0 20 20"><path d="M2 6a2 2 0 012-2h5l2 2h5a2 2 0 012 2v6a2 2 0 01-2 2H4a2 2 0 01-2-2V6z"></path></svg>
+                            <a href="{{ $link->url }}" target="_blank" class="flex flex-col items-center justify-center p-4 border rounded-lg hover:bg-gray-100 hover:shadow-md transition aspect-square text-center">
+                                <svg class="w-14 h-14 text-yellow-500" fill="currentColor" viewBox="0 0 20 20"><path d="M2 6a2 2 0 012-2h5l2 2h5a2 2 0 012 2v6a2 2 0 01-2 2H4a2 2 0 01-2-2V6z"></path></svg>
                                 <p class="text-xs text-center mt-2 font-semibold break-all">{{ Str::limit($link->title, 30) }}</p>
+                                @if($link->kategori)
+                                    <span class="mt-1 inline-block px-2 py-0.5 text-[10px] font-medium rounded-full {{ $link->kategori === 'Hasil Kerja' ? 'bg-blue-100 text-blue-800' : 'bg-gray-100 text-gray-700' }}">
+                                        {{ $link->kategori }}
+                                    </span>
+                                @endif
                             </a>
                             @if(Auth::user()->isSuperAdmin())
                                 <form action="{{ route('galeri-tautan.destroy', $link) }}" method="POST" onsubmit="return confirm('Anda yakin ingin menghapus tautan ini?');" class="absolute top-0 right-0 m-1 opacity-0 group-hover:opacity-100">

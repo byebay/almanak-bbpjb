@@ -6,5 +6,5 @@ use Illuminate\Database\Eloquent\Model;
 class SharedLink extends Model
 {
     use HasFactory;
-    protected $fillable = ['title', 'url', 'year'];
+    protected $fillable = ['title', 'url', 'year', 'kategori'];
 }

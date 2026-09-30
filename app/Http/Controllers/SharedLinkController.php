@@ -23,6 +23,10 @@ class SharedLinkController extends Controller
             'title' => 'required|string|max:255',
             'url' => 'required|url',
             'year' => 'required|integer',
+            'kategori' => 'required|in:Hasil Kerja,Lainnya',
+        ], [
+            'kategori.required' => 'Kategori wajib dipilih.',
+            'kategori.in' => 'Kategori harus berupa Hasil Kerja atau Lainnya.',
         ]);
 
         SharedLink::create($validated);
