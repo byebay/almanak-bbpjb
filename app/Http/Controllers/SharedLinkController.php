@@ -14,7 +14,19 @@ class SharedLinkController extends Controller
 
         $query = SharedLink::where('year', $selectedYear)->where('kategori', $kategori);
         
-        $links = $query->orderBy('title')->get();
+        if ($kategori === 'Hasil Kerja') {
+            $driver = $query->getConnection()->getDriverName();
+            if ($driver === 'sqlite') {
+                $query->orderByRaw("CAST(strftime('%m', created_at) AS INTEGER) ASC");
+            } else {
+                $query->orderByRaw('MONTH(created_at) ASC');
+            }
+            $query->orderBy('created_at', 'ASC');
+        } else {
+            $query->orderBy('title');
+        }
+
+        $links = $query->get();
         return view('galeri-tautan.index', compact('links', 'selectedYear', 'kategori'));
     }
 

@@ -88,12 +88,7 @@
                         <div class="relative group">
                             <a href="{{ $link->url }}" target="_blank" class="flex flex-col items-center justify-center p-4 border rounded-lg hover:bg-gray-100 hover:shadow-md transition aspect-square text-center">
                                 <svg class="w-14 h-14 text-yellow-500" fill="currentColor" viewBox="0 0 20 20"><path d="M2 6a2 2 0 012-2h5l2 2h5a2 2 0 012 2v6a2 2 0 01-2 2H4a2 2 0 01-2-2V6z"></path></svg>
-                                <p class="text-xs text-center mt-2 font-semibold break-all">{{ Str::limit($link->title, 30) }}</p>
-                                @if($link->kategori)
-                                    <span class="mt-1 inline-block px-2 py-0.5 text-[10px] font-medium rounded-full {{ $link->kategori === 'Hasil Kerja' ? 'bg-blue-100 text-blue-800' : 'bg-gray-100 text-gray-700' }}">
-                                        {{ $link->kategori }}
-                                    </span>
-                                @endif
+                                <p class="text-xs text-center mt-2 font-semibold break-words leading-tight">{{ $link->title }}</p>
                             </a>
                             @if(Auth::user()->isSuperAdmin())
                                 <form action="{{ route('galeri-tautan.destroy', $link) }}" method="POST" onsubmit="return confirm('Anda yakin ingin menghapus tautan ini?');" class="absolute top-0 right-0 m-1 opacity-0 group-hover:opacity-100">
