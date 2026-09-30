@@ -10,8 +10,12 @@ class SharedLinkController extends Controller
     public function index(Request $request)
     {
         $selectedYear = $request->input('year', now()->year);
-        $links = SharedLink::where('year', $selectedYear)->orderBy('title')->get();
-        return view('galeri-tautan.index', compact('links', 'selectedYear'));
+        $kategori = $request->input('kategori', 'Hasil Kerja');
+
+        $query = SharedLink::where('year', $selectedYear)->where('kategori', $kategori);
+        
+        $links = $query->orderBy('title')->get();
+        return view('galeri-tautan.index', compact('links', 'selectedYear', 'kategori'));
     }
 
     public function store(Request $request)

@@ -1,5 +1,8 @@
 <?php
 
+// Prevent timeout on cold start (especially with php -S built-in server)
+set_time_limit(120);
+
 use Illuminate\Foundation\Application;
 use Illuminate\Http\Request;
 

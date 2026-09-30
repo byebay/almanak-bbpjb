@@ -10,6 +10,9 @@
             <div class="bg-white p-6 rounded-lg shadow-sm mb-6">
                 <h3 class="font-bold text-lg mb-4">Pilih Tahun</h3>
                 <form action="{{ route('galeri-tautan.index') }}" method="GET" class="flex items-end space-x-4">
+                    @if(request('kategori'))
+                        <input type="hidden" name="kategori" value="{{ request('kategori') }}">
+                    @endif
                     <div>
                         <label for="year" class="block font-medium text-sm text-gray-700">Tahun:</label>
                         <select name="year" id="year" class="border-gray-300 rounded-md shadow-sm mt-1">
@@ -79,7 +82,7 @@
             @endif
 
             <div class="bg-white p-6 rounded-lg shadow-sm">
-                <h3 class="font-bold text-lg mb-4">Daftar Tautan - Tahun {{ $selectedYear }}</h3>
+                <h3 class="font-bold text-lg mb-4">Daftar Tautan {{ $kategori ? '('.$kategori.')' : '' }} - Tahun {{ $selectedYear }}</h3>
                 <div class="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-6 gap-4">
                     @forelse ($links as $link)
                         <div class="relative group">
